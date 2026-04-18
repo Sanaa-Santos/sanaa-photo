@@ -649,7 +649,7 @@ function InlineQuestionnaire() {
       {/* Solid base blocks parallax bleed-through */}
       <div style={{ position: "absolute", inset: 0, zIndex: 0, background: BG }} />
 
-      {/* Sliding frame background per question */}
+      {/* Sliding frame background per question — SVG mask fades frames at top */}
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
           key={bgKey}
@@ -662,19 +662,26 @@ function InlineQuestionnaire() {
           <svg width="100%" height="100%" viewBox="0 0 420 800"
             preserveAspectRatio="xMidYMid slice"
             style={{ position: "absolute", inset: 0 }}>
-            {bgFrameSet.map(f => <FrameEl key={f.id} frame={f} opacity={0.32} />)}
+            <defs>
+              <linearGradient id="frameFade" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="white" stopOpacity="0" />
+                <stop offset="35%" stopColor="white" stopOpacity="0" />
+                <stop offset="60%" stopColor="white" stopOpacity="1" />
+                <stop offset="100%" stopColor="white" stopOpacity="1" />
+              </linearGradient>
+              <mask id="topFadeMask">
+                <rect x="0" y="0" width="420" height="800" fill="url(#frameFade)" />
+              </mask>
+            </defs>
+            <g mask="url(#topFadeMask)">
+              {bgFrameSet.map(f => <FrameEl key={f.id} frame={f} opacity={0.38} />)}
+            </g>
           </svg>
         </motion.div>
       </AnimatePresence>
 
-      {/* Gradient fade at top — seamless blend from page above */}
-      <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "20rem", zIndex: 3, background: `linear-gradient(to bottom, ${BG} 0%, ${BG}cc 35%, transparent 100%)`, pointerEvents: "none" }} />
-
-      {/* Bottom fade */}
-      <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "6rem", zIndex: 3, background: `linear-gradient(to top, ${BG} 0%, transparent 100%)`, pointerEvents: "none" }} />
-
       {/* Vignette */}
-      <div style={{ position: "absolute", inset: 0, zIndex: 2, background: "radial-gradient(ellipse at 50% 60%, rgba(8,14,26,0.25) 10%, rgba(8,14,26,0.8) 100%)", pointerEvents: "none" }} />
+      <div style={{ position: "absolute", inset: 0, zIndex: 2, background: "radial-gradient(ellipse at 50% 65%, rgba(8,14,26,0.2) 10%, rgba(8,14,26,0.75) 100%)", pointerEvents: "none" }} />
 
       {/* Progress dots */}
       {!submitted && (
