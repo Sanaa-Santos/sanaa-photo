@@ -646,6 +646,9 @@ function InlineQuestionnaire() {
   return (
     <section style={{ position: "relative", minHeight: "100svh", display: "flex", flexDirection: "column", justifyContent: "center", overflow: "hidden" }}>
 
+      {/* Solid base blocks parallax bleed-through */}
+      <div style={{ position: "absolute", inset: 0, zIndex: 0, background: BG }} />
+
       {/* Sliding frame background per question */}
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
@@ -654,7 +657,7 @@ function InlineQuestionnaire() {
           animate={{ x: 0 }}
           exit={{ x: "-100%" }}
           transition={{ duration: 0.55, ease: [0.4, 0, 0.2, 1] }}
-          style={{ position: "absolute", inset: 0, zIndex: 0 }}
+          style={{ position: "absolute", inset: 0, zIndex: 1 }}
         >
           <svg width="100%" height="100%" viewBox="0 0 420 800"
             preserveAspectRatio="xMidYMid slice"
@@ -664,8 +667,14 @@ function InlineQuestionnaire() {
         </motion.div>
       </AnimatePresence>
 
+      {/* Gradient fade at top — seamless blend from page above */}
+      <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "20rem", zIndex: 3, background: `linear-gradient(to bottom, ${BG} 0%, ${BG}cc 35%, transparent 100%)`, pointerEvents: "none" }} />
+
+      {/* Bottom fade */}
+      <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "6rem", zIndex: 3, background: `linear-gradient(to top, ${BG} 0%, transparent 100%)`, pointerEvents: "none" }} />
+
       {/* Vignette */}
-      <div style={{ position: "absolute", inset: 0, zIndex: 1, background: "radial-gradient(ellipse at 50% 45%, rgba(8,14,26,0.5) 10%, rgba(8,14,26,0.93) 100%)" }} />
+      <div style={{ position: "absolute", inset: 0, zIndex: 2, background: "radial-gradient(ellipse at 50% 60%, rgba(8,14,26,0.25) 10%, rgba(8,14,26,0.8) 100%)", pointerEvents: "none" }} />
 
       {/* Progress dots */}
       {!submitted && (
