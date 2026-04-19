@@ -255,7 +255,7 @@ function placeFrames({ count, areaW, areaH, seed = 1, minGap = 24, scaleLo = 0.6
 // Pre-compute frame sets (done once at module load, not on every render)
 const MAIN_FRAMES   = placeFrames({ count: 48, areaW: 420, areaH: 9000, seed: 31337, minGap: 28 });
 const QUEST_FRAMES  = Array.from({ length: 6 }, (_, i) =>
-  placeFrames({ count: 18, areaW: 420, areaH: 800, seed: i * 23 + 7, minGap: 20, scaleLo: 0.5, scaleHi: 0.85 })
+  placeFrames({ count: 16, areaW: 420, areaH: 800, seed: i * 23 + 7, minGap: 24, scaleLo: 0.42, scaleHi: 0.68 })
 );
 
 // ─── SVG FRAME ELEMENT ────────────────────────────────────────────────────────
@@ -649,7 +649,7 @@ function InlineQuestionnaire() {
       {/* Solid base blocks parallax bleed-through */}
       <div style={{ position: "absolute", inset: 0, zIndex: 0, background: BG }} />
 
-      {/* Sliding frame background per question — SVG mask fades frames at top */}
+      {/* Sliding frame background per question */}
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
           key={bgKey}
@@ -662,26 +662,19 @@ function InlineQuestionnaire() {
           <svg width="100%" height="100%" viewBox="0 0 420 800"
             preserveAspectRatio="xMidYMid slice"
             style={{ position: "absolute", inset: 0 }}>
-            <defs>
-              <linearGradient id="frameFade" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="white" stopOpacity="0" />
-                <stop offset="35%" stopColor="white" stopOpacity="0" />
-                <stop offset="60%" stopColor="white" stopOpacity="1" />
-                <stop offset="100%" stopColor="white" stopOpacity="1" />
-              </linearGradient>
-              <mask id="topFadeMask">
-                <rect x="0" y="0" width="420" height="800" fill="url(#frameFade)" />
-              </mask>
-            </defs>
-            <g mask="url(#topFadeMask)">
-              {bgFrameSet.map(f => <FrameEl key={f.id} frame={f} opacity={0.38} />)}
-            </g>
+            {bgFrameSet.map(f => <FrameEl key={f.id} frame={f} opacity={0.28} />)}
           </svg>
         </motion.div>
       </AnimatePresence>
 
-      {/* Vignette */}
-      <div style={{ position: "absolute", inset: 0, zIndex: 2, background: "radial-gradient(ellipse at 50% 65%, rgba(8,14,26,0.2) 10%, rgba(8,14,26,0.75) 100%)", pointerEvents: "none" }} />
+      {/* Vignette — heavy to keep text readable */}
+      <div style={{ position: "absolute", inset: 0, zIndex: 2, background: "radial-gradient(ellipse at 50% 65%, rgba(8,14,26,0.45) 10%, rgba(8,14,26,0.88) 100%)", pointerEvents: "none" }} />
+
+      {/* Top fade — frames and bg dissolve together into the section above */}
+      <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "22rem", zIndex: 3, background: `linear-gradient(to bottom, ${BG} 0%, ${BG}f0 20%, ${BG}99 55%, transparent 100%)`, pointerEvents: "none" }} />
+
+      {/* Bottom fade */}
+      <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "5rem", zIndex: 3, background: `linear-gradient(to top, ${BG}, transparent)`, pointerEvents: "none" }} />
 
       {/* Progress dots */}
       {!submitted && (
