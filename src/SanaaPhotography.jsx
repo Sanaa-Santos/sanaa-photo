@@ -266,7 +266,7 @@ function FrameEl({ frame, opacity = 0.38, photoIndex }) {
   return (
     <g transform={`translate(${frame.x},${frame.y}) scale(${frame.scale})`} opacity={opacity}>
       {photoUrl && (
-        <g>
+        <>
           <defs>
             <clipPath id={`photo-clip-${frame.id}`}>
               <rect x={def.px} y={def.py} width={def.pw} height={def.ph} />
@@ -277,11 +277,12 @@ function FrameEl({ frame, opacity = 0.38, photoIndex }) {
             y={def.py}
             width={def.pw}
             height={def.ph}
-            href={photoUrl}
+            xlinkHref={photoUrl}
             preserveAspectRatio="xMidYMid slice"
             clipPath={`url(#photo-clip-${frame.id})`}
+            style={{ pointerEvents: "none" }}
           />
-        </g>
+        </>
       )}
       <g dangerouslySetInnerHTML={{ __html: def.svg(photoUrl ? "none" : frame.fill) }} />
     </g>
