@@ -267,7 +267,7 @@ const QUEST_FRAMES  = Array.from({ length: 6 }, (_, i) =>
 );
 
 // ─── SVG FRAME ELEMENT ────────────────────────────────────────────────────────
-function FrameEl({ frame, opacity = 0.35, photoIndex, viewportWidth = 420 }) {
+function FrameEl({ frame, opacity = 0.90, photoIndex, viewportWidth = 420 }) {
   const def = FRAMES[frame.defIdx];
   const photoUrl = photoIndex !== undefined ? PHOTOS[photoIndex % PHOTOS.length] : null;
   // Use consistent opacity across all viewports
