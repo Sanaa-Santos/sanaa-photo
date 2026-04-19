@@ -255,19 +255,20 @@ function placeFrames({ count, areaW, areaH, seed = 1, minGap = 24, scaleLo = 0.6
 
 // Helper to get frame placement dimensions based on viewport
 function getMainFrameParams(viewportW) {
-  // On mobile (<768px), use viewport width; on desktop, use wider layout to fill page
-  const areaW = viewportW < 768 ? Math.max(viewportW * 0.9, 360) : 1200;
-  return { count: 48, areaW, areaH: 9000, seed: 31337, minGap: 28, scaleLo: 1.0, scaleHi: 1.6 };
+  // On mobile (<768px), use viewport width; on desktop, use tighter layout to fill page
+  const areaW = viewportW < 768 ? Math.max(viewportW * 0.9, 360) : 900;
+  const scaleHi = viewportW < 768 ? 1.6 : 2.0; // Larger frames on desktop
+  return { count: 48, areaW, areaH: 9000, seed: 31337, minGap: 28, scaleLo: 1.0, scaleHi };
 }
 
 // Pre-compute frame sets for desktop
-const MAIN_FRAMES   = placeFrames(getMainFrameParams(1200));
+const MAIN_FRAMES   = placeFrames(getMainFrameParams(900));
 const QUEST_FRAMES  = Array.from({ length: 6 }, (_, i) =>
   placeFrames({ count: 16, areaW: 420, areaH: 800, seed: i * 23 + 7, minGap: 24, scaleLo: 0.52, scaleHi: 0.75 })
 );
 
 // ─── SVG FRAME ELEMENT ────────────────────────────────────────────────────────
-function FrameEl({ frame, opacity = 0.90, photoIndex, viewportWidth = 420 }) {
+function FrameEl({ frame, opacity = 0.95, photoIndex, viewportWidth = 420 }) {
   const def = FRAMES[frame.defIdx];
   const photoUrl = photoIndex !== undefined ? PHOTOS[photoIndex % PHOTOS.length] : null;
   // Use consistent opacity across all viewports
@@ -310,7 +311,7 @@ function ParallaxFrames({ areaW }) {
   // On mobile, compute frames with responsive width; on desktop use pre-computed frames
   const frames = W < 768 ? placeFrames(getMainFrameParams(W)) : MAIN_FRAMES;
   // ViewBox matches the frame layout area for proper scaling
-  const viewBoxW = W < 768 ? Math.max(W * 0.9, 360) : 1200;
+  const viewBoxW = W < 768 ? Math.max(W * 0.9, 360) : 900;
 
   return (
     <div style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none", overflow: "hidden" }}>
