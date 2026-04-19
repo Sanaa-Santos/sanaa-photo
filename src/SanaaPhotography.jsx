@@ -253,6 +253,70 @@ function placeFrames({ count, areaW, areaH, seed = 1, minGap = 24, scaleLo = 0.6
   return placed;
 }
 
+const PHOTO_ORIENTATION = {
+  LANDSCAPE: "landscape",
+  PORTRAIT: "portrait",
+};
+
+function getOrientationForSize(width, height) {
+  if (!width || !height) return null;
+  return width >= height ? PHOTO_ORIENTATION.LANDSCAPE : PHOTO_ORIENTATION.PORTRAIT;
+}
+
+function usePhotoOrientations(photoUrls) {
+  const [orientations, setOrientations] = useState(() => photoUrls.map(() => null));
+
+  useEffect(() => {
+    let active = true;
+
+    photoUrls.forEach((src, idx) => {
+      const img = new Image();
+      img.onload = () => {
+        if (!active) return;
+        const orientation = getOrientationForSize(img.naturalWidth, img.naturalHeight);
+        setOrientations(prev => {
+          if (prev[idx] === orientation) return prev;
+          const next = [...prev];
+          next[idx] = orientation;
+          return next;
+        });
+      };
+      img.onerror = () => {
+        if (!active) return;
+        setOrientations(prev => {
+          if (prev[idx] === PHOTO_ORIENTATION.LANDSCAPE) return prev;
+          const next = [...prev];
+          next[idx] = PHOTO_ORIENTATION.LANDSCAPE;
+          return next;
+        });
+      };
+      img.src = src;
+    });
+
+    return () => { active = false; };
+  }, [photoUrls]);
+
+  return orientations;
+}
+
+function getPhotoIndexForFrame(frame, photoOrientations) {
+  const def = FRAMES[frame.defIdx];
+  const frameOrientation = getOrientationForSize(def.pw, def.ph) || PHOTO_ORIENTATION.LANDSCAPE;
+  const matchIndexes = [];
+
+  for (let i = 0; i < photoOrientations.length; i += 1) {
+    if (photoOrientations[i] === frameOrientation) {
+      matchIndexes.push(i);
+    }
+  }
+
+  if (matchIndexes.length > 0) {
+    return matchIndexes[frame.id % matchIndexes.length];
+  }
+
+  return frame.id % PHOTOS.length;
+}
+
 // Helper to get frame placement dimensions based on viewport
 function getMainFrameParams(viewportW) {
   // On mobile (<768px), use viewport width; on desktop, use a wider frame area so frames are more spread horizontally
@@ -316,7 +380,7 @@ function FrameEl({ frame, opacity = 0.95, photoIndex, viewportWidth = 420 }) {
 
 // ─── PARALLAX FRAME BACKGROUND (main site) ───────────────────────────────────
 // Uses framer-motion's useScroll + useTransform for GPU-composited parallax
-function ParallaxFrames({ areaW }) {
+function ParallaxFrames({ areaW, photoOrientations }) {
   const { scrollY } = useScroll();
   // Frames move 1.6× scroll speed = faster than content
   const y = useTransform(scrollY, [0, 10000], [0, -16000]);
@@ -333,7 +397,14 @@ function ParallaxFrames({ areaW }) {
     <div style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none", overflow: "hidden" }}>
       <motion.div style={{ y: ySpring, willChange: "transform" }}>
         <svg width={W} height={H} viewBox={`0 0 ${viewBoxW} ${H}`} style={{ display: "block" }}>
-          {frames.map(f => <FrameEl key={f.id} frame={f} photoIndex={f.id} viewportWidth={W} />)}
+          {frames.map(f => (
+            <FrameEl
+              key={f.id}
+              frame={f}
+              photoIndex={getPhotoIndexForFrame(f, photoOrientations)}
+              viewportWidth={W}
+            />
+          ))}
         </svg>
       </motion.div>
     </div>
@@ -552,7 +623,7 @@ function ThankYou({ onClose }) {
   );
 }
 
-function Questionnaire({ visible, onClose }) {
+function Questionnaire({ visible, onClose, photoOrientations }) {
   const [step, setStep] = useState(0);
   const [showForm, setShowForm] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -598,7 +669,14 @@ function Questionnaire({ visible, onClose }) {
               style={{ position: "absolute", inset: 0 }}
             >
               <svg width="100%" height="100%" viewBox="0 0 420 800" preserveAspectRatio="xMidYMid slice" style={{ position: "absolute", inset: 0 }}>
-                {bgFrameSet.map(f => <FrameEl key={f.id} frame={f} opacity={0.95} photoIndex={f.id} />)}
+                {bgFrameSet.map(f => (
+                  <FrameEl
+                    key={f.id}
+                    frame={f}
+                    opacity={0.95}
+                    photoIndex={getPhotoIndexForFrame(f, photoOrientations)}
+                  />
+                ))}
               </svg>
             </motion.div>
           </AnimatePresence>
@@ -681,7 +759,7 @@ function FloatingButton({ onClick }) {
 // ─── MAIN APP ─────────────────────────────────────────────────────────────────
 
 // ─── INLINE QUESTIONNAIRE SECTION ─────────────────────────────────────────────
-function InlineQuestionnaire() {
+function InlineQuestionnaire({ photoOrientations }) {
   const [step, setStep] = useState(0);
   const [showForm, setShowForm] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -714,7 +792,14 @@ function InlineQuestionnaire() {
           <svg width="100%" height="100%" viewBox="0 0 420 800"
             preserveAspectRatio="xMidYMid slice"
             style={{ position: "absolute", inset: 0 }}>
-            {bgFrameSet.map(f => <FrameEl key={f.id} frame={f} opacity={0.95} photoIndex={f.id} />)}
+            {bgFrameSet.map(f => (
+              <FrameEl
+                key={f.id}
+                frame={f}
+                opacity={0.95}
+                photoIndex={getPhotoIndexForFrame(f, photoOrientations)}
+              />
+            ))}
           </svg>
         </motion.div>
       </AnimatePresence>
@@ -774,6 +859,8 @@ export default function SanaaPhotography() {
     questRef.current?.scrollIntoView({ behavior: "smooth" });
   }, []);
 
+  const photoOrientations = usePhotoOrientations(PHOTOS);
+
   return (
     <>
       <style>{`
@@ -790,7 +877,7 @@ export default function SanaaPhotography() {
 
       <div style={{ position: "relative", background: BG, minHeight: "100vh" }}>
 
-        <ParallaxFrames areaW={areaW} />
+        <ParallaxFrames areaW={areaW} photoOrientations={photoOrientations} />
 
         {/* Grain */}
         <div style={{ position: "fixed", inset: 0, zIndex: 1, pointerEvents: "none", opacity: 0.28,
@@ -947,7 +1034,7 @@ export default function SanaaPhotography() {
 
           {/* QUESTIONNAIRE — inline bottom section */}
           <div ref={questRef}>
-            <InlineQuestionnaire />
+            <InlineQuestionnaire photoOrientations={photoOrientations} />
           </div>
 
         </div>
