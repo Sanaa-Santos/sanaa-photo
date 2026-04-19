@@ -581,7 +581,7 @@ function Questionnaire({ visible, onClose }) {
               style={{ position: "absolute", inset: 0 }}
             >
               <svg width="100%" height="100%" viewBox="0 0 420 800" preserveAspectRatio="xMidYMid slice" style={{ position: "absolute", inset: 0 }}>
-                {bgFrameSet.map(f => <FrameEl key={f.id} frame={f} opacity={0.28} photoIndex={f.id} />)}
+                {bgFrameSet.map(f => <FrameEl key={f.id} frame={f} opacity={0.95} photoIndex={f.id} />)}
               </svg>
             </motion.div>
           </AnimatePresence>
@@ -697,7 +697,7 @@ function InlineQuestionnaire() {
           <svg width="100%" height="100%" viewBox="0 0 420 800"
             preserveAspectRatio="xMidYMid slice"
             style={{ position: "absolute", inset: 0 }}>
-            {bgFrameSet.map(f => <FrameEl key={f.id} frame={f} opacity={0.28} photoIndex={f.id} />)}
+            {bgFrameSet.map(f => <FrameEl key={f.id} frame={f} opacity={0.95} photoIndex={f.id} />)}
           </svg>
         </motion.div>
       </AnimatePresence>
