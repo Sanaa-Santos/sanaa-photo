@@ -265,12 +265,14 @@ function FrameEl({ frame, opacity = 0.38, photoIndex }) {
   const photoUrl = photoIndex !== undefined ? PHOTOS[photoIndex % PHOTOS.length] : null;
   return (
     <g transform={`translate(${frame.x},${frame.y}) scale(${frame.scale})`} opacity={opacity}>
+      <g dangerouslySetInnerHTML={{ __html: def.svg(photoUrl ? "transparent" : frame.fill) }} />
       {photoUrl && (
         <foreignObject
           x={def.px}
           y={def.py}
           width={def.pw}
           height={def.ph}
+          xmlns="http://www.w3.org/1999/xhtml"
           style={{ pointerEvents: "none", overflow: "hidden" }}
         >
           <img
@@ -283,10 +285,10 @@ function FrameEl({ frame, opacity = 0.38, photoIndex }) {
               display: "block",
             }}
             crossOrigin="anonymous"
+            alt="photo"
           />
         </foreignObject>
       )}
-      <g dangerouslySetInnerHTML={{ __html: def.svg(photoUrl ? "none" : frame.fill) }} />
     </g>
   );
 }
