@@ -272,29 +272,16 @@ function FrameEl({ frame, opacity = 0.38, photoIndex }) {
   return (
     <g transform={`translate(${frame.x},${frame.y}) scale(${frame.scale})`}>
       {photoUrl && (
-        <foreignObject
+        <image
           x={def.px}
           y={def.py}
           width={def.pw}
           height={def.ph}
-          xmlns="http://www.w3.org/1999/xhtml"
-          style={{ pointerEvents: "none", overflow: "hidden" }}
-        >
-          <img
-            src={photoUrl}
-            style={{
-              width: "110%",
-              height: "110%",
-              transform: "translate(-5%, -5%)",
-              objectFit: "cover",
-              objectPosition: "center",
-              display: "block",
-              filter: "contrast(1.15) saturate(1.15)",
-            }}
-            crossOrigin="anonymous"
-            alt="photo"
-          />
-        </foreignObject>
+          href={photoUrl}
+          xlinkHref={photoUrl}
+          preserveAspectRatio="xMidYMid slice"
+          style={{ pointerEvents: "none", filter: "contrast(1.15) saturate(1.15)" }}
+        />
       )}
       <g dangerouslySetInnerHTML={{ __html: frameSvg }} />
     </g>
