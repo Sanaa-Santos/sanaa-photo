@@ -421,10 +421,11 @@ function QuestionPanel({ q, step, onSelect }) {
               key={opt}
               type="button"
               variants={itemVariants}
+              onPointerDown={event => event.currentTarget.blur()}
               onClick={event => { event.currentTarget.blur(); onSelect(opt); }}
               whileHover={{ scale: 1.02, borderColor: GOLD, backgroundColor: "rgba(200,160,74,0.12)" }}
               whileTap={{ scale: 0.98 }}
-              style={{ background: "rgba(14,22,40,0.6)", border: "1px solid rgba(200,160,74,0.22)", color: CREAM, padding: "0.82rem 1.2rem", fontFamily: "'Crimson Text',Georgia,serif", fontSize: "0.98rem", cursor: "pointer", textAlign: "left", borderRadius: "2px", display: "flex", alignItems: "center", gap: "0.7rem", backdropFilter: "blur(8px)", outline: "none" }}
+              style={{ background: "rgba(14,22,40,0.6)", border: "1px solid rgba(200,160,74,0.22)", color: CREAM, padding: "0.82rem 1.2rem", fontFamily: "'Crimson Text',Georgia,serif", fontSize: "0.98rem", cursor: "pointer", textAlign: "left", borderRadius: "2px", display: "flex", alignItems: "center", gap: "0.7rem", backdropFilter: "blur(8px)", outline: "none", WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}
             >
               <span style={{ color: GOLD, opacity: 0.5, fontSize: "0.72rem", fontFamily: "monospace", minWidth: 18 }}>0{i + 1}</span>
               {opt}
