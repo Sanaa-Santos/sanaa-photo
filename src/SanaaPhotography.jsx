@@ -7,6 +7,7 @@ import {
   useInView,
   AnimatePresence,
 } from "framer-motion";
+import { PHOTOS } from "./photos.js";
 
 // ─── DESIGN TOKENS ────────────────────────────────────────────────────────────
 const BG    = "#0e1628";
@@ -259,11 +260,30 @@ const QUEST_FRAMES  = Array.from({ length: 6 }, (_, i) =>
 );
 
 // ─── SVG FRAME ELEMENT ────────────────────────────────────────────────────────
-function FrameEl({ frame, opacity = 0.38 }) {
+function FrameEl({ frame, opacity = 0.38, photoIndex }) {
   const def = FRAMES[frame.defIdx];
+  const photoUrl = photoIndex !== undefined ? PHOTOS[photoIndex % PHOTOS.length] : null;
   return (
     <g transform={`translate(${frame.x},${frame.y}) scale(${frame.scale})`} opacity={opacity}>
-      <g dangerouslySetInnerHTML={{ __html: def.svg(frame.fill) }} />
+      {photoUrl && (
+        <g>
+          <defs>
+            <clipPath id={`photo-clip-${frame.id}`}>
+              <rect x={def.px} y={def.py} width={def.pw} height={def.ph} />
+            </clipPath>
+          </defs>
+          <image
+            x={def.px}
+            y={def.py}
+            width={def.pw}
+            height={def.ph}
+            href={photoUrl}
+            preserveAspectRatio="xMidYMid slice"
+            clipPath={`url(#photo-clip-${frame.id})`}
+          />
+        </g>
+      )}
+      <g dangerouslySetInnerHTML={{ __html: def.svg(photoUrl ? "none" : frame.fill) }} />
     </g>
   );
 }
@@ -283,7 +303,7 @@ function ParallaxFrames({ areaW }) {
     <div style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none", overflow: "hidden" }}>
       <motion.div style={{ y: ySpring, willChange: "transform" }}>
         <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} style={{ display: "block" }}>
-          {MAIN_FRAMES.map(f => <FrameEl key={f.id} frame={f} />)}
+          {MAIN_FRAMES.map(f => <FrameEl key={f.id} frame={f} photoIndex={f.id} />)}
         </svg>
       </motion.div>
     </div>
