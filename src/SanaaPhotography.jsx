@@ -253,19 +253,25 @@ function placeFrames({ count, areaW, areaH, seed = 1, minGap = 24, scaleLo = 0.6
   return placed;
 }
 
-// Pre-compute frame sets (done once at module load, not on every render)
-// Desktop-sized layout: frames spread across wider area and scaled larger
-const MAIN_FRAMES   = placeFrames({ count: 48, areaW: 1200, areaH: 9000, seed: 31337, minGap: 28, scaleLo: 1.0, scaleHi: 1.6 });
+// Helper to get frame placement dimensions based on viewport
+function getMainFrameParams(viewportW) {
+  // On mobile (<768px), use viewport width; on desktop, use wider layout to fill page
+  const areaW = viewportW < 768 ? Math.max(viewportW * 0.9, 360) : 1200;
+  return { count: 48, areaW, areaH: 9000, seed: 31337, minGap: 28, scaleLo: 1.0, scaleHi: 1.6 };
+}
+
+// Pre-compute frame sets for desktop
+const MAIN_FRAMES   = placeFrames(getMainFrameParams(1200));
 const QUEST_FRAMES  = Array.from({ length: 6 }, (_, i) =>
   placeFrames({ count: 16, areaW: 420, areaH: 800, seed: i * 23 + 7, minGap: 24, scaleLo: 0.52, scaleHi: 0.75 })
 );
 
 // ─── SVG FRAME ELEMENT ────────────────────────────────────────────────────────
-function FrameEl({ frame, opacity = 0.38, photoIndex, viewportWidth = 420 }) {
+function FrameEl({ frame, opacity = 0.35, photoIndex, viewportWidth = 420 }) {
   const def = FRAMES[frame.defIdx];
   const photoUrl = photoIndex !== undefined ? PHOTOS[photoIndex % PHOTOS.length] : null;
-  // On mobile, boost opacity so frames are more visible; on desktop, keep them subtle
-  const frameOpacity = viewportWidth < 768 ? Math.min(0.55, opacity) : opacity;
+  // Use consistent opacity across all viewports
+  const frameOpacity = opacity;
   const frameSvg = photoUrl
     ? def.svg("transparent")
         .replace(/fill="(?!none)([^"]+)"/g, 'fill="$1" fill-opacity="0.04"')
@@ -301,12 +307,16 @@ function ParallaxFrames({ areaW }) {
 
   const H = 9000;
   const W = Math.max(areaW, 380);
+  // On mobile, compute frames with responsive width; on desktop use pre-computed frames
+  const frames = W < 768 ? placeFrames(getMainFrameParams(W)) : MAIN_FRAMES;
+  // ViewBox matches the frame layout area for proper scaling
+  const viewBoxW = W < 768 ? Math.max(W * 0.9, 360) : 1200;
 
   return (
     <div style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none", overflow: "hidden" }}>
       <motion.div style={{ y: ySpring, willChange: "transform" }}>
-        <svg width={W} height={H} viewBox={`0 0 1200 ${H}`} style={{ display: "block" }}>
-          {MAIN_FRAMES.map(f => <FrameEl key={f.id} frame={f} photoIndex={f.id} viewportWidth={W} />)}
+        <svg width={W} height={H} viewBox={`0 0 ${viewBoxW} ${H}`} style={{ display: "block" }}>
+          {frames.map(f => <FrameEl key={f.id} frame={f} photoIndex={f.id} viewportWidth={W} />)}
         </svg>
       </motion.div>
     </div>
