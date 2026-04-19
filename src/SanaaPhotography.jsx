@@ -273,7 +273,7 @@ function FrameEl({ frame, opacity = 0.38, photoIndex }) {
           height={def.ph}
           xlinkHref={photoUrl}
           preserveAspectRatio="xMidYMid slice"
-          clipPath={`url(#clip-${frame.id})`}
+          crossOrigin="anonymous"
           style={{ pointerEvents: "none" }}
         />
       )}
@@ -297,13 +297,6 @@ function ParallaxFrames({ areaW }) {
     <div style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none", overflow: "hidden" }}>
       <motion.div style={{ y: ySpring, willChange: "transform" }}>
         <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} style={{ display: "block" }}>
-          <defs>
-            {MAIN_FRAMES.map(f => (
-              <clipPath key={`clip-def-${f.id}`} id={`clip-${f.id}`}>
-                <rect x={FRAMES[f.defIdx].px} y={FRAMES[f.defIdx].py} width={FRAMES[f.defIdx].pw} height={FRAMES[f.defIdx].ph} />
-              </clipPath>
-            ))}
-          </defs>
           {MAIN_FRAMES.map(f => <FrameEl key={f.id} frame={f} photoIndex={f.id} />)}
         </svg>
       </motion.div>
