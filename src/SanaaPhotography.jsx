@@ -311,7 +311,7 @@ function ParallaxFrames({ areaW }) {
       </motion.div>
     </div>
   );
-}}
+}
 
 // ─── SCROLL-TRIGGERED REVEAL ─────────────────────────────────────────────────
 const revealVariants = {
