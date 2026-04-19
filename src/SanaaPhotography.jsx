@@ -17,7 +17,7 @@ const MUTED = "#8a9ab8";
 
 // ─── FRAME DEFINITIONS (15 styles) ───────────────────────────────────────────
 const FRAMES = [
-  { w:160,h:120,px:20,py:16,pw:120,ph:88, frameUrl:"https://res.cloudinary.com/drqtl7xy8/image/upload/v1776629794/frame1_fmwvhf.png", svg:(f)=>`
+  { w:160,h:120,px:20,py:16,pw:120,ph:88, svg:(f)=>`
     <rect x="0" y="0" width="160" height="120" rx="3" fill="#8a5e08"/>
     <rect x="5" y="4" width="150" height="112" rx="2" fill="#b07c10"/>
     <rect x="10" y="8" width="140" height="104" rx="2" fill="#7a5008"/>
@@ -34,7 +34,7 @@ const FRAMES = [
     <circle cx="11" cy="110" r="6" fill="#8a5e08" stroke="#d0a020" stroke-width="1"/>
     <circle cx="149" cy="110" r="6" fill="#8a5e08" stroke="#d0a020" stroke-width="1"/>
   `},
-  { w:108,h:148,px:8,py:8,pw:92,ph:132, frameUrl:"https://res.cloudinary.com/drqtl7xy8/image/upload/v1776629794/frame2_d6uta8.png", svg:(f)=>`
+  { w:108,h:148,px:8,py:8,pw:92,ph:132, svg:(f)=>`
     <rect x="0" y="0" width="108" height="148" rx="2" fill="#1c0c06"/>
     <rect x="4" y="4" width="100" height="140" rx="1" fill="#2c1810"/>
     <rect x="7" y="7" width="94" height="134" rx="1" fill="#140a04"/>
@@ -46,7 +46,7 @@ const FRAMES = [
     <line x1="0" y1="35" x2="108" y2="32" stroke="#281408" stroke-width="0.5" opacity="0.45"/>
     <line x1="0" y1="90" x2="108" y2="93" stroke="#281408" stroke-width="0.4" opacity="0.3"/>
   `},
-  { w:132,h:100,px:14,py:13,pw:104,ph:74, frameUrl:"https://res.cloudinary.com/drqtl7xy8/image/upload/v1776629794/frame3_zyqlgv.png", svg:(f)=>`
+  { w:132,h:100,px:14,py:13,pw:104,ph:74, svg:(f)=>`
     <rect x="0" y="0" width="132" height="100" rx="5" fill="#d0c8b0"/>
     <rect x="5" y="5" width="122" height="90" rx="4" fill="#e0d8c0"/>
     <rect x="9" y="9" width="114" height="82" rx="3" fill="#c0b8a0"/>
@@ -55,7 +55,7 @@ const FRAMES = [
     <rect x="0" y="0" width="132" height="100" rx="5" fill="none" stroke="#b0a890" stroke-width="1"/>
     <rect x="5" y="5" width="122" height="90" rx="4" fill="none" stroke="#e8e0d0" stroke-width="0.5"/>
   `},
-  { w:142,h:108,px:16,py:14,pw:110,ph:80, frameUrl:"https://res.cloudinary.com/drqtl7xy8/image/upload/v1776629794/frame4_vjgtjg.png", svg:(f)=>`
+  { w:142,h:108,px:16,py:14,pw:110,ph:80, svg:(f)=>`
     <rect x="0" y="0" width="142" height="108" rx="2" fill="#906c18"/>
     <rect x="5" y="4" width="132" height="100" rx="2" fill="#b08828"/>
     <rect x="8" y="7" width="126" height="94" rx="1" fill="#785808"/>
@@ -68,7 +68,7 @@ const FRAMES = [
     <rect x="0" y="0" width="6" height="108" fill="#b89028"/>
     <rect x="136" y="0" width="6" height="108" fill="#b89028"/>
   `},
-  { w:98,h:128,px:13,py:13,pw:72,ph:102, frameUrl:"https://res.cloudinary.com/drqtl7xy8/image/upload/v1776629793/frame5_cj8tad.png", svg:(f)=>`
+  { w:98,h:128,px:13,py:13,pw:72,ph:102, svg:(f)=>`
     <rect x="0" y="0" width="98" height="128" rx="1" fill="#7a8082"/>
     <rect x="4" y="4" width="90" height="120" rx="1" fill="#929a9c"/>
     <rect x="7" y="7" width="84" height="114" rx="1" fill="#686e70"/>
@@ -83,7 +83,7 @@ const FRAMES = [
     <line x1="91" y1="22" x2="98" y2="22" stroke="#c0c8c8" stroke-width="1"/>
     <line x1="91" y1="106" x2="98" y2="106" stroke="#c0c8c8" stroke-width="1"/>
   `},
-  { w:138,h:96,px:12,py:11,pw:114,ph:74, frameUrl:"https://res.cloudinary.com/drqtl7xy8/image/upload/v1776629793/frame6_zury45.png", svg:(f)=>`
+  { w:138,h:96,px:12,py:11,pw:114,ph:74, svg:(f)=>`
     <rect x="0" y="0" width="138" height="96" rx="2" fill="#482c10"/>
     <rect x="6" y="5" width="126" height="86" rx="1" fill="#583818"/>
     <rect x="10" y="9" width="118" height="78" rx="1" fill="#381e08"/>
@@ -96,7 +96,7 @@ const FRAMES = [
     <circle cx="6" cy="91" r="3" fill="#281408"/>
     <circle cx="132" cy="91" r="3" fill="#281408"/>
   `},
-  { w:118,h:154,px:14,py:14,pw:90,ph:126, frameUrl:"https://res.cloudinary.com/drqtl7xy8/image/upload/v1776629793/frame7_akm3rs.png", svg:(f)=>`
+  { w:118,h:154,px:14,py:14,pw:90,ph:126, svg:(f)=>`
     <rect x="0" y="0" width="118" height="154" rx="6" fill="#9a5868"/>
     <rect x="5" y="5" width="108" height="144" rx="5" fill="#b47080"/>
     <rect x="9" y="9" width="100" height="136" rx="4" fill="#885868"/>
@@ -106,7 +106,7 @@ const FRAMES = [
     <path d="M59,0 Q66,5 59,10 Q52,5 59,0Z" fill="#b47080"/>
     <path d="M59,144 Q66,149 59,154 Q52,149 59,144Z" fill="#b47080"/>
   `},
-  { w:113,h:83,px:9,py:8,pw:95,ph:67, frameUrl:"https://res.cloudinary.com/drqtl7xy8/image/upload/v1776629793/frame8_mqphcf.png", svg:(f)=>`
+  { w:113,h:83,px:9,py:8,pw:95,ph:67, svg:(f)=>`
     <rect x="0" y="0" width="113" height="83" rx="1" fill="#080808"/>
     <rect x="4" y="4" width="105" height="75" rx="1" fill="#181818"/>
     <rect x="7" y="7" width="99" height="69" fill="#0c0c0c"/>
@@ -114,7 +114,7 @@ const FRAMES = [
     <rect x="0" y="0" width="113" height="83" fill="none" stroke="#282828" stroke-width="0.8"/>
     <rect x="4" y="4" width="105" height="75" fill="none" stroke="#343434" stroke-width="0.4"/>
   `},
-  { w:138,h:103,px:22,py:17,pw:94,ph:69, frameUrl:"https://res.cloudinary.com/drqtl7xy8/image/upload/v1776629793/frame9_o7rpxq.png", svg:(f)=>`
+  { w:138,h:103,px:22,py:17,pw:94,ph:69, svg:(f)=>`
     <rect x="0" y="0" width="138" height="103" rx="3" fill="#c0b8a0"/>
     <rect x="5" y="5" width="128" height="93" rx="2" fill="#d0c8b0"/>
     <rect x="9" y="8" width="120" height="87" rx="2" fill="#b0a890"/>
@@ -124,7 +124,7 @@ const FRAMES = [
     <rect x="5" y="5" width="128" height="93" rx="2" fill="none" stroke="#989080" stroke-width="0.8"/>
     <rect x="17" y="13" width="104" height="77" rx="1" fill="none" stroke="#c0b8a0" stroke-width="0.8"/>
   `},
-  { w:122,h:93,px:13,py:12,pw:96,ph:69, frameUrl:"https://res.cloudinary.com/drqtl7xy8/image/upload/v1776629793/frame10_fezg4u.png", svg:(f)=>`
+  { w:122,h:93,px:13,py:12,pw:96,ph:69, svg:(f)=>`
     <rect x="0" y="0" width="122" height="93" rx="3" fill="#723818"/>
     <rect x="4" y="3" width="114" height="87" rx="2" fill="#925028"/>
     <rect x="8" y="6" width="106" height="81" rx="2" fill="#622808"/>
@@ -136,7 +136,7 @@ const FRAMES = [
     <circle cx="108" cy="18" r="1.5" fill="#aa6030" opacity="0.45"/>
     <rect x="0" y="0" width="122" height="93" rx="3" fill="none" stroke="#b87040" stroke-width="0.8"/>
   `},
-  { w:102,h:132,px:13,py:13,pw:76,ph:106, frameUrl:"https://res.cloudinary.com/drqtl7xy8/image/upload/v1776629792/frame11_x6jdu9.png", svg:(f)=>`
+  { w:102,h:132,px:13,py:13,pw:76,ph:106, svg:(f)=>`
     <rect x="0" y="0" width="102" height="132" rx="3" fill="#183520"/>
     <rect x="5" y="5" width="92" height="122" rx="2" fill="#24462a"/>
     <rect x="9" y="9" width="84" height="114" rx="2" fill="#102818"/>
@@ -147,7 +147,7 @@ const FRAMES = [
     <line x1="5" y1="82" x2="97" y2="80" stroke="#304e38" stroke-width="0.7" opacity="0.45"/>
     <line x1="5" y1="110" x2="97" y2="112" stroke="#304e38" stroke-width="0.6" opacity="0.4"/>
   `},
-  { w:93,h:122,px:10,py:10,pw:73,ph:102, frameUrl:"https://res.cloudinary.com/drqtl7xy8/image/upload/v1776629792/frame12_ltcimu.png", svg:(f)=>`
+  { w:93,h:122,px:10,py:10,pw:73,ph:102, svg:(f)=>`
     <rect x="0" y="0" width="93" height="122" rx="2" fill="#b88c1e"/>
     <rect x="3" y="3" width="87" height="116" rx="1" fill="#180e06"/>
     <rect x="7" y="7" width="79" height="108" rx="1" fill="#b88c1e"/>
@@ -162,7 +162,7 @@ const FRAMES = [
     <circle cx="3" cy="61" r="2.5" fill="#cca028"/>
     <circle cx="90" cy="61" r="2.5" fill="#cca028"/>
   `},
-  { w:128,h:88,px:10,py:9,pw:108,ph:70, frameUrl:"https://res.cloudinary.com/drqtl7xy8/image/upload/v1776629792/frame13_qms9po.png", svg:(f)=>`
+  { w:128,h:88,px:10,py:9,pw:108,ph:70, svg:(f)=>`
     <rect x="0" y="0" width="128" height="88" fill="#180a04"/>
     <rect x="9" y="8" width="110" height="72" fill="#0c0602"/>
     <rect x="10" y="9" width="108" height="70" fill="${f}"/>
@@ -175,7 +175,7 @@ const FRAMES = [
     <line x1="0" y1="88" x2="10" y2="79" stroke="#381808" stroke-width="0.8"/>
     <line x1="128" y1="88" x2="118" y2="79" stroke="#381808" stroke-width="0.8"/>
   `},
-  { w:112,h:142,px:14,py:14,pw:84,ph:114, frameUrl:"https://res.cloudinary.com/drqtl7xy8/image/upload/v1776629792/frame14_vpoxl6.png", svg:(f)=>`
+  { w:112,h:142,px:14,py:14,pw:84,ph:114, svg:(f)=>`
     <rect x="0" y="0" width="112" height="142" rx="2" fill="#585c5e"/>
     <rect x="5" y="5" width="102" height="132" rx="1" fill="#686c6e"/>
     <rect x="9" y="9" width="94" height="124" rx="1" fill="#4e5254"/>
@@ -188,7 +188,7 @@ const FRAMES = [
     <line x1="5" y1="34" x2="107" y2="32" stroke="#747a7c" stroke-width="0.4" opacity="0.5"/>
     <line x1="5" y1="82" x2="107" y2="84" stroke="#747a7c" stroke-width="0.4" opacity="0.4"/>
   `},
-  { w:168,h:128,px:24,py:19,pw:120,ph:90, frameUrl:"https://res.cloudinary.com/drqtl7xy8/image/upload/v1776629792/frame15_qzjrjh.png", svg:(f)=>`
+  { w:168,h:128,px:24,py:19,pw:120,ph:90, svg:(f)=>`
     <rect x="0" y="0" width="168" height="128" rx="4" fill="#845c0e"/>
     <rect x="6" y="5" width="156" height="118" rx="3" fill="#a07820"/>
     <rect x="11" y="9" width="146" height="110" rx="2" fill="#724c06"/>
@@ -253,70 +253,6 @@ function placeFrames({ count, areaW, areaH, seed = 1, minGap = 24, scaleLo = 0.6
   return placed;
 }
 
-const PHOTO_ORIENTATION = {
-  LANDSCAPE: "landscape",
-  PORTRAIT: "portrait",
-};
-
-function getOrientationForSize(width, height) {
-  if (!width || !height) return null;
-  return width >= height ? PHOTO_ORIENTATION.LANDSCAPE : PHOTO_ORIENTATION.PORTRAIT;
-}
-
-function usePhotoOrientations(photoUrls) {
-  const [orientations, setOrientations] = useState(() => photoUrls.map(() => null));
-
-  useEffect(() => {
-    let active = true;
-
-    photoUrls.forEach((src, idx) => {
-      const img = new Image();
-      img.onload = () => {
-        if (!active) return;
-        const orientation = getOrientationForSize(img.naturalWidth, img.naturalHeight);
-        setOrientations(prev => {
-          if (prev[idx] === orientation) return prev;
-          const next = [...prev];
-          next[idx] = orientation;
-          return next;
-        });
-      };
-      img.onerror = () => {
-        if (!active) return;
-        setOrientations(prev => {
-          if (prev[idx] === PHOTO_ORIENTATION.LANDSCAPE) return prev;
-          const next = [...prev];
-          next[idx] = PHOTO_ORIENTATION.LANDSCAPE;
-          return next;
-        });
-      };
-      img.src = src;
-    });
-
-    return () => { active = false; };
-  }, [photoUrls]);
-
-  return orientations;
-}
-
-function getPhotoIndexForFrame(frame, photoOrientations) {
-  const def = FRAMES[frame.defIdx];
-  const frameOrientation = getOrientationForSize(def.pw, def.ph) || PHOTO_ORIENTATION.LANDSCAPE;
-  const matchIndexes = [];
-
-  for (let i = 0; i < photoOrientations.length; i += 1) {
-    if (photoOrientations[i] === frameOrientation) {
-      matchIndexes.push(i);
-    }
-  }
-
-  if (matchIndexes.length > 0) {
-    return matchIndexes[frame.id % matchIndexes.length];
-  }
-
-  return frame.id % PHOTOS.length;
-}
-
 // Helper to get frame placement dimensions based on viewport
 function getMainFrameParams(viewportW) {
   // On mobile (<768px), use viewport width; on desktop, use a wider frame area so frames are more spread horizontally
@@ -338,49 +274,34 @@ function FrameEl({ frame, opacity = 0.95, photoIndex, viewportWidth = 420 }) {
   const photoUrl = photoIndex !== undefined ? PHOTOS[photoIndex % PHOTOS.length] : null;
   // Use consistent opacity across all viewports
   const frameOpacity = opacity;
-
-  // Scale photo to 90% of frame area to avoid clipping outside frame
-  const photoScale = 0.9;
-  const photoW = def.pw * photoScale;
-  const photoH = def.ph * photoScale;
-  const photoX = def.px + (def.pw - photoW) / 2;
-  const photoY = def.py + (def.ph - photoH) / 2;
+  const frameSvg = photoUrl
+    ? def.svg("transparent")
+        .replace(/fill="(?!none)([^"]+)"/g, 'fill="$1" fill-opacity="0.04"')
+        .replace(/stroke="([^"]+)"/g, 'stroke="$1" stroke-opacity="0.45"')
+    : def.svg(frame.fill);
 
   return (
     <g transform={`translate(${frame.x},${frame.y}) scale(${frame.scale})`} opacity={frameOpacity}>
       {photoUrl && (
         <image
-          x={photoX}
-          y={photoY}
-          width={photoW}
-          height={photoH}
+          x={def.px}
+          y={def.py}
+          width={def.pw}
+          height={def.ph}
           href={photoUrl}
           xlinkHref={photoUrl}
           preserveAspectRatio="xMidYMid slice"
           style={{ pointerEvents: "none", filter: "contrast(1.15) saturate(1.15)" }}
         />
       )}
-      {def.frameUrl ? (
-        <image
-          x={0}
-          y={0}
-          width={def.w}
-          height={def.h}
-          href={def.frameUrl}
-          xlinkHref={def.frameUrl}
-          preserveAspectRatio="xMidYMid slice"
-          style={{ pointerEvents: "none" }}
-        />
-      ) : (
-        <g dangerouslySetInnerHTML={{ __html: def.svg(frame.fill) }} />
-      )}
+      <g dangerouslySetInnerHTML={{ __html: frameSvg }} />
     </g>
   );
 }
 
 // ─── PARALLAX FRAME BACKGROUND (main site) ───────────────────────────────────
 // Uses framer-motion's useScroll + useTransform for GPU-composited parallax
-function ParallaxFrames({ areaW, photoOrientations }) {
+function ParallaxFrames({ areaW }) {
   const { scrollY } = useScroll();
   // Frames move 1.6× scroll speed = faster than content
   const y = useTransform(scrollY, [0, 10000], [0, -16000]);
@@ -397,14 +318,7 @@ function ParallaxFrames({ areaW, photoOrientations }) {
     <div style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none", overflow: "hidden" }}>
       <motion.div style={{ y: ySpring, willChange: "transform" }}>
         <svg width={W} height={H} viewBox={`0 0 ${viewBoxW} ${H}`} style={{ display: "block" }}>
-          {frames.map(f => (
-            <FrameEl
-              key={f.id}
-              frame={f}
-              photoIndex={getPhotoIndexForFrame(f, photoOrientations)}
-              viewportWidth={W}
-            />
-          ))}
+          {frames.map(f => <FrameEl key={f.id} frame={f} photoIndex={f.id} viewportWidth={W} />)}
         </svg>
       </motion.div>
     </div>
@@ -623,7 +537,7 @@ function ThankYou({ onClose }) {
   );
 }
 
-function Questionnaire({ visible, onClose, photoOrientations }) {
+function Questionnaire({ visible, onClose }) {
   const [step, setStep] = useState(0);
   const [showForm, setShowForm] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -669,14 +583,7 @@ function Questionnaire({ visible, onClose, photoOrientations }) {
               style={{ position: "absolute", inset: 0 }}
             >
               <svg width="100%" height="100%" viewBox="0 0 420 800" preserveAspectRatio="xMidYMid slice" style={{ position: "absolute", inset: 0 }}>
-                {bgFrameSet.map(f => (
-                  <FrameEl
-                    key={f.id}
-                    frame={f}
-                    opacity={0.95}
-                    photoIndex={getPhotoIndexForFrame(f, photoOrientations)}
-                  />
-                ))}
+                {bgFrameSet.map(f => <FrameEl key={f.id} frame={f} opacity={0.95} photoIndex={f.id} />)}
               </svg>
             </motion.div>
           </AnimatePresence>
@@ -759,7 +666,7 @@ function FloatingButton({ onClick }) {
 // ─── MAIN APP ─────────────────────────────────────────────────────────────────
 
 // ─── INLINE QUESTIONNAIRE SECTION ─────────────────────────────────────────────
-function InlineQuestionnaire({ photoOrientations }) {
+function InlineQuestionnaire() {
   const [step, setStep] = useState(0);
   const [showForm, setShowForm] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -792,14 +699,7 @@ function InlineQuestionnaire({ photoOrientations }) {
           <svg width="100%" height="100%" viewBox="0 0 420 800"
             preserveAspectRatio="xMidYMid slice"
             style={{ position: "absolute", inset: 0 }}>
-            {bgFrameSet.map(f => (
-              <FrameEl
-                key={f.id}
-                frame={f}
-                opacity={0.95}
-                photoIndex={getPhotoIndexForFrame(f, photoOrientations)}
-              />
-            ))}
+            {bgFrameSet.map(f => <FrameEl key={f.id} frame={f} opacity={0.95} photoIndex={f.id} />)}
           </svg>
         </motion.div>
       </AnimatePresence>
@@ -859,8 +759,6 @@ export default function SanaaPhotography() {
     questRef.current?.scrollIntoView({ behavior: "smooth" });
   }, []);
 
-  const photoOrientations = usePhotoOrientations(PHOTOS);
-
   return (
     <>
       <style>{`
@@ -877,7 +775,7 @@ export default function SanaaPhotography() {
 
       <div style={{ position: "relative", background: BG, minHeight: "100vh" }}>
 
-        <ParallaxFrames areaW={areaW} photoOrientations={photoOrientations} />
+        <ParallaxFrames areaW={areaW} />
 
         {/* Grain */}
         <div style={{ position: "fixed", inset: 0, zIndex: 1, pointerEvents: "none", opacity: 0.28,
@@ -1034,7 +932,7 @@ export default function SanaaPhotography() {
 
           {/* QUESTIONNAIRE — inline bottom section */}
           <div ref={questRef}>
-            <InlineQuestionnaire photoOrientations={photoOrientations} />
+            <InlineQuestionnaire />
           </div>
 
         </div>
