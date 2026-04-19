@@ -255,10 +255,10 @@ function placeFrames({ count, areaW, areaH, seed = 1, minGap = 24, scaleLo = 0.6
 
 // Helper to get frame placement dimensions based on viewport
 function getMainFrameParams(viewportW) {
-  // On mobile (<768px), use viewport width; on desktop, use tighter layout to fill page
-  const areaW = viewportW < 768 ? Math.max(viewportW * 0.9, 360) : 900;
+  // On mobile (<768px), use viewport width; on desktop, use a wider frame area so frames are more spread horizontally
+  const areaW = viewportW < 768 ? Math.max(viewportW * 0.9, 360) : 1200;
   const scaleHi = viewportW < 768 ? 1.6 : 2.0; // Larger frames on desktop
-  const minGap = viewportW < 768 ? 28 : 40; // More space between frames on desktop
+  const minGap = viewportW < 768 ? 28 : 50; // More space between frames on desktop
   return { count: 48, areaW, areaH: 9000, seed: 31337, minGap, scaleLo: 1.0, scaleHi };
 }
 
@@ -356,7 +356,7 @@ function Sec({ children, style }) {
   return (
     <section style={{ position: "relative", minHeight: "100svh", display: "flex", flexDirection: "column", justifyContent: "center", ...style }}>
       <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 50% 50%, rgba(14,22,40,0.72) 25%, rgba(14,22,40,0.38) 100%)", pointerEvents: "none" }} />
-      <div style={{ position: "relative", zIndex: 2, padding: "4rem 1.5rem 4rem" }}>
+      <div style={{ position: "relative", zIndex: 2, padding: "4rem 3rem 4rem", maxWidth: 1060, margin: "0 auto", width: "100%" }}>
         {children}
       </div>
     </section>
