@@ -258,7 +258,8 @@ function getMainFrameParams(viewportW) {
   // On mobile (<768px), use viewport width; on desktop, use tighter layout to fill page
   const areaW = viewportW < 768 ? Math.max(viewportW * 0.9, 360) : 900;
   const scaleHi = viewportW < 768 ? 1.6 : 2.0; // Larger frames on desktop
-  return { count: 48, areaW, areaH: 9000, seed: 31337, minGap: 28, scaleLo: 1.0, scaleHi };
+  const minGap = viewportW < 768 ? 28 : 40; // More space between frames on desktop
+  return { count: 48, areaW, areaH: 9000, seed: 31337, minGap, scaleLo: 1.0, scaleHi };
 }
 
 // Pre-compute frame sets for desktop
@@ -355,7 +356,7 @@ function Sec({ children, style }) {
   return (
     <section style={{ position: "relative", minHeight: "100svh", display: "flex", flexDirection: "column", justifyContent: "center", ...style }}>
       <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 50% 50%, rgba(14,22,40,0.72) 25%, rgba(14,22,40,0.38) 100%)", pointerEvents: "none" }} />
-      <div style={{ position: "relative", zIndex: 2, padding: "7rem 2rem 6rem" }}>
+      <div style={{ position: "relative", zIndex: 2, padding: "4rem 1.5rem 4rem" }}>
         {children}
       </div>
     </section>
