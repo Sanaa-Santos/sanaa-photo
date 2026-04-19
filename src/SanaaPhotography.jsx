@@ -254,15 +254,18 @@ function placeFrames({ count, areaW, areaH, seed = 1, minGap = 24, scaleLo = 0.6
 }
 
 // Pre-compute frame sets (done once at module load, not on every render)
-const MAIN_FRAMES   = placeFrames({ count: 48, areaW: 420, areaH: 9000, seed: 31337, minGap: 28, scaleLo: 0.8, scaleHi: 1.25 });
+// Desktop-sized layout: frames spread across wider area and scaled larger
+const MAIN_FRAMES   = placeFrames({ count: 48, areaW: 1200, areaH: 9000, seed: 31337, minGap: 28, scaleLo: 1.0, scaleHi: 1.6 });
 const QUEST_FRAMES  = Array.from({ length: 6 }, (_, i) =>
-  placeFrames({ count: 16, areaW: 420, areaH: 800, seed: i * 23 + 7, minGap: 24, scaleLo: 0.42, scaleHi: 0.68 })
+  placeFrames({ count: 16, areaW: 420, areaH: 800, seed: i * 23 + 7, minGap: 24, scaleLo: 0.52, scaleHi: 0.75 })
 );
 
 // ─── SVG FRAME ELEMENT ────────────────────────────────────────────────────────
-function FrameEl({ frame, opacity = 0.38, photoIndex }) {
+function FrameEl({ frame, opacity = 0.38, photoIndex, viewportWidth = 420 }) {
   const def = FRAMES[frame.defIdx];
   const photoUrl = photoIndex !== undefined ? PHOTOS[photoIndex % PHOTOS.length] : null;
+  // On mobile, boost opacity so frames are more visible; on desktop, keep them subtle
+  const frameOpacity = viewportWidth < 768 ? Math.min(0.55, opacity) : opacity;
   const frameSvg = photoUrl
     ? def.svg("transparent")
         .replace(/fill="(?!none)([^"]+)"/g, 'fill="$1" fill-opacity="0.04"')
@@ -270,7 +273,7 @@ function FrameEl({ frame, opacity = 0.38, photoIndex }) {
     : def.svg(frame.fill);
 
   return (
-    <g transform={`translate(${frame.x},${frame.y}) scale(${frame.scale})`}>
+    <g transform={`translate(${frame.x},${frame.y}) scale(${frame.scale})`} opacity={frameOpacity}>
       {photoUrl && (
         <image
           x={def.px}
@@ -302,13 +305,13 @@ function ParallaxFrames({ areaW }) {
   return (
     <div style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none", overflow: "hidden" }}>
       <motion.div style={{ y: ySpring, willChange: "transform" }}>
-        <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} style={{ display: "block" }}>
-          {MAIN_FRAMES.map(f => <FrameEl key={f.id} frame={f} photoIndex={f.id} />)}
+        <svg width={W} height={H} viewBox={`0 0 1200 ${H}`} style={{ display: "block" }}>
+          {MAIN_FRAMES.map(f => <FrameEl key={f.id} frame={f} photoIndex={f.id} viewportWidth={W} />)}
         </svg>
       </motion.div>
     </div>
   );
-}
+}}
 
 // ─── SCROLL-TRIGGERED REVEAL ─────────────────────────────────────────────────
 const revealVariants = {
