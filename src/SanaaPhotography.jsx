@@ -263,6 +263,12 @@ const QUEST_FRAMES  = Array.from({ length: 6 }, (_, i) =>
 function FrameEl({ frame, opacity = 0.38, photoIndex }) {
   const def = FRAMES[frame.defIdx];
   const photoUrl = photoIndex !== undefined ? PHOTOS[photoIndex % PHOTOS.length] : null;
+  const frameSvg = photoUrl
+    ? def.svg("transparent")
+        .replace(/fill="(?!none)([^"]+)"/g, 'fill="$1" fill-opacity="0.08"')
+        .replace(/stroke="([^"]+)"/g, 'stroke="$1" stroke-opacity="0.65"')
+    : def.svg(frame.fill);
+
   return (
     <g transform={`translate(${frame.x},${frame.y}) scale(${frame.scale})`}>
       {photoUrl && (
@@ -288,7 +294,7 @@ function FrameEl({ frame, opacity = 0.38, photoIndex }) {
           />
         </foreignObject>
       )}
-      <g opacity={photoUrl ? 0.64 : opacity} dangerouslySetInnerHTML={{ __html: def.svg(photoUrl ? "transparent" : frame.fill) }} />
+      <g dangerouslySetInnerHTML={{ __html: frameSvg }} />
     </g>
   );
 }
