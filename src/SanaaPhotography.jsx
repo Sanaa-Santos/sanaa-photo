@@ -254,7 +254,7 @@ function placeFrames({ count, areaW, areaH, seed = 1, minGap = 24, scaleLo = 0.6
 }
 
 // Pre-compute frame sets (done once at module load, not on every render)
-const MAIN_FRAMES   = placeFrames({ count: 48, areaW: 420, areaH: 9000, seed: 31337, minGap: 28 });
+const MAIN_FRAMES   = placeFrames({ count: 48, areaW: 420, areaH: 9000, seed: 31337, minGap: 28, scaleLo: 0.8, scaleHi: 1.25 });
 const QUEST_FRAMES  = Array.from({ length: 6 }, (_, i) =>
   placeFrames({ count: 16, areaW: 420, areaH: 800, seed: i * 23 + 7, minGap: 24, scaleLo: 0.42, scaleHi: 0.68 })
 );
@@ -265,8 +265,8 @@ function FrameEl({ frame, opacity = 0.38, photoIndex }) {
   const photoUrl = photoIndex !== undefined ? PHOTOS[photoIndex % PHOTOS.length] : null;
   const frameSvg = photoUrl
     ? def.svg("transparent")
-        .replace(/fill="(?!none)([^"]+)"/g, 'fill="$1" fill-opacity="0.08"')
-        .replace(/stroke="([^"]+)"/g, 'stroke="$1" stroke-opacity="0.65"')
+        .replace(/fill="(?!none)([^"]+)"/g, 'fill="$1" fill-opacity="0.04"')
+        .replace(/stroke="([^"]+)"/g, 'stroke="$1" stroke-opacity="0.45"')
     : def.svg(frame.fill);
 
   return (
@@ -283,11 +283,13 @@ function FrameEl({ frame, opacity = 0.38, photoIndex }) {
           <img
             src={photoUrl}
             style={{
-              width: "100%",
-              height: "100%",
+              width: "110%",
+              height: "110%",
+              transform: "translate(-5%, -5%)",
               objectFit: "cover",
               objectPosition: "center",
               display: "block",
+              filter: "contrast(1.15) saturate(1.15)",
             }}
             crossOrigin="anonymous"
             alt="photo"
@@ -760,6 +762,7 @@ export default function SanaaPhotography() {
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body { background: ${BG}; color: ${CREAM}; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+        h1, h2, h3, p, button, label { text-shadow: 0 1px 18px rgba(0,0,0,0.45); }
         input::placeholder { color: #1e2e48; }
         ::-webkit-scrollbar { width: 3px; }
         ::-webkit-scrollbar-track { background: ${BG}; }
