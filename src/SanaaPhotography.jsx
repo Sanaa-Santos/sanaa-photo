@@ -8,12 +8,14 @@ import {
   AnimatePresence,
 } from "framer-motion";
 import { PHOTOS } from "./photos.js";
+import sitePattern from "./assets/sitebg.jpg";
+import logoImg from "./assets/logo.png";
 
 // ─── DESIGN TOKENS ────────────────────────────────────────────────────────────
-const BG    = "#0e1628";
-const GOLD  = "#c8a04a";
-const CREAM = "#f0e8d8";
-const MUTED = "#8a9ab8";
+const BG    = "#1a0608";
+const GOLD  = "#8E1D1F";
+const CREAM = "#F7DDC2";
+const MUTED = "#ACAF9A";
 
 // ─── FRAME DEFINITIONS (15 styles) ───────────────────────────────────────────
 const FRAMES = [
@@ -213,7 +215,7 @@ function makeRng(seed) {
   let s = ((seed ^ 0xdeadbeef) >>> 0) || 1;
   return () => {
     s ^= s << 13; s ^= s >>> 17; s ^= s << 5;
-    return ((s >>> 0) % 99991) / 99991; // always strictly < 1
+    return ((s >>> 0) % 99991) / 99991;
   };
 }
 
@@ -221,14 +223,12 @@ function makeRng(seed) {
 function placeFrames({ count, areaW, areaH, seed = 1, minGap = 24, scaleLo = 0.65, scaleHi = 1.1 }) {
   const rng = makeRng(seed);
   const placed = [];
-
   for (let i = 0; i < count; i++) {
     const defIdx = Math.min(Math.floor(rng() * FRAMES.length), FRAMES.length - 1);
     const def = FRAMES[defIdx];
     const scale = scaleLo + rng() * (scaleHi - scaleLo);
     const fw = def.w * scale;
     const fh = def.h * scale;
-
     let best = null, bestScore = -Infinity;
     for (let attempt = 0; attempt < 350; attempt++) {
       const x = 8 + rng() * Math.max(0, areaW - fw - 16);
@@ -247,51 +247,40 @@ function placeFrames({ count, areaW, areaH, seed = 1, minGap = 24, scaleLo = 0.6
     if (!best) continue;
     placed.push({
       defIdx, scale, x: best.x, y: best.y, fw, fh, id: i,
-      fill: `hsl(${205 + Math.floor(rng() * 40)},${16 + Math.floor(rng() * 16)}%,${7 + Math.floor(rng() * 9)}%)`,
+      fill: `hsl(${10 + Math.floor(rng() * 20)},${40 + Math.floor(rng() * 20)}%,${8 + Math.floor(rng() * 8)}%)`,
     });
   }
   return placed;
 }
 
-// Helper to get frame placement dimensions based on viewport
 function getMainFrameParams(viewportW) {
-  // On mobile (<768px), use viewport width; on desktop, use a wider frame area so frames are more spread horizontally
   const areaW = viewportW < 768 ? Math.max(viewportW * 0.9, 360) : 1200;
-  const scaleHi = viewportW < 768 ? 1.6 : 2.0; // Larger frames on desktop
-  const minGap = viewportW < 768 ? 28 : 50; // More space between frames on desktop
+  const scaleHi = viewportW < 768 ? 1.6 : 2.0;
+  const minGap = viewportW < 768 ? 28 : 50;
   return { count: 48, areaW, areaH: 9000, seed: 31337, minGap, scaleLo: 1.0, scaleHi };
 }
 
-// Pre-compute frame sets for desktop
-const MAIN_FRAMES   = placeFrames(getMainFrameParams(900));
-const QUEST_FRAMES  = Array.from({ length: 6 }, (_, i) =>
+const MAIN_FRAMES  = placeFrames(getMainFrameParams(900));
+const QUEST_FRAMES = Array.from({ length: 6 }, (_, i) =>
   placeFrames({ count: 16, areaW: 420, areaH: 800, seed: i * 23 + 7, minGap: 24, scaleLo: 0.52, scaleHi: 0.75 })
 );
 
 // ─── SVG FRAME ELEMENT ────────────────────────────────────────────────────────
-function FrameEl({ frame, opacity = 0.95, photoIndex, viewportWidth = 420 }) {
+function FrameEl({ frame, opacity = 0.95, photoIndex }) {
   const def = FRAMES[frame.defIdx];
   const photoUrl = photoIndex !== undefined ? PHOTOS[photoIndex % PHOTOS.length] : null;
-  // Use consistent opacity across all viewports
-  const frameOpacity = opacity;
   const frameSvg = photoUrl
     ? def.svg("transparent")
         .replace(/fill="(?!none)([^"]+)"/g, 'fill="$1" fill-opacity="0.04"')
         .replace(/stroke="([^"]+)"/g, 'stroke="$1" stroke-opacity="0.45"')
     : def.svg(frame.fill);
-
   return (
-    <g transform={`translate(${frame.x},${frame.y}) scale(${frame.scale})`} opacity={frameOpacity}>
+    <g transform={`translate(${frame.x},${frame.y}) scale(${frame.scale})`} opacity={opacity}>
       {photoUrl && (
-        <image
-          x={def.px}
-          y={def.py}
-          width={def.pw}
-          height={def.ph}
-          href={photoUrl}
-          xlinkHref={photoUrl}
+        <image x={def.px} y={def.py} width={def.pw} height={def.ph}
+          href={photoUrl} xlinkHref={photoUrl}
           preserveAspectRatio="xMidYMid slice"
-          style={{ pointerEvents: "none", filter: "contrast(1.15) saturate(1.15)" }}
+          style={{ pointerEvents: "none", filter: "contrast(1.15) saturate(1.05)" }}
         />
       )}
       <g dangerouslySetInnerHTML={{ __html: frameSvg }} />
@@ -299,26 +288,27 @@ function FrameEl({ frame, opacity = 0.95, photoIndex, viewportWidth = 420 }) {
   );
 }
 
-// ─── PARALLAX FRAME BACKGROUND (main site) ───────────────────────────────────
-// Uses framer-motion's useScroll + useTransform for GPU-composited parallax
+// ─── PARALLAX FRAME BACKGROUND ───────────────────────────────────────────────
 function ParallaxFrames({ areaW }) {
   const { scrollY } = useScroll();
-  // Frames move 1.6× scroll speed = faster than content
   const y = useTransform(scrollY, [0, 10000], [0, -16000]);
   const ySpring = useSpring(y, { stiffness: 80, damping: 30, restDelta: 0.001 });
-
   const H = 9000;
   const W = Math.max(areaW, 380);
-  // On mobile, compute frames with responsive width; on desktop use pre-computed frames
   const frames = W < 768 ? placeFrames(getMainFrameParams(W)) : MAIN_FRAMES;
-  // ViewBox matches the frame layout area for proper scaling
   const viewBoxW = W < 768 ? Math.max(W * 0.9, 360) : 900;
-
   return (
-    <div style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none", overflow: "hidden" }}>
+    <div style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none", overflow: "hidden", background: BG }}>
+      <div style={{
+        position: "absolute", inset: 0,
+        backgroundImage: `url(${sitePattern})`,
+        backgroundRepeat: "repeat",
+        backgroundSize: "380px",
+        opacity: 0.07,
+      }} />
       <motion.div style={{ y: ySpring, willChange: "transform" }}>
         <svg width={W} height={H} viewBox={`0 0 ${viewBoxW} ${H}`} style={{ display: "block" }}>
-          {frames.map(f => <FrameEl key={f.id} frame={f} photoIndex={f.id} viewportWidth={W} />)}
+          {frames.map(f => <FrameEl key={f.id} frame={f} photoIndex={f.id} />)}
         </svg>
       </motion.div>
     </div>
@@ -338,14 +328,8 @@ function Reveal({ children, delay = 0, style }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px 0px" });
   return (
-    <motion.div
-      ref={ref}
-      variants={revealVariants}
-      initial="hidden"
-      animate={inView ? "visible" : "hidden"}
-      custom={delay}
-      style={style}
-    >
+    <motion.div ref={ref} variants={revealVariants} initial="hidden"
+      animate={inView ? "visible" : "hidden"} custom={delay} style={style}>
       {children}
     </motion.div>
   );
@@ -355,20 +339,81 @@ function Reveal({ children, delay = 0, style }) {
 function Sec({ children, style }) {
   return (
     <section style={{ position: "relative", minHeight: "100svh", display: "flex", flexDirection: "column", justifyContent: "center", ...style }}>
-      <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 50% 50%, rgba(14,22,40,0.72) 25%, rgba(14,22,40,0.38) 100%)", pointerEvents: "none" }} />
-      <div style={{ position: "relative", zIndex: 2, padding: "4rem 3rem 4rem", maxWidth: 1060, margin: "0 auto", width: "100%" }}>
+      <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 50% 50%, rgba(26,6,8,0.75) 25%, rgba(26,6,8,0.45) 100%)", pointerEvents: "none" }} />
+      <div style={{ position: "relative", zIndex: 2, padding: "4rem 3rem", maxWidth: 1060, margin: "0 auto", width: "100%" }}>
         {children}
       </div>
     </section>
   );
 }
 
-// ─── QUESTIONNAIRE ────────────────────────────────────────────────────────────
+// ─── ANIMATED LOGO — hero large, shrinks to nav on scroll ────────────────────
+function AnimatedLogo() {
+  const { scrollY } = useScroll();
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    return scrollY.on("change", v => setScrolled(v > 80));
+  }, [scrollY]);
+
+  return (
+    <>
+      {/* Fixed nav bar — always present but logo only visible after scroll */}
+      <div style={{
+        position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
+        padding: "0.9rem 1.5rem",
+        display: "flex", justifyContent: "space-between", alignItems: "center",
+        background: `linear-gradient(to bottom, ${BG}f0 60%, transparent)`,
+        backdropFilter: "blur(4px)",
+        pointerEvents: "none",
+      }}>
+        {/* Small nav logo — fades in on scroll */}
+        <motion.img
+          src={logoImg}
+          alt="Sansan Stills"
+          animate={{ opacity: scrolled ? 1 : 0, height: scrolled ? 38 : 30 }}
+          transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+          style={{ width: "auto", display: "block", pointerEvents: "auto" }}
+        />
+        {/* Nav CTA */}
+        <motion.div
+          animate={{ opacity: 1 }}
+          style={{ pointerEvents: "auto" }}
+        />
+      </div>
+
+      {/* Hero logo — large, centered, fades out on scroll */}
+      <motion.div
+        animate={{
+          opacity: scrolled ? 0 : 1,
+          scale: scrolled ? 0.85 : 1,
+          y: scrolled ? -20 : 0,
+        }}
+        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          marginBottom: "2rem",
+          pointerEvents: scrolled ? "none" : "auto",
+        }}
+      >
+        <img
+          src={logoImg}
+          alt="Sansan Stills"
+          style={{ height: "clamp(80px, 18vw, 160px)", width: "auto", display: "block" }}
+        />
+      </motion.div>
+    </>
+  );
+}
+
+// ─── QUESTIONNAIRE DATA ───────────────────────────────────────────────────────
 const QUESTIONS = [
-  { id: "vibe",    q: "What's your wedding vibe?",                  sub: "Every love story starts somewhere.",                 opts: ["Golden & timeless", "Intimate & editorial", "Wild & joyful", "Soft & dreamy"] },
-  { id: "moments", q: "Which moments matter most to you?",          sub: "The ones you'll want to live in forever.",           opts: ["The first look", "The vows", "The dancing", "All the in-betweens"] },
-  { id: "size",    q: "How many people are celebrating with you?",  sub: "Big love, small gathering, or somewhere in between.", opts: ["Under 30", "30–80", "80–150", "150+"] },
-  { id: "found",   q: "How did you find Sanaa?",                    sub: "Just curious.",                                      opts: ["Instagram", "Google", "A friend told me", "I just knew"] },
+  { id: "vibe",    q: "What's your wedding vibe?",                 sub: "Every love story starts somewhere.",                  opts: ["Golden & timeless", "Intimate & editorial", "Wild & joyful", "Soft & dreamy"] },
+  { id: "moments", q: "Which moments matter most to you?",         sub: "The ones you'll want to live in forever.",            opts: ["The first look", "The vows", "The dancing", "All the in-betweens"] },
+  { id: "size",    q: "How many people are celebrating with you?", sub: "Big love, small gathering, or somewhere in between.", opts: ["Under 30", "30–80", "80–150", "150+"] },
+  { id: "found",   q: "How did you find Sansan Stills?",           sub: "Just curious.",                                       opts: ["Instagram", "Google", "A friend told me", "I just knew"] },
   { id: "frame",   q: "If you could only frame one photo from your wedding, what would it be?",
     sub: "The one that says everything.",
     opts: ["The moment we saw each other", "Our hands, intertwined", "Everyone we love in one room", "A quiet moment, just us"],
@@ -376,58 +421,35 @@ const QUESTIONS = [
   },
 ];
 
-// Slide variants — content slides left on advance, new content enters from right
-const slideOut = { x: "-100%", opacity: 0 };
-const slideIn  = { x: "100%",  opacity: 0 };
-const slideCenter = { x: 0, opacity: 1 };
 const slideTransition = { duration: 0.5, ease: [0.4, 0, 0.2, 1] };
 
-// Frame bg for questionnaire also slides left as content does
-const bgSlideVariants = {
-  enter: (dir) => ({ x: dir > 0 ? "100%" : "-100%" }),
-  center: { x: 0 },
-  exit:  (dir) => ({ x: dir > 0 ? "-100%" : "100%" }),
-};
-
+// ─── QUESTION PANEL ───────────────────────────────────────────────────────────
 function QuestionPanel({ q, step, onSelect }) {
-  const containerVariants = {
-    hidden: {},
-    visible: { transition: { staggerChildren: 0.06 } },
-  };
+  const containerVariants = { hidden: {}, visible: { transition: { staggerChildren: 0.06 } } };
   const itemVariants = {
     hidden: { opacity: 0, x: 20 },
     visible: { opacity: 1, x: 0, transition: { duration: 0.4, ease: "easeOut" } },
   };
-
   return (
-    <motion.div
-      key={step}
-      initial={{ opacity: 0, x: 60 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -60 }}
-      transition={slideTransition}
-      style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", height: "100%", padding: "5rem 2rem 2rem" }}
-    >
+    <motion.div key={step} initial={{ opacity: 0, x: 60 }} animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -60 }} transition={slideTransition}
+      style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", height: "100%", padding: "5rem 2rem 2rem" }}>
       <motion.div variants={containerVariants} initial="hidden" animate="visible" style={{ textAlign: "center", maxWidth: 340, width: "100%" }}>
-        <motion.p variants={itemVariants} style={{ color: GOLD, fontFamily: "'Crimson Text',Georgia,serif", fontSize: "0.78rem", letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: "0.7rem", opacity: 0.75 }}>
+        <motion.p variants={itemVariants} style={{ color: CREAM, fontFamily: "'Manrope',sans-serif", fontSize: "0.78rem", letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: "0.7rem", opacity: 0.6 }}>
           {q.sub}
         </motion.p>
-        <motion.h2 variants={itemVariants} style={{ fontFamily: "'Playfair Display',Georgia,serif", fontSize: "clamp(1.2rem,4.5vw,1.65rem)", color: CREAM, fontWeight: 400, lineHeight: 1.38, marginBottom: "2.4rem" }}>
+        <motion.h2 variants={itemVariants} style={{ fontFamily: "'Helvetica Neue',Helvetica,Arial,sans-serif", fontSize: "clamp(1.2rem,4.5vw,1.65rem)", color: CREAM, fontWeight: 400, lineHeight: 1.38, marginBottom: "2.4rem" }}>
           {q.q}
         </motion.h2>
         <div style={{ display: "flex", flexDirection: "column", gap: "0.65rem" }}>
           {q.opts.map((opt, i) => (
-            <motion.button
-              key={opt}
-              type="button"
-              variants={itemVariants}
-              onPointerDown={event => event.currentTarget.blur()}
-              onClick={event => { event.currentTarget.blur(); onSelect(opt); }}
-              whileHover={{ scale: 1.02, borderColor: GOLD, backgroundColor: "rgba(200,160,74,0.12)" }}
+            <motion.button key={opt} type="button" variants={itemVariants}
+              onPointerDown={e => e.currentTarget.blur()}
+              onClick={e => { e.currentTarget.blur(); onSelect(opt); }}
+              whileHover={{ scale: 1.02, borderColor: CREAM, backgroundColor: "rgba(247,221,194,0.1)" }}
               whileTap={{ scale: 0.98 }}
-              style={{ background: "rgba(14,22,40,0.6)", border: "1px solid rgba(200,160,74,0.22)", color: CREAM, padding: "0.82rem 1.2rem", fontFamily: "'Crimson Text',Georgia,serif", fontSize: "0.98rem", cursor: "pointer", textAlign: "left", borderRadius: "2px", display: "flex", alignItems: "center", gap: "0.7rem", backdropFilter: "blur(8px)", outline: "none", WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}
-            >
-              <span style={{ color: GOLD, opacity: 0.5, fontSize: "0.72rem", fontFamily: "monospace", minWidth: 18 }}>0{i + 1}</span>
+              style={{ background: "rgba(26,6,8,0.7)", border: "1px solid rgba(247,221,194,0.2)", color: CREAM, padding: "0.82rem 1.2rem", fontFamily: "'Manrope',sans-serif", fontSize: "0.98rem", cursor: "pointer", textAlign: "left", borderRadius: "2px", display: "flex", alignItems: "center", gap: "0.7rem", backdropFilter: "blur(8px)", outline: "none", WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}>
+              <span style={{ color: GOLD, opacity: 0.8, fontSize: "0.72rem", fontFamily: "monospace", minWidth: 18 }}>0{i + 1}</span>
               {opt}
             </motion.button>
           ))}
@@ -437,6 +459,7 @@ function QuestionPanel({ q, step, onSelect }) {
   );
 }
 
+// ─── CONTACT FORM ─────────────────────────────────────────────────────────────
 function ContactForm({ onSubmit }) {
   const [form, setForm] = useState({ name: "", email: "", date: "", location: "" });
   const fields = [
@@ -445,58 +468,41 @@ function ContactForm({ onSubmit }) {
     { k: "date",     label: "Wedding date",  ph: "October 2026 — or still deciding" },
     { k: "location", label: "Venue or city", ph: "Austin, TX" },
   ];
-
-  const containerVariants = {
-    hidden: {},
-    visible: { transition: { staggerChildren: 0.07 } },
-  };
+  const containerVariants = { hidden: {}, visible: { transition: { staggerChildren: 0.07 } } };
   const itemVariants = {
     hidden: { opacity: 0, y: 16 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.45, ease: "easeOut" } },
   };
-
   return (
-    <motion.div
-      key="form"
-      initial={{ opacity: 0, x: 60 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -60 }}
-      transition={slideTransition}
-      style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", height: "100%", padding: "5rem 2rem 2rem" }}
-    >
+    <motion.div key="form" initial={{ opacity: 0, x: 60 }} animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -60 }} transition={slideTransition}
+      style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", height: "100%", padding: "5rem 2rem 2rem" }}>
       <motion.div variants={containerVariants} initial="hidden" animate="visible" style={{ maxWidth: 340, width: "100%", textAlign: "center" }}>
-        <motion.p variants={itemVariants} style={{ color: GOLD, fontFamily: "'Crimson Text',Georgia,serif", fontSize: "0.78rem", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "0.4rem", opacity: 0.75 }}>
+        <motion.p variants={itemVariants} style={{ color: CREAM, fontFamily: "'Manrope',sans-serif", fontSize: "0.78rem", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "0.4rem", opacity: 0.6 }}>
           Almost there
         </motion.p>
-        <motion.h2 variants={itemVariants} style={{ fontFamily: "'Playfair Display',Georgia,serif", fontSize: "1.4rem", color: CREAM, fontWeight: 400, marginBottom: "0.35rem" }}>
+        <motion.h2 variants={itemVariants} style={{ fontFamily: "'Helvetica Neue',Helvetica,Arial,sans-serif", fontSize: "1.4rem", color: CREAM, fontWeight: 400, marginBottom: "0.35rem" }}>
           Tell me who you are.
         </motion.h2>
-        <motion.p variants={itemVariants} style={{ color: MUTED, fontFamily: "'Crimson Text',Georgia,serif", fontSize: "0.92rem", marginBottom: "1.6rem" }}>
+        <motion.p variants={itemVariants} style={{ color: MUTED, fontFamily: "'Manrope',sans-serif", fontSize: "0.92rem", marginBottom: "1.6rem" }}>
           And when the story begins.
         </motion.p>
         {fields.map((field) => (
           <motion.div key={field.k} variants={itemVariants} style={{ marginBottom: "0.85rem", textAlign: "left" }}>
-            <label style={{ display: "block", color: "#5a6a88", fontFamily: "'Crimson Text',Georgia,serif", fontSize: "0.8rem", marginBottom: "0.25rem", letterSpacing: "0.06em" }}>
+            <label style={{ display: "block", color: MUTED, fontFamily: "'Manrope',sans-serif", fontSize: "0.8rem", marginBottom: "0.25rem", letterSpacing: "0.06em" }}>
               {field.label}
             </label>
-            <input
-              type="text"
-              placeholder={field.ph}
-              value={form[field.k]}
+            <input type="text" placeholder={field.ph} value={form[field.k]}
               onChange={e => setForm(p => ({ ...p, [field.k]: e.target.value }))}
-              style={{ width: "100%", background: "rgba(255,255,255,0.05)", border: "1px solid #1e2e48", borderRadius: "2px", padding: "0.58rem 0.82rem", color: CREAM, fontFamily: "'Crimson Text',Georgia,serif", fontSize: "0.96rem", outline: "none", boxSizing: "border-box", transition: "border-color 0.2s" }}
-              onFocus={e => e.target.style.borderColor = GOLD}
-              onBlur={e => e.target.style.borderColor = "#1e2e48"}
+              style={{ width: "100%", background: "rgba(247,221,194,0.05)", border: "1px solid rgba(247,221,194,0.15)", borderRadius: "2px", padding: "0.58rem 0.82rem", color: CREAM, fontFamily: "'Manrope',sans-serif", fontSize: "0.96rem", outline: "none", boxSizing: "border-box", transition: "border-color 0.2s" }}
+              onFocus={e => e.target.style.borderColor = CREAM}
+              onBlur={e => e.target.style.borderColor = "rgba(247,221,194,0.15)"}
             />
           </motion.div>
         ))}
-        <motion.button
-          variants={itemVariants}
-          onClick={() => onSubmit(form)}
-          whileHover={{ scale: 1.02, opacity: 0.92 }}
-          whileTap={{ scale: 0.98 }}
-          style={{ marginTop: "0.6rem", width: "100%", background: GOLD, border: "none", color: "#1a1208", padding: "0.82rem", fontFamily: "'Playfair Display',Georgia,serif", fontSize: "0.96rem", cursor: "pointer", borderRadius: "2px", letterSpacing: "0.04em" }}
-        >
+        <motion.button variants={itemVariants} onClick={() => onSubmit(form)}
+          whileHover={{ scale: 1.02, opacity: 0.92 }} whileTap={{ scale: 0.98 }}
+          style={{ marginTop: "0.6rem", width: "100%", background: GOLD, border: "none", color: CREAM, padding: "0.82rem", fontFamily: "'Helvetica Neue',Helvetica,Arial,sans-serif", fontSize: "0.96rem", cursor: "pointer", borderRadius: "2px", letterSpacing: "0.06em" }}>
           Begin the story
         </motion.button>
       </motion.div>
@@ -504,32 +510,21 @@ function ContactForm({ onSubmit }) {
   );
 }
 
+// ─── THANK YOU ────────────────────────────────────────────────────────────────
 function ThankYou({ onClose }) {
   return (
-    <motion.div
-      key="thanks"
-      initial={{ opacity: 0, scale: 0.96 }}
-      animate={{ opacity: 1, scale: 1 }}
+    <motion.div key="thanks" initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", height: "100%", padding: "2rem", textAlign: "center" }}
-    >
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2, duration: 0.6 }}
-      >
-        <div style={{ fontFamily: "'Playfair Display',Georgia,serif", fontSize: "2rem", color: GOLD, marginBottom: "1rem" }}>
+      style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", height: "100%", padding: "2rem", textAlign: "center" }}>
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.6 }}>
+        <div style={{ fontFamily: "'Helvetica Neue',Helvetica,Arial,sans-serif", fontSize: "2rem", color: CREAM, marginBottom: "1rem" }}>
           Can't wait to meet you.
         </div>
-        <p style={{ color: MUTED, lineHeight: 1.8, fontFamily: "'Crimson Text',Georgia,serif", fontSize: "1.05rem", marginBottom: "2rem", maxWidth: 280 }}>
+        <p style={{ color: MUTED, lineHeight: 1.8, fontFamily: "'Manrope',sans-serif", fontSize: "1.05rem", marginBottom: "2rem", maxWidth: 280 }}>
           Sanaa will be in touch within 48 hours. In the meantime, keep dreaming.
         </p>
-        <motion.button
-          onClick={onClose}
-          whileHover={{ scale: 1.04 }}
-          whileTap={{ scale: 0.97 }}
-          style={{ background: "none", border: `1px solid ${GOLD}`, color: GOLD, padding: "0.75rem 2rem", fontFamily: "'Playfair Display',Georgia,serif", fontSize: "0.95rem", cursor: "pointer", borderRadius: "2px" }}
-        >
+        <motion.button onClick={onClose} whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
+          style={{ background: "none", border: `1px solid ${CREAM}`, color: CREAM, padding: "0.75rem 2rem", fontFamily: "'Helvetica Neue',Helvetica,Arial,sans-serif", fontSize: "0.95rem", cursor: "pointer", borderRadius: "2px" }}>
           Back to the gallery
         </motion.button>
       </motion.div>
@@ -537,125 +532,22 @@ function ThankYou({ onClose }) {
   );
 }
 
-function Questionnaire({ visible, onClose }) {
-  const [step, setStep] = useState(0);
-  const [showForm, setShowForm] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-
-  // Reset state whenever questionnaire opens
-  useEffect(() => {
-    if (visible) { setStep(0); setShowForm(false); setSubmitted(false); }
-  }, [visible]);
-
-  const handleSelect = useCallback(() => {
-    const q = QUESTIONS[step];
-    if (q.isFinal) { setShowForm(true); return; }
-    setStep(s => s + 1);
-  }, [step]);
-
-  const handleSubmit = useCallback(() => {
-    setSubmitted(true);
-  }, []);
-
-  // Which frame set to show — new set per step + form + thanks
-  const bgFrameSet = submitted ? QUEST_FRAMES[5] : showForm ? QUEST_FRAMES[4] : QUEST_FRAMES[Math.min(step, 3)];
-  const bgKey = submitted ? "thanks" : showForm ? "form" : `q${step}`;
-
-  return (
-    <AnimatePresence>
-      {visible && (
-        <motion.div
-          key="questionnaire-overlay"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.45 }}
-          style={{ position: "fixed", inset: 0, zIndex: 400, background: "#080e1a", overflow: "hidden" }}
-        >
-          {/* Frame background — slides left on each step advance */}
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.div
-              key={bgKey}
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "-100%" }}
-              transition={{ duration: 0.55, ease: [0.4, 0, 0.2, 1] }}
-              style={{ position: "absolute", inset: 0 }}
-            >
-              <svg width="100%" height="100%" viewBox="0 0 420 800" preserveAspectRatio="xMidYMid slice" style={{ position: "absolute", inset: 0 }}>
-                {bgFrameSet.map(f => <FrameEl key={f.id} frame={f} opacity={0.95} photoIndex={f.id} />)}
-              </svg>
-            </motion.div>
-          </AnimatePresence>
-
-          {/* Vignette */}
-          <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 50% 45%, rgba(8,14,26,0.55) 15%, rgba(8,14,26,0.92) 100%)", zIndex: 1 }} />
-
-          {/* Close button */}
-          <motion.button
-            onClick={onClose}
-            whileHover={{ scale: 1.15, color: CREAM }}
-            style={{ position: "absolute", top: "1.2rem", right: "1.2rem", zIndex: 10, background: "none", border: "none", color: "#3a4a68", fontSize: "1.5rem", cursor: "pointer", lineHeight: 1 }}
-          >
-            ×
-          </motion.button>
-
-          {/* Progress dots */}
-          {!submitted && (
-            <div style={{ position: "absolute", top: "1.3rem", left: "50%", transform: "translateX(-50%)", display: "flex", gap: 7, zIndex: 10 }}>
-              {QUESTIONS.map((_, i) => (
-                <motion.div
-                  key={i}
-                  animate={{ background: i <= step ? GOLD : "#1e2e48", scale: i === step ? 1.3 : 1 }}
-                  transition={{ duration: 0.3 }}
-                  style={{ width: 6, height: 6, borderRadius: "50%" }}
-                />
-              ))}
-            </div>
-          )}
-
-          {/* Content layer */}
-          <div style={{ position: "absolute", inset: 0, zIndex: 5, overflow: "hidden" }}>
-            <AnimatePresence mode="wait" initial={false}>
-              {submitted ? (
-                <ThankYou key="thanks" onClose={onClose} />
-              ) : showForm ? (
-                <ContactForm key="form" onSubmit={handleSubmit} />
-              ) : (
-                <QuestionPanel key={`q-${step}`} q={QUESTIONS[step]} step={step} onSelect={handleSelect} />
-              )}
-            </AnimatePresence>
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
-}
-
-// ─── FLOATING CTA BUTTON ──────────────────────────────────────────────────────
+// ─── FLOATING CTA ─────────────────────────────────────────────────────────────
 function FloatingButton({ onClick }) {
   const { scrollY } = useScroll();
   const [pastHero, setPastHero] = useState(false);
-
   useEffect(() => {
     return scrollY.on("change", v => setPastHero(v > window.innerHeight * 0.6));
   }, [scrollY]);
-
   return (
     <AnimatePresence>
       {pastHero && (
-        <motion.button
-          key="fab"
-          onClick={onClick}
-          initial={{ opacity: 0, scale: 0.7, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.7, y: 20 }}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.93 }}
+        <motion.button key="fab" onClick={onClick}
+          initial={{ opacity: 0, scale: 0.7, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.7, y: 20 }} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.93 }}
           transition={{ type: "spring", stiffness: 300, damping: 22 }}
-          style={{ position: "fixed", bottom: "1.5rem", right: "1.5rem", zIndex: 150, background: GOLD, border: "none", color: "#1a1208", width: 52, height: 52, borderRadius: "50%", cursor: "pointer", fontSize: "1.1rem", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 4px 24px rgba(200,160,74,0.3)`, fontFamily: "serif" }}
-          title="Book Sanaa"
-        >
+          style={{ position: "fixed", bottom: "1.5rem", right: "1.5rem", zIndex: 150, background: GOLD, border: "none", color: CREAM, width: 52, height: 52, borderRadius: "50%", cursor: "pointer", fontSize: "1.1rem", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 24px rgba(142,29,31,0.4)", fontFamily: "serif" }}
+          title="Book Sansan Stills">
           ✦
         </motion.button>
       )}
@@ -663,9 +555,7 @@ function FloatingButton({ onClick }) {
   );
 }
 
-// ─── MAIN APP ─────────────────────────────────────────────────────────────────
-
-// ─── INLINE QUESTIONNAIRE SECTION ─────────────────────────────────────────────
+// ─── INLINE QUESTIONNAIRE ─────────────────────────────────────────────────────
 function InlineQuestionnaire() {
   const [step, setStep] = useState(0);
   const [showForm, setShowForm] = useState(false);
@@ -682,52 +572,29 @@ function InlineQuestionnaire() {
 
   return (
     <section style={{ position: "relative", minHeight: "100svh", display: "flex", flexDirection: "column", justifyContent: "center", overflow: "hidden" }}>
-
-      {/* Solid base blocks parallax bleed-through */}
       <div style={{ position: "absolute", inset: 0, zIndex: 0, background: BG }} />
-
-      {/* Sliding frame background per question */}
       <AnimatePresence mode="wait" initial={false}>
-        <motion.div
-          key={bgKey}
-          initial={{ x: "100%" }}
-          animate={{ x: 0 }}
-          exit={{ x: "-100%" }}
+        <motion.div key={bgKey} initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "-100%" }}
           transition={{ duration: 0.55, ease: [0.4, 0, 0.2, 1] }}
-          style={{ position: "absolute", inset: 0, zIndex: 1 }}
-        >
-          <svg width="100%" height="100%" viewBox="0 0 420 800"
-            preserveAspectRatio="xMidYMid slice"
-            style={{ position: "absolute", inset: 0 }}>
+          style={{ position: "absolute", inset: 0, zIndex: 1 }}>
+          <svg width="100%" height="100%" viewBox="0 0 420 800" preserveAspectRatio="xMidYMid slice" style={{ position: "absolute", inset: 0 }}>
             {bgFrameSet.map(f => <FrameEl key={f.id} frame={f} opacity={0.95} photoIndex={f.id} />)}
           </svg>
         </motion.div>
       </AnimatePresence>
-
-      {/* Vignette — heavy to keep text readable */}
-      <div style={{ position: "absolute", inset: 0, zIndex: 2, background: "radial-gradient(ellipse at 50% 65%, rgba(8,14,26,0.45) 10%, rgba(8,14,26,0.88) 100%)", pointerEvents: "none" }} />
-
-      {/* Top fade — frames and bg dissolve together into the section above */}
+      <div style={{ position: "absolute", inset: 0, zIndex: 2, background: "radial-gradient(ellipse at 50% 65%, rgba(26,6,8,0.5) 10%, rgba(26,6,8,0.9) 100%)", pointerEvents: "none" }} />
       <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "22rem", zIndex: 3, background: `linear-gradient(to bottom, ${BG} 0%, ${BG}f0 20%, ${BG}99 55%, transparent 100%)`, pointerEvents: "none" }} />
-
-      {/* Bottom fade */}
       <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "5rem", zIndex: 3, background: `linear-gradient(to top, ${BG}, transparent)`, pointerEvents: "none" }} />
-
-      {/* Progress dots */}
       {!submitted && (
         <div style={{ position: "absolute", top: "1.8rem", left: "50%", transform: "translateX(-50%)", display: "flex", gap: 7, zIndex: 5 }}>
           {QUESTIONS.map((_, i) => (
-            <motion.div
-              key={i}
-              animate={{ background: i <= step ? GOLD : "#1e2e48", scale: i === step ? 1.3 : 1 }}
+            <motion.div key={i}
+              animate={{ background: i <= step ? CREAM : "rgba(247,221,194,0.2)", scale: i === step ? 1.3 : 1 }}
               transition={{ duration: 0.3 }}
-              style={{ width: 6, height: 6, borderRadius: "50%" }}
-            />
+              style={{ width: 6, height: 6, borderRadius: "50%" }} />
           ))}
         </div>
       )}
-
-      {/* Sliding content */}
       <div style={{ position: "relative", zIndex: 5, overflow: "hidden" }}>
         <AnimatePresence mode="wait" initial={false}>
           {submitted ? (
@@ -762,67 +629,62 @@ export default function SanaaPhotography() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500&display=swap');
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body { background: ${BG}; color: ${CREAM}; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
-        h1, h2, h3, p, button, label { text-shadow: 0 1px 18px rgba(0,0,0,0.45); }
-        input::placeholder { color: #1e2e48; }
+        h1, h2, h3, p, button, label { text-shadow: 0 1px 12px rgba(0,0,0,0.6); }
+        input::placeholder { color: rgba(172,175,154,0.4); }
         ::-webkit-scrollbar { width: 3px; }
         ::-webkit-scrollbar-track { background: ${BG}; }
-        ::-webkit-scrollbar-thumb { background: #1e2e48; }
+        ::-webkit-scrollbar-thumb { background: ${GOLD}; }
       `}</style>
 
       <div style={{ position: "relative", background: BG, minHeight: "100vh" }}>
 
         <ParallaxFrames areaW={areaW} />
 
-        {/* Grain */}
-        <div style={{ position: "fixed", inset: 0, zIndex: 1, pointerEvents: "none", opacity: 0.28,
+        {/* Grain overlay */}
+        <div style={{ position: "fixed", inset: 0, zIndex: 1, pointerEvents: "none", opacity: 0.22,
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E")` }} />
 
-        {/* Nav */}
-        <motion.nav
-          initial={{ opacity: 0, y: -12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.2 }}
-          style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 100, padding: "1.2rem 1.5rem", display: "flex", justifyContent: "space-between", alignItems: "center", background: `linear-gradient(to bottom, ${BG}e0, transparent)` }}
-        >
-          <span style={{ fontFamily: "'Playfair Display',Georgia,serif", fontSize: "0.95rem", color: GOLD, letterSpacing: "0.05em" }}>Sanaa</span>
+        {/* Sticky nav — Let's begin button always visible */}
+        <div style={{
+          position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
+          padding: "0.9rem 1.5rem",
+          display: "flex", justifyContent: "space-between", alignItems: "center",
+          background: `linear-gradient(to bottom, ${BG}f0 60%, transparent)`,
+          backdropFilter: "blur(4px)",
+        }}>
+          {/* AnimatedLogo renders the nav-size logo here when scrolled */}
+          <NavLogo />
           <motion.button
             onClick={scrollToQuest}
             whileHover={{ color: CREAM }}
-            style={{ fontFamily: "'Crimson Text',Georgia,serif", fontSize: "0.8rem", color: MUTED, background: "none", border: "none", cursor: "pointer", letterSpacing: "0.14em", textTransform: "uppercase" }}
-          >
+            style={{ fontFamily: "'Manrope',sans-serif", fontSize: "0.78rem", color: MUTED, background: "none", border: "none", cursor: "pointer", letterSpacing: "0.14em", textTransform: "uppercase" }}>
             Let's begin →
           </motion.button>
-        </motion.nav>
+        </div>
 
         <div style={{ position: "relative", zIndex: 2 }}>
 
           {/* HERO */}
           <Sec>
             <div style={{ textAlign: "center" }}>
+              {/* Large hero logo — fades out on scroll */}
+              <HeroLogo />
+
               <Reveal>
-                <p style={{ fontFamily: "'Crimson Text',Georgia,serif", fontSize: "0.78rem", letterSpacing: "0.24em", color: MUTED, textTransform: "uppercase", marginBottom: "1.5rem" }}>Austin, Texas</p>
-              </Reveal>
-              <Reveal delay={0.12}>
-                <h1 style={{ fontFamily: "'Playfair Display',Georgia,serif", fontSize: "clamp(2.8rem,12vw,4.8rem)", fontWeight: 400, color: CREAM, lineHeight: 1.1, marginBottom: "1.4rem" }}>
-                  Sanaa<br /><em style={{ color: GOLD }}>Photography</em>
-                </h1>
+                <p style={{ fontFamily: "'Manrope',sans-serif", fontSize: "0.75rem", letterSpacing: "0.24em", color: MUTED, textTransform: "uppercase", marginBottom: "1.5rem" }}>Austin, Texas</p>
               </Reveal>
               <Reveal delay={0.24}>
-                <p style={{ fontFamily: "'Crimson Text',Georgia,serif", fontSize: "1.1rem", color: "#5a6a88", lineHeight: 1.9, maxWidth: 290, margin: "0 auto 3.5rem" }}>
+                <p style={{ fontFamily: "'Manrope',sans-serif", fontSize: "1.05rem", color: MUTED, lineHeight: 1.9, maxWidth: 300, margin: "0 auto 3.5rem" }}>
                   Wedding photography for couples who believe every frame tells a story worth keeping.
                 </p>
               </Reveal>
               <Reveal delay={0.38}>
-                <motion.button
-                  onClick={scrollToQuest}
-                  whileHover={{ scale: 1.04, opacity: 0.9 }}
-                  whileTap={{ scale: 0.97 }}
-                  style={{ background: "none", border: `1px solid ${GOLD}44`, color: GOLD, padding: "0.75rem 2rem", fontFamily: "'Crimson Text',Georgia,serif", fontSize: "0.9rem", cursor: "pointer", borderRadius: "2px", letterSpacing: "0.1em", textTransform: "uppercase" }}
-                >
+                <motion.button onClick={scrollToQuest} whileHover={{ scale: 1.04, opacity: 0.9 }} whileTap={{ scale: 0.97 }}
+                  style={{ background: "none", border: "1px solid rgba(247,221,194,0.3)", color: CREAM, padding: "0.75rem 2rem", fontFamily: "'Manrope',sans-serif", fontSize: "0.85rem", cursor: "pointer", borderRadius: "2px", letterSpacing: "0.12em", textTransform: "uppercase" }}>
                   Begin here ↓
                 </motion.button>
               </Reveal>
@@ -831,19 +693,19 @@ export default function SanaaPhotography() {
 
           {/* ABOUT */}
           <Sec>
-            <Reveal><p style={{ fontFamily: "'Crimson Text',Georgia,serif", fontSize: "0.76rem", letterSpacing: "0.22em", color: GOLD, textTransform: "uppercase", marginBottom: "1rem" }}>About Sanaa</p></Reveal>
+            <Reveal><p style={{ fontFamily: "'Manrope',sans-serif", fontSize: "0.72rem", letterSpacing: "0.22em", color: GOLD, textTransform: "uppercase", marginBottom: "1rem" }}>About Sanaa</p></Reveal>
             <Reveal delay={0.09}>
-              <h2 style={{ fontFamily: "'Playfair Display',Georgia,serif", fontSize: "clamp(1.7rem,7vw,2.5rem)", fontWeight: 400, color: CREAM, lineHeight: 1.25, marginBottom: "2rem", maxWidth: 340 }}>
+              <h2 style={{ fontFamily: "'Helvetica Neue',Helvetica,Arial,sans-serif", fontSize: "clamp(1.7rem,7vw,2.5rem)", fontWeight: 400, color: CREAM, lineHeight: 1.25, marginBottom: "2rem", maxWidth: 360 }}>
                 I document what words leave out.
               </h2>
             </Reveal>
             <Reveal delay={0.18}>
-              <p style={{ fontFamily: "'Crimson Text',Georgia,serif", fontSize: "1.03rem", color: "#5a6a88", lineHeight: 1.95, marginBottom: "1.4rem" }}>
+              <p style={{ fontFamily: "'Manrope',sans-serif", fontSize: "1rem", color: MUTED, lineHeight: 1.95, marginBottom: "1.4rem", maxWidth: 520 }}>
                 I'm Sanaa, a documentary-style wedding photographer rooted in Austin. I'm drawn to the quiet in-between moments — a hand squeeze before the doors open, a grandmother laughing mid-toast, the last song when no one wants to leave.
               </p>
             </Reveal>
             <Reveal delay={0.27}>
-              <p style={{ fontFamily: "'Crimson Text',Georgia,serif", fontSize: "1.03rem", color: "#5a6a88", lineHeight: 1.95 }}>
+              <p style={{ fontFamily: "'Manrope',sans-serif", fontSize: "1rem", color: MUTED, lineHeight: 1.95, maxWidth: 520 }}>
                 My work is warm, honest, and unhurried. I'm not just there to photograph your wedding — I'm there to remember it with you.
               </p>
             </Reveal>
@@ -851,9 +713,9 @@ export default function SanaaPhotography() {
 
           {/* APPROACH */}
           <Sec>
-            <Reveal><p style={{ fontFamily: "'Crimson Text',Georgia,serif", fontSize: "0.76rem", letterSpacing: "0.22em", color: GOLD, textTransform: "uppercase", marginBottom: "1rem" }}>The approach</p></Reveal>
+            <Reveal><p style={{ fontFamily: "'Manrope',sans-serif", fontSize: "0.72rem", letterSpacing: "0.22em", color: GOLD, textTransform: "uppercase", marginBottom: "1rem" }}>The approach</p></Reveal>
             <Reveal delay={0.09}>
-              <h2 style={{ fontFamily: "'Playfair Display',Georgia,serif", fontSize: "clamp(1.7rem,7vw,2.5rem)", fontWeight: 400, color: CREAM, lineHeight: 1.25, marginBottom: "2.4rem" }}>
+              <h2 style={{ fontFamily: "'Helvetica Neue',Helvetica,Arial,sans-serif", fontSize: "clamp(1.7rem,7vw,2.5rem)", fontWeight: 400, color: CREAM, lineHeight: 1.25, marginBottom: "2.4rem" }}>
                 A gallery you'll return to for decades.
               </h2>
             </Reveal>
@@ -863,10 +725,10 @@ export default function SanaaPhotography() {
               { n: "03", t: "Full day coverage",      b: "From the quiet morning getting ready to the last slow dance. Nothing missed." },
             ].map((item, i) => (
               <Reveal key={item.n} delay={0.12 + i * 0.1}>
-                <div style={{ marginBottom: "2rem", paddingLeft: "1rem", borderLeft: "1px solid #1a2840" }}>
-                  <span style={{ fontFamily: "monospace", fontSize: "0.7rem", color: GOLD, opacity: 0.55 }}>{item.n}</span>
-                  <h3 style={{ fontFamily: "'Playfair Display',Georgia,serif", fontSize: "1.02rem", color: CREAM, fontWeight: 400, margin: "0.25rem 0 0.38rem" }}>{item.t}</h3>
-                  <p style={{ fontFamily: "'Crimson Text',Georgia,serif", fontSize: "0.96rem", color: "#3e4e68", lineHeight: 1.78, margin: 0 }}>{item.b}</p>
+                <div style={{ marginBottom: "2rem", paddingLeft: "1.2rem", borderLeft: "1px solid rgba(142,29,31,0.4)" }}>
+                  <span style={{ fontFamily: "monospace", fontSize: "0.7rem", color: GOLD, opacity: 0.7 }}>{item.n}</span>
+                  <h3 style={{ fontFamily: "'Helvetica Neue',Helvetica,Arial,sans-serif", fontSize: "1.02rem", color: CREAM, fontWeight: 400, margin: "0.25rem 0 0.38rem" }}>{item.t}</h3>
+                  <p style={{ fontFamily: "'Manrope',sans-serif", fontSize: "0.95rem", color: MUTED, lineHeight: 1.78, margin: 0, opacity: 0.8 }}>{item.b}</p>
                 </div>
               </Reveal>
             ))}
@@ -874,9 +736,9 @@ export default function SanaaPhotography() {
 
           {/* INVESTMENT */}
           <Sec>
-            <Reveal><p style={{ fontFamily: "'Crimson Text',Georgia,serif", fontSize: "0.76rem", letterSpacing: "0.22em", color: GOLD, textTransform: "uppercase", marginBottom: "1rem" }}>Investment</p></Reveal>
+            <Reveal><p style={{ fontFamily: "'Manrope',sans-serif", fontSize: "0.72rem", letterSpacing: "0.22em", color: GOLD, textTransform: "uppercase", marginBottom: "1rem" }}>Investment</p></Reveal>
             <Reveal delay={0.09}>
-              <h2 style={{ fontFamily: "'Playfair Display',Georgia,serif", fontSize: "clamp(1.7rem,7vw,2.5rem)", fontWeight: 400, color: CREAM, lineHeight: 1.25, marginBottom: "2rem" }}>
+              <h2 style={{ fontFamily: "'Helvetica Neue',Helvetica,Arial,sans-serif", fontSize: "clamp(1.7rem,7vw,2.5rem)", fontWeight: 400, color: CREAM, lineHeight: 1.25, marginBottom: "2rem" }}>
                 Made to fit your day.
               </h2>
             </Reveal>
@@ -886,17 +748,17 @@ export default function SanaaPhotography() {
               { name: "The Weekend",   hours: "Two days", price: "from $5,500" },
             ].map((pkg, i) => (
               <Reveal key={pkg.name} delay={0.1 + i * 0.09}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "1.05rem 0", borderBottom: "1px solid #151f30" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "1.05rem 0", borderBottom: "1px solid rgba(247,221,194,0.08)" }}>
                   <div>
-                    <p style={{ fontFamily: "'Playfair Display',Georgia,serif", fontSize: "0.98rem", color: CREAM, margin: 0, fontWeight: 400 }}>{pkg.name}</p>
-                    <p style={{ fontFamily: "'Crimson Text',Georgia,serif", fontSize: "0.86rem", color: "#344050", margin: 0 }}>{pkg.hours}</p>
+                    <p style={{ fontFamily: "'Helvetica Neue',Helvetica,Arial,sans-serif", fontSize: "0.98rem", color: CREAM, margin: 0, fontWeight: 400 }}>{pkg.name}</p>
+                    <p style={{ fontFamily: "'Manrope',sans-serif", fontSize: "0.84rem", color: MUTED, margin: 0, opacity: 0.6 }}>{pkg.hours}</p>
                   </div>
-                  <p style={{ fontFamily: "'Crimson Text',Georgia,serif", fontSize: "0.95rem", color: GOLD, margin: 0 }}>{pkg.price}</p>
+                  <p style={{ fontFamily: "'Manrope',sans-serif", fontSize: "0.95rem", color: GOLD, margin: 0 }}>{pkg.price}</p>
                 </div>
               </Reveal>
             ))}
             <Reveal delay={0.4}>
-              <p style={{ fontFamily: "'Crimson Text',Georgia,serif", fontSize: "0.86rem", color: "#344050", marginTop: "1.4rem", fontStyle: "italic" }}>
+              <p style={{ fontFamily: "'Manrope',sans-serif", fontSize: "0.84rem", color: MUTED, marginTop: "1.4rem", fontStyle: "italic", opacity: 0.6 }}>
                 All packages include a private online gallery, print release, and a lot of care.
               </p>
             </Reveal>
@@ -904,33 +766,29 @@ export default function SanaaPhotography() {
 
           {/* PRE-QUESTIONNAIRE CTA */}
           <section style={{ position: "relative", padding: "8rem 2rem", textAlign: "center", minHeight: "50svh", display: "flex", flexDirection: "column", justifyContent: "center" }}>
-            <div style={{ position: "absolute", inset: 0, background: `radial-gradient(ellipse at center, ${BG}d0 20%, ${BG}80 100%)`, pointerEvents: "none" }} />
+            <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at center, rgba(26,6,8,0.7) 20%, rgba(26,6,8,0.5) 100%)", pointerEvents: "none" }} />
             <div style={{ position: "relative", zIndex: 2 }}>
-              <Reveal><p style={{ fontFamily: "'Crimson Text',Georgia,serif", fontSize: "0.76rem", letterSpacing: "0.24em", color: GOLD, textTransform: "uppercase", marginBottom: "1rem", opacity: 0.8 }}>Your story is waiting</p></Reveal>
+              <Reveal><p style={{ fontFamily: "'Manrope',sans-serif", fontSize: "0.72rem", letterSpacing: "0.24em", color: GOLD, textTransform: "uppercase", marginBottom: "1rem", opacity: 0.9 }}>Your story is waiting</p></Reveal>
               <Reveal delay={0.1}>
-                <h2 style={{ fontFamily: "'Playfair Display',Georgia,serif", fontSize: "clamp(1.9rem,8vw,2.7rem)", fontWeight: 400, color: CREAM, lineHeight: 1.25, maxWidth: 320, margin: "0 auto 2rem" }}>
+                <h2 style={{ fontFamily: "'Helvetica Neue',Helvetica,Arial,sans-serif", fontSize: "clamp(1.9rem,8vw,2.7rem)", fontWeight: 400, color: CREAM, lineHeight: 1.25, maxWidth: 340, margin: "0 auto 2rem" }}>
                   Let's put your photos in a frame worth keeping.
                 </h2>
               </Reveal>
               <Reveal delay={0.2}>
-                <motion.button
-                  onClick={scrollToQuest}
-                  whileHover={{ scale: 1.04, opacity: 0.9 }}
-                  whileTap={{ scale: 0.97 }}
-                  style={{ background: GOLD, border: "none", color: "#1a1208", padding: "1rem 2.5rem", fontFamily: "'Playfair Display',Georgia,serif", fontSize: "0.95rem", cursor: "pointer", borderRadius: "2px", letterSpacing: "0.05em" }}
-                >
+                <motion.button onClick={scrollToQuest} whileHover={{ scale: 1.04, opacity: 0.9 }} whileTap={{ scale: 0.97 }}
+                  style={{ background: GOLD, border: "none", color: CREAM, padding: "1rem 2.5rem", fontFamily: "'Helvetica Neue',Helvetica,Arial,sans-serif", fontSize: "0.95rem", cursor: "pointer", borderRadius: "2px", letterSpacing: "0.06em" }}>
                   Begin here
                 </motion.button>
               </Reveal>
               <Reveal delay={0.32}>
-                <p style={{ marginTop: "3rem", fontFamily: "'Crimson Text',Georgia,serif", fontSize: "0.8rem", color: "#1e2e48" }}>
+                <p style={{ marginTop: "3rem", fontFamily: "'Manrope',sans-serif", fontSize: "0.8rem", color: MUTED, opacity: 0.5 }}>
                   Austin, TX · Available worldwide
                 </p>
               </Reveal>
             </div>
           </section>
 
-          {/* QUESTIONNAIRE — inline bottom section */}
+          {/* QUESTIONNAIRE */}
           <div ref={questRef}>
             <InlineQuestionnaire />
           </div>
@@ -940,5 +798,45 @@ export default function SanaaPhotography() {
 
       <FloatingButton onClick={scrollToQuest} />
     </>
+  );
+}
+
+// ─── NAV LOGO — small, fades in after scroll ──────────────────────────────────
+function NavLogo() {
+  const { scrollY } = useScroll();
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    return scrollY.on("change", v => setScrolled(v > 80));
+  }, [scrollY]);
+  return (
+    <motion.img
+      src={logoImg}
+      alt="Sansan Stills"
+      animate={{ opacity: scrolled ? 1 : 0, height: scrolled ? 38 : 28 }}
+      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+      style={{ width: "auto", display: "block" }}
+    />
+  );
+}
+
+// ─── HERO LOGO — large, centered, fades out on scroll ────────────────────────
+function HeroLogo() {
+  const { scrollY } = useScroll();
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    return scrollY.on("change", v => setScrolled(v > 80));
+  }, [scrollY]);
+  return (
+    <motion.div
+      animate={{ opacity: scrolled ? 0 : 1, scale: scrolled ? 0.88 : 1, y: scrolled ? -16 : 0 }}
+      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+      style={{ display: "flex", justifyContent: "center", marginBottom: "2rem", pointerEvents: scrolled ? "none" : "auto" }}
+    >
+      <img
+        src={logoImg}
+        alt="Sansan Stills"
+        style={{ height: "clamp(80px, 18vw, 160px)", width: "auto", display: "block" }}
+      />
+    </motion.div>
   );
 }
