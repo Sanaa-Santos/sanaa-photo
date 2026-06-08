@@ -3,13 +3,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import logoImg from "./assets/logo.png";
 import sitePattern from "./assets/sitebg.jpg";
 
-// ─── BRAND TOKENS ─────────────────────────────────────────────────────────────
 const BISQUE    = "#F7DDC2";
 const FIREBRICK = "#8E1D1F";
 const SADDLE    = "#644028";
 const KHAKI     = "#ACAF9A";
 
-// ─── QUESTIONNAIRE DATA ───────────────────────────────────────────────────────
 const QUESTIONS = [
   {
     id: "vibe",
@@ -51,10 +49,7 @@ const QUESTIONS = [
 
 const slideTransition = { duration: 0.45, ease: [0.4, 0, 0.2, 1] };
 
-// ─── QUESTION PANEL ───────────────────────────────────────────────────────────
 function QuestionPanel({ q, step, onSelect }) {
-  const [hovered, setHovered] = useState(null);
-
   const containerVariants = {
     hidden: {},
     visible: { transition: { staggerChildren: 0.07 } },
@@ -97,53 +92,46 @@ function QuestionPanel({ q, step, onSelect }) {
           {q.q}
         </motion.h2>
         <div style={{ display: "flex", flexDirection: "column", gap: "0.55rem" }}>
-          {q.opts.map((opt, i) => {
-            const isHovered = hovered === i;
-            return (
-              <motion.button
-                key={`${step}-${i}`}
-                variants={itemVariants}
-                onPointerEnter={() => setHovered(i)}
-                onPointerLeave={() => setHovered(null)}
-                onPointerDown={() => setHovered(null)}
-                onClick={() => { setHovered(null); onSelect(opt); }}
-                whileTap={{ scale: 0.98 }}
-                style={{
-                  background: isHovered ? FIREBRICK : "transparent",
-                  border: `1.5px solid ${FIREBRICK}`,
-                  color: isHovered ? BISQUE : FIREBRICK,
-                  padding: "0.72rem 1.3rem",
-                  fontFamily: "'Manrope', sans-serif",
-                  fontSize: "0.93rem",
-                  cursor: "pointer",
-                  textAlign: "left",
-                  borderRadius: "999px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "0.8rem",
-                  outline: "none",
-                  WebkitTapHighlightColor: "transparent",
-                  transition: "background 0.15s, color 0.15s",
-                }}
-              >
-                <span style={{
-                  fontFamily: "monospace",
-                  fontSize: "0.65rem",
-                  color: isHovered ? "rgba(247,221,194,0.6)" : KHAKI,
-                  minWidth: 18,
-                  transition: "color 0.15s",
-                }}>0{i + 1}</span>
-                {opt}
-              </motion.button>
-            );
-          })}
+          {q.opts.map((opt, i) => (
+            <motion.button
+              key={`${step}-${i}`}
+              className="q-btn"
+              variants={itemVariants}
+              onClick={() => onSelect(opt)}
+              whileTap={{ scale: 0.98 }}
+              style={{
+                background: "transparent",
+                border: `1.5px solid ${FIREBRICK}`,
+                color: FIREBRICK,
+                padding: "0.72rem 1.3rem",
+                fontFamily: "'Manrope', sans-serif",
+                fontSize: "0.93rem",
+                cursor: "pointer",
+                textAlign: "left",
+                borderRadius: "999px",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.8rem",
+                outline: "none",
+                WebkitTapHighlightColor: "transparent",
+                transition: "background 0.15s, color 0.15s",
+              }}
+            >
+              <span className="q-btn-num" style={{
+                fontFamily: "monospace",
+                fontSize: "0.65rem",
+                color: KHAKI,
+                minWidth: 18,
+              }}>0{i + 1}</span>
+              {opt}
+            </motion.button>
+          ))}
         </div>
       </motion.div>
     </motion.div>
   );
 }
 
-// ─── CONTACT FORM ─────────────────────────────────────────────────────────────
 function ContactForm({ onSubmit }) {
   const [form, setForm] = useState({ name: "", email: "", date: "", location: "" });
   const fields = [
@@ -252,7 +240,6 @@ function ContactForm({ onSubmit }) {
   );
 }
 
-// ─── THANK YOU ────────────────────────────────────────────────────────────────
 function ThankYou({ onClose }) {
   return (
     <motion.div
@@ -310,7 +297,6 @@ function ThankYou({ onClose }) {
   );
 }
 
-// ─── QUESTIONNAIRE DRAWER ────────────────────────────────────────────────────
 function QuestionnaireDrawer({ onClose }) {
   const [step, setStep] = useState(0);
   const [showForm, setShowForm] = useState(false);
@@ -346,7 +332,6 @@ function QuestionnaireDrawer({ onClose }) {
         overflowY: "auto",
       }}
     >
-      {/* Pattern bg */}
       <div style={{
         position: "absolute",
         inset: 0,
@@ -357,7 +342,6 @@ function QuestionnaireDrawer({ onClose }) {
         pointerEvents: "none",
       }} />
 
-      {/* Close */}
       <button
         onClick={handleClose}
         style={{
@@ -380,7 +364,6 @@ function QuestionnaireDrawer({ onClose }) {
         }}
       >✕</button>
 
-      {/* Step dots */}
       {!submitted && (
         <div style={{
           position: "fixed",
@@ -405,7 +388,6 @@ function QuestionnaireDrawer({ onClose }) {
         </div>
       )}
 
-      {/* Panel */}
       <div style={{ position: "relative", zIndex: 1, width: "100%", display: "flex", justifyContent: "center" }}>
         <AnimatePresence mode="wait" initial={false}>
           {submitted ? (
@@ -421,7 +403,6 @@ function QuestionnaireDrawer({ onClose }) {
   );
 }
 
-// ─── MAIN PAGE ────────────────────────────────────────────────────────────────
 export default function SanaaPhotography() {
   const [questOpen, setQuestOpen] = useState(false);
 
@@ -440,9 +421,13 @@ export default function SanaaPhotography() {
         }
         button { cursor: pointer; }
         input::placeholder { color: rgba(100,64,40,0.35); }
+        .q-btn { -webkit-tap-highlight-color: transparent; }
+        @media (hover: hover) {
+          .q-btn:hover { background: ${FIREBRICK} !important; color: ${BISQUE} !important; }
+          .q-btn:hover .q-btn-num { color: rgba(247,221,194,0.6) !important; }
+        }
       `}</style>
 
-      {/* Tiled pattern background */}
       <div style={{
         position: "fixed",
         inset: 0,
@@ -453,7 +438,6 @@ export default function SanaaPhotography() {
         opacity: 0.13,
       }} />
 
-      {/* Main content */}
       <div style={{
         position: "relative",
         zIndex: 1,
@@ -466,7 +450,6 @@ export default function SanaaPhotography() {
         textAlign: "center",
       }}>
 
-        {/* Logo */}
         <motion.div
           initial={{ opacity: 0, y: -18 }}
           animate={{ opacity: 1, y: 0 }}
@@ -480,7 +463,6 @@ export default function SanaaPhotography() {
           />
         </motion.div>
 
-        {/* Headline */}
         <motion.h1
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -499,7 +481,6 @@ export default function SanaaPhotography() {
           Wedding photography for couples who believe every frame is worth keeping.
         </motion.h1>
 
-        {/* Subline */}
         <motion.p
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -517,7 +498,6 @@ export default function SanaaPhotography() {
           Austin, TX · Available worldwide
         </motion.p>
 
-        {/* CTA */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -556,7 +536,6 @@ export default function SanaaPhotography() {
           </p>
         </motion.div>
 
-        {/* Footer */}
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -572,11 +551,10 @@ export default function SanaaPhotography() {
             textTransform: "uppercase",
           }}
         >
-          © Sansan Stills 2025
+          © Sansan Stills 2026
         </motion.p>
       </div>
 
-      {/* Questionnaire drawer */}
       <AnimatePresence>
         {questOpen && (
           <QuestionnaireDrawer onClose={() => setQuestOpen(false)} />
