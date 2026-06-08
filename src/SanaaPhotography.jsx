@@ -422,10 +422,12 @@ export default function SanaaPhotography() {
         button { cursor: pointer; }
         input::placeholder { color: rgba(100,64,40,0.35); }
         .q-btn { -webkit-tap-highlight-color: transparent; }
-        @media (hover: hover) {
-          .q-btn:hover { background: ${FIREBRICK} !important; color: ${BISQUE} !important; }
-          .q-btn:hover .q-btn-num { color: rgba(247,221,194,0.6) !important; }
-        }
+.q-btn:active { background: #8E1D1F !important; color: #F7DDC2 !important; }
+.q-btn:active .q-btn-num { color: rgba(247,221,194,0.6) !important; }
+@media (hover: hover) {
+  .q-btn:hover { background: #8E1D1F !important; color: #F7DDC2 !important; }
+  .q-btn:hover .q-btn-num { color: rgba(247,221,194,0.6) !important; }
+}
       `}</style>
 
       <div style={{
