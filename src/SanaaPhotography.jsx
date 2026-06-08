@@ -138,17 +138,17 @@ function QuestionPanel({ q, step, onSelect }) {
 }
 
 function ContactForm({ onSubmit, answers }) {
-  const [form, setForm] = useState({ name: "", email: "", date: "", location: "" });
+  const [form, setForm] = useState({ name: "", email: "", date: "", location: "", message: "" });
   const [sending, setSending] = useState(false);
   const [error, setError] = useState(null);
 
-const fields = [
-  { k: "name",     label: "Your name",     ph: "Sarah & James" },
-  { k: "email",    label: "Email address", ph: "you@email.com" },
-  { k: "date",     label: "Wedding date",  ph: "October 2026 — or still deciding" },
-  { k: "location", label: "Venue or city", ph: "Austin, TX" },
-  { k: "message",  label: "Anything else?", ph: "Tell me more about your day...", multiline: true },
-];
+  const fields = [
+    { k: "name",     label: "Your name",     ph: "Sarah & James" },
+    { k: "email",    label: "Email address", ph: "you@email.com" },
+    { k: "date",     label: "Wedding date",  ph: "October 2026 — or still deciding" },
+    { k: "location", label: "Venue or city", ph: "Austin, TX" },
+    { k: "message",  label: "Anything else?", ph: "Tell me more about your day...", multiline: true },
+  ];
 
   const handleSubmit = async () => {
     setSending(true);
@@ -162,6 +162,7 @@ const fields = [
           email:    form.email,
           date:     form.date,
           location: form.location,
+          message:  form.message  || "—",
           vibe:     answers.vibe     || "—",
           moments:  answers.moments  || "—",
           size:     answers.size     || "—",
@@ -182,6 +183,18 @@ const fields = [
   const itemVariants = {
     hidden: { opacity: 0, y: 14 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" } },
+  };
+
+  const inputBase = {
+    width: "100%",
+    background: "rgba(142,29,31,0.04)",
+    border: `1px solid rgba(142,29,31,0.25)`,
+    color: FIREBRICK,
+    fontFamily: "'Manrope', sans-serif",
+    fontSize: "0.94rem",
+    outline: "none",
+    boxSizing: "border-box",
+    transition: "border-color 0.2s",
   };
 
   return (
@@ -229,27 +242,36 @@ const fields = [
               marginBottom: "0.22rem",
               letterSpacing: "0.05em",
             }}>{field.label}</label>
-            <input
-              type="text"
-              placeholder={field.ph}
-              value={form[field.k]}
-              onChange={e => setForm(p => ({ ...p, [field.k]: e.target.value }))}
-              style={{
-                width: "100%",
-                background: "rgba(142,29,31,0.04)",
-                border: `1px solid rgba(142,29,31,0.25)`,
-                borderRadius: "999px",
-                padding: "0.56rem 1rem",
-                color: FIREBRICK,
-                fontFamily: "'Manrope', sans-serif",
-                fontSize: "0.94rem",
-                outline: "none",
-                boxSizing: "border-box",
-                transition: "border-color 0.2s",
-              }}
-              onFocus={e => e.target.style.borderColor = FIREBRICK}
-              onBlur={e => e.target.style.borderColor = "rgba(142,29,31,0.25)"}
-            />
+            {field.multiline ? (
+              <textarea
+                placeholder={field.ph}
+                value={form[field.k]}
+                onChange={e => setForm(p => ({ ...p, [field.k]: e.target.value }))}
+                rows={3}
+                style={{
+                  ...inputBase,
+                  borderRadius: "16px",
+                  padding: "0.56rem 1rem",
+                  resize: "none",
+                }}
+                onFocus={e => e.target.style.borderColor = FIREBRICK}
+                onBlur={e => e.target.style.borderColor = "rgba(142,29,31,0.25)"}
+              />
+            ) : (
+              <input
+                type="text"
+                placeholder={field.ph}
+                value={form[field.k]}
+                onChange={e => setForm(p => ({ ...p, [field.k]: e.target.value }))}
+                style={{
+                  ...inputBase,
+                  borderRadius: "999px",
+                  padding: "0.56rem 1rem",
+                }}
+                onFocus={e => e.target.style.borderColor = FIREBRICK}
+                onBlur={e => e.target.style.borderColor = "rgba(142,29,31,0.25)"}
+              />
+            )}
           </motion.div>
         ))}
 
@@ -473,6 +495,7 @@ export default function SanaaPhotography() {
         }
         button { cursor: pointer; }
         input::placeholder { color: rgba(100,64,40,0.35); }
+        textarea::placeholder { color: rgba(100,64,40,0.35); }
         .q-btn { -webkit-tap-highlight-color: transparent; }
         .q-btn:active { background: ${FIREBRICK} !important; color: ${BISQUE} !important; }
         .q-btn:active .q-btn-num { color: rgba(247,221,194,0.6) !important; }
@@ -548,7 +571,7 @@ export default function SanaaPhotography() {
             marginBottom: "2.8rem",
           }}
         >
-          Austin, TX · Available worldwide
+          Austin, TX Based · Full day coverage at $3,000
         </motion.p>
 
         <motion.div
