@@ -299,17 +299,22 @@ function ParallaxFrames({ areaW }) {
   const viewBoxW = W < 768 ? Math.max(W * 0.9, 360) : 900;
   return (
     <div style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none", overflow: "hidden", background: BG }}>
-      {/* ── Tiled cat+bow pattern — visible watermark ── */}
-      <div style={{
-        position: "absolute", inset: 0,
-        backgroundImage: `url(${sitePattern})`,
-        backgroundRepeat: "repeat",
-        backgroundSize: "320px",
-        opacity: 0.18,
-        mixBlendMode: "screen",
-      }} />
-      <motion.div style={{ y: ySpring, willChange: "transform" }}>
-        <svg width={W} height={H} viewBox={`0 0 ${viewBoxW} ${H}`} style={{ display: "block" }}>
+      {/* ── Pattern + frames scroll together ── */}
+      <motion.div style={{ y: ySpring, willChange: "transform", position: "absolute", top: 0, left: 0, right: 0 }}>
+        {/* Tiled cat+bow pattern — scrolls with frames */}
+        <div style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          height: `${H}px`,
+          backgroundImage: `url(${sitePattern})`,
+          backgroundRepeat: "repeat",
+          backgroundSize: "520px",
+          opacity: 0.55,
+          mixBlendMode: "multiply",
+        }} />
+        <svg width={W} height={H} viewBox={`0 0 ${viewBoxW} ${H}`} style={{ display: "block", position: "relative", zIndex: 1 }}>
           {frames.map(f => <FrameEl key={f.id} frame={f} photoIndex={f.id} />)}
         </svg>
       </motion.div>
@@ -349,7 +354,7 @@ function Sec({ children, style }) {
   );
 }
 
-// ─── NAV LOGO — small, fades in after scroll ──────────────────────────────────
+// ─── NAV LOGO — centered, fades in after scroll ───────────────────────────────
 function NavLogo() {
   const { scrollY } = useScroll();
   const [scrolled, setScrolled] = useState(false);
@@ -375,7 +380,6 @@ function HeroLogo() {
     return scrollY.on("change", v => setScrolled(v > 80));
   }, [scrollY]);
   return (
-    // visibility:hidden keeps space reserved so layout doesn't shift
     <div style={{ display: "flex", justifyContent: "center", marginBottom: "2rem" }}>
       <motion.img
         src={logoImg}
@@ -633,23 +637,26 @@ export default function SanaaPhotography() {
         <div style={{ position: "fixed", inset: 0, zIndex: 1, pointerEvents: "none", opacity: 0.22,
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E")` }} />
 
-        {/* ── STICKY NAV — always visible, solid background ── */}
+        {/* ── NAV — transparent background, logo centered ── */}
         <div style={{
           position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
           padding: "0.9rem 1.5rem",
-          display: "flex", justifyContent: "space-between", alignItems: "center",
-          background: `${BG}ee`,
-          borderBottom: `1px solid rgba(247,221,194,0.06)`,
-          backdropFilter: "blur(8px)",
-          WebkitBackdropFilter: "blur(8px)",
+          display: "flex", justifyContent: "center", alignItems: "center",
+          background: "transparent",
         }}>
-          <NavLogo />
+          {/* "Let's begin" tucked to the right absolutely so logo stays centered */}
           <motion.button
             onClick={scrollToQuest}
             whileHover={{ color: CREAM }}
-            style={{ fontFamily: "'Manrope',sans-serif", fontSize: "0.78rem", color: MUTED, background: "none", border: "none", cursor: "pointer", letterSpacing: "0.14em", textTransform: "uppercase" }}>
+            style={{
+              position: "absolute", right: "1.5rem",
+              fontFamily: "'Manrope',sans-serif", fontSize: "0.78rem", color: MUTED,
+              background: "none", border: "none", cursor: "pointer",
+              letterSpacing: "0.14em", textTransform: "uppercase"
+            }}>
             Let's begin →
           </motion.button>
+          <NavLogo />
         </div>
 
         <div style={{ position: "relative", zIndex: 2 }}>
@@ -657,7 +664,6 @@ export default function SanaaPhotography() {
           {/* HERO */}
           <Sec>
             <div style={{ textAlign: "center" }}>
-              {/* Large hero logo — fades out on scroll but holds its space */}
               <HeroLogo />
               <Reveal>
                 <p style={{ fontFamily: "'Manrope',sans-serif", fontSize: "0.75rem", letterSpacing: "0.24em", color: MUTED, textTransform: "uppercase", marginBottom: "1.5rem" }}>Austin, Texas</p>
