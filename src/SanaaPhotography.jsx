@@ -142,12 +142,13 @@ function ContactForm({ onSubmit, answers }) {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState(null);
 
-  const fields = [
-    { k: "name",     label: "Your name",     ph: "Sarah & James" },
-    { k: "email",    label: "Email address", ph: "you@email.com" },
-    { k: "date",     label: "Wedding date",  ph: "October 2026 — or still deciding" },
-    { k: "location", label: "Venue or city", ph: "Austin, TX" },
-  ];
+const fields = [
+  { k: "name",     label: "Your name",     ph: "Sarah & James" },
+  { k: "email",    label: "Email address", ph: "you@email.com" },
+  { k: "date",     label: "Wedding date",  ph: "October 2026 — or still deciding" },
+  { k: "location", label: "Venue or city", ph: "Austin, TX" },
+  { k: "message",  label: "Anything else?", ph: "Tell me more about your day...", multiline: true },
+];
 
   const handleSubmit = async () => {
     setSending(true);
