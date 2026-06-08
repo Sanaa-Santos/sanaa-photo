@@ -34,9 +34,9 @@ const QUESTIONS = [
     sub: "The one that says everything.",
     opts: [
       "The moment we saw each other",
-      "Our hands, intertwined",
-      "Everyone we love in one room",
-      "A quiet moment, just us",
+      "The exact moment the open bar opened",
+      "Proof that we can dance",
+      "The one my mom will put on her fridge",
     ],
     isFinal: true,
   },
