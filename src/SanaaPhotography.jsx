@@ -15,12 +15,7 @@ const EMAILJS_KEY      = "gN2ok8Ezm4_FvorFo";
 
 const QUESTIONS = [
 { id: "vibe", q: "How do you want your day to feel?", sub: "Go with your gut.", opts: ["Romantic & emotional", "Fun & energetic", "Calm & intimate", "Bold & unforgettable"] },
-  {
-    id: "moments",
-    q: "Which moments matter most to you?",
-    sub: "The ones you'll want to live in forever.",
-    opts: ["The first look", "The vows", "The dancing", "All the in-betweens"],
-  },
+{ id: "moments", q: "What should I drop everything to photograph?", sub: "I'll keep my eyes open.", opts: ["Spontaneous tears", "Pure, unplanned laughter", "A quiet moment between you two", "Your favorite people, just being"] },
   {
     id: "size",
     q: "How many people are celebrating with you?",
