@@ -14,12 +14,7 @@ const EMAILJS_TEMPLATE = "template_pipszhb";
 const EMAILJS_KEY      = "gN2ok8Ezm4_FvorFo";
 
 const QUESTIONS = [
-  {
-    id: "vibe",
-    q: "What's your wedding vibe?",
-    sub: "Every love story starts somewhere.",
-    opts: ["Golden & timeless", "Intimate & editorial", "Wild & joyful", "Soft & dreamy"],
-  },
+{ id: "vibe", q: "How do you want your day to feel?", sub: "Go with your gut.", opts: ["Romantic & emotional", "Fun & energetic", "Calm & intimate", "Bold & unforgettable"] },
   {
     id: "moments",
     q: "Which moments matter most to you?",
