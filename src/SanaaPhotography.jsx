@@ -53,6 +53,8 @@ const slideTransition = { duration: 0.45, ease: [0.4, 0, 0.2, 1] };
 
 // ─── QUESTION PANEL ───────────────────────────────────────────────────────────
 function QuestionPanel({ q, step, onSelect }) {
+  const [hovered, setHovered] = useState(null);
+
   const containerVariants = {
     hidden: {},
     visible: { transition: { staggerChildren: 0.07 } },
@@ -84,7 +86,8 @@ function QuestionPanel({ q, step, onSelect }) {
           {q.sub}
         </motion.p>
         <motion.h2 variants={itemVariants} style={{
-          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+          fontFamily: "'Libre Baskerville', serif",
+          fontStyle: "italic",
           fontSize: "clamp(1.15rem, 3.5vw, 1.5rem)",
           fontWeight: 400,
           color: FIREBRICK,
@@ -94,39 +97,46 @@ function QuestionPanel({ q, step, onSelect }) {
           {q.q}
         </motion.h2>
         <div style={{ display: "flex", flexDirection: "column", gap: "0.55rem" }}>
-          {q.opts.map((opt, i) => (
-            <motion.button
-              key={opt}
-              variants={itemVariants}
-              onClick={() => onSelect(opt)}
-              whileHover={{ x: 4, backgroundColor: FIREBRICK, color: BISQUE }}
-              whileTap={{ scale: 0.98 }}
-              style={{
-                background: "transparent",
-                border: `1px solid ${FIREBRICK}`,
-                color: FIREBRICK,
-                padding: "0.78rem 1.1rem",
-                fontFamily: "'Manrope', sans-serif",
-                fontSize: "0.95rem",
-                cursor: "pointer",
-                textAlign: "left",
-                borderRadius: "2px",
-                display: "flex",
-                alignItems: "center",
-                gap: "0.8rem",
-                transition: "background 0.2s, color 0.2s",
-                outline: "none",
-              }}
-            >
-              <span style={{
-                fontFamily: "monospace",
-                fontSize: "0.68rem",
-                color: KHAKI,
-                minWidth: 18,
-              }}>0{i + 1}</span>
-              {opt}
-            </motion.button>
-          ))}
+          {q.opts.map((opt, i) => {
+            const isHovered = hovered === i;
+            return (
+              <motion.button
+                key={`${step}-${i}`}
+                variants={itemVariants}
+                onPointerEnter={() => setHovered(i)}
+                onPointerLeave={() => setHovered(null)}
+                onPointerDown={() => setHovered(null)}
+                onClick={() => { setHovered(null); onSelect(opt); }}
+                whileTap={{ scale: 0.98 }}
+                style={{
+                  background: isHovered ? FIREBRICK : "transparent",
+                  border: `1.5px solid ${FIREBRICK}`,
+                  color: isHovered ? BISQUE : FIREBRICK,
+                  padding: "0.72rem 1.3rem",
+                  fontFamily: "'Manrope', sans-serif",
+                  fontSize: "0.93rem",
+                  cursor: "pointer",
+                  textAlign: "left",
+                  borderRadius: "999px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.8rem",
+                  outline: "none",
+                  WebkitTapHighlightColor: "transparent",
+                  transition: "background 0.15s, color 0.15s",
+                }}
+              >
+                <span style={{
+                  fontFamily: "monospace",
+                  fontSize: "0.65rem",
+                  color: isHovered ? "rgba(247,221,194,0.6)" : KHAKI,
+                  minWidth: 18,
+                  transition: "color 0.15s",
+                }}>0{i + 1}</span>
+                {opt}
+              </motion.button>
+            );
+          })}
         </div>
       </motion.div>
     </motion.div>
@@ -168,7 +178,8 @@ function ContactForm({ onSubmit }) {
           marginBottom: "0.4rem",
         }}>Almost there</motion.p>
         <motion.h2 variants={itemVariants} style={{
-          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+          fontFamily: "'Libre Baskerville', serif",
+          fontStyle: "italic",
           fontSize: "1.4rem",
           fontWeight: 400,
           color: FIREBRICK,
@@ -201,8 +212,8 @@ function ContactForm({ onSubmit }) {
                 width: "100%",
                 background: "rgba(142,29,31,0.04)",
                 border: `1px solid rgba(142,29,31,0.25)`,
-                borderRadius: "2px",
-                padding: "0.56rem 0.8rem",
+                borderRadius: "999px",
+                padding: "0.56rem 1rem",
                 color: FIREBRICK,
                 fontFamily: "'Manrope', sans-serif",
                 fontSize: "0.94rem",
@@ -226,12 +237,14 @@ function ContactForm({ onSubmit }) {
             background: FIREBRICK,
             border: "none",
             color: BISQUE,
-            padding: "0.82rem",
-            fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-            fontSize: "0.95rem",
+            padding: "0.82rem 1.5rem",
+            fontFamily: "'Manrope', sans-serif",
+            fontSize: "0.78rem",
+            fontWeight: 500,
             cursor: "pointer",
-            borderRadius: "2px",
-            letterSpacing: "0.06em",
+            borderRadius: "999px",
+            letterSpacing: "0.12em",
+            textTransform: "uppercase",
           }}
         >Begin the story</motion.button>
       </motion.div>
@@ -259,7 +272,8 @@ function ThankYou({ onClose }) {
         marginBottom: "0.8rem",
       }}>You're in good hands</p>
       <h2 style={{
-        fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+        fontFamily: "'Libre Baskerville', serif",
+        fontStyle: "italic",
         fontSize: "1.7rem",
         fontWeight: 400,
         color: FIREBRICK,
@@ -280,14 +294,16 @@ function ThankYou({ onClose }) {
         onClick={onClose}
         style={{
           background: "none",
-          border: `1px solid ${FIREBRICK}`,
+          border: `1.5px solid ${FIREBRICK}`,
           color: FIREBRICK,
           padding: "0.7rem 2rem",
-          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-          fontSize: "0.88rem",
+          fontFamily: "'Manrope', sans-serif",
+          fontSize: "0.75rem",
+          fontWeight: 500,
           cursor: "pointer",
-          borderRadius: "2px",
-          letterSpacing: "0.06em",
+          borderRadius: "999px",
+          letterSpacing: "0.12em",
+          textTransform: "uppercase",
         }}
       >← Back</button>
     </motion.div>
@@ -330,7 +346,7 @@ function QuestionnaireDrawer({ onClose }) {
         overflowY: "auto",
       }}
     >
-      {/* Pattern bg inside drawer too */}
+      {/* Pattern bg */}
       <div style={{
         position: "absolute",
         inset: 0,
@@ -341,7 +357,7 @@ function QuestionnaireDrawer({ onClose }) {
         pointerEvents: "none",
       }} />
 
-      {/* close */}
+      {/* Close */}
       <button
         onClick={handleClose}
         style={{
@@ -349,21 +365,26 @@ function QuestionnaireDrawer({ onClose }) {
           top: "1.2rem",
           right: "1.4rem",
           background: "none",
-          border: "none",
-          fontSize: "1.4rem",
-          color: SADDLE,
+          border: `1.5px solid ${FIREBRICK}`,
+          color: FIREBRICK,
+          width: 34,
+          height: 34,
+          borderRadius: "999px",
+          fontSize: "0.85rem",
           cursor: "pointer",
-          lineHeight: 1,
-          opacity: 0.5,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          opacity: 0.6,
           zIndex: 10,
         }}
       >✕</button>
 
-      {/* step dots */}
+      {/* Step dots */}
       {!submitted && (
         <div style={{
           position: "fixed",
-          top: "1.4rem",
+          top: "1.55rem",
           left: "50%",
           transform: "translateX(-50%)",
           display: "flex",
@@ -384,7 +405,7 @@ function QuestionnaireDrawer({ onClose }) {
         </div>
       )}
 
-      {/* panel */}
+      {/* Panel */}
       <div style={{ position: "relative", zIndex: 1, width: "100%", display: "flex", justifyContent: "center" }}>
         <AnimatePresence mode="wait" initial={false}>
           {submitted ? (
@@ -407,7 +428,7 @@ export default function SanaaPhotography() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500&family=Libre+Baskerville:ital@1&display=swap');
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
         html, body { height: 100%; }
         body {
@@ -455,11 +476,7 @@ export default function SanaaPhotography() {
           <img
             src={logoImg}
             alt="Sansan Stills"
-            style={{
-              height: "clamp(90px, 20vw, 160px)",
-              width: "auto",
-              display: "block",
-            }}
+            style={{ height: "clamp(90px, 20vw, 160px)", width: "auto", display: "block" }}
           />
         </motion.div>
 
@@ -469,11 +486,12 @@ export default function SanaaPhotography() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
           style={{
-            fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-            fontSize: "clamp(1.5rem, 5vw, 2.4rem)",
+            fontFamily: "'Libre Baskerville', serif",
+            fontStyle: "italic",
+            fontSize: "clamp(1.4rem, 4.5vw, 2.2rem)",
             fontWeight: 400,
             color: FIREBRICK,
-            lineHeight: 1.28,
+            lineHeight: 1.35,
             maxWidth: 480,
             marginBottom: "1rem",
           }}
@@ -488,10 +506,11 @@ export default function SanaaPhotography() {
           transition={{ duration: 0.7, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
           style={{
             fontFamily: "'Manrope', sans-serif",
-            fontSize: "0.9rem",
+            fontSize: "0.82rem",
             color: SADDLE,
-            opacity: 0.75,
-            letterSpacing: "0.04em",
+            opacity: 0.7,
+            letterSpacing: "0.1em",
+            textTransform: "uppercase",
             marginBottom: "2.8rem",
           }}
         >
@@ -507,29 +526,31 @@ export default function SanaaPhotography() {
         >
           <motion.button
             onClick={() => setQuestOpen(true)}
-            whileHover={{ scale: 1.03, backgroundColor: SADDLE }}
+            whileHover={{ backgroundColor: SADDLE }}
             whileTap={{ scale: 0.97 }}
             style={{
               background: FIREBRICK,
               border: "none",
               color: BISQUE,
-              padding: "0.95rem 2.8rem",
-              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-              fontSize: "1rem",
-              borderRadius: "2px",
-              letterSpacing: "0.07em",
+              padding: "0.95rem 3rem",
+              fontFamily: "'Manrope', sans-serif",
+              fontSize: "0.82rem",
+              fontWeight: 500,
+              borderRadius: "999px",
+              letterSpacing: "0.14em",
+              textTransform: "uppercase",
               transition: "background 0.2s",
-              boxShadow: "0 2px 18px rgba(142,29,31,0.18)",
+              boxShadow: "0 2px 18px rgba(142,29,31,0.2)",
             }}
           >
             Let's Chat
           </motion.button>
           <p style={{
             fontFamily: "'Manrope', sans-serif",
-            fontSize: "0.76rem",
+            fontSize: "0.74rem",
             color: SADDLE,
-            opacity: 0.6,
-            letterSpacing: "0.06em",
+            opacity: 0.55,
+            letterSpacing: "0.05em",
           }}>
             Fill out a short questionnaire to begin
           </p>
@@ -544,9 +565,9 @@ export default function SanaaPhotography() {
             position: "fixed",
             bottom: "1.4rem",
             fontFamily: "'Manrope', sans-serif",
-            fontSize: "0.7rem",
+            fontSize: "0.68rem",
             color: SADDLE,
-            opacity: 0.4,
+            opacity: 0.35,
             letterSpacing: "0.12em",
             textTransform: "uppercase",
           }}
