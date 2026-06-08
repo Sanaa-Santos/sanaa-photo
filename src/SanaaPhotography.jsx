@@ -347,7 +347,7 @@ function ThankYou({ onClose }) {
         marginBottom: "2rem",
         opacity: 0.8,
       }}>
-        Sanaa will be in touch within 48 hours.<br />In the meantime, keep dreaming.
+        We'll be in touch within 48 hours.<br />In the meantime, keep dreaming.
       </p>
       <button
         onClick={onClose}
