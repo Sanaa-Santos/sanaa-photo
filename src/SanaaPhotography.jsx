@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import emailjs from "@emailjs/browser";
 import logoImg from "./assets/logo.png";
 import sitePattern from "./assets/sitebg.jpg";
 
@@ -7,6 +8,10 @@ const BISQUE    = "#F7DDC2";
 const FIREBRICK = "#8E1D1F";
 const SADDLE    = "#644028";
 const KHAKI     = "#ACAF9A";
+
+const EMAILJS_SERVICE  = "sansan_service";
+const EMAILJS_TEMPLATE = "template_pipszhb";
+const EMAILJS_KEY      = "gN2ok8Ezm4_FvorFo";
 
 const QUESTIONS = [
   {
@@ -132,14 +137,46 @@ function QuestionPanel({ q, step, onSelect }) {
   );
 }
 
-function ContactForm({ onSubmit }) {
+function ContactForm({ onSubmit, answers }) {
   const [form, setForm] = useState({ name: "", email: "", date: "", location: "" });
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState(null);
+
   const fields = [
     { k: "name",     label: "Your name",     ph: "Sarah & James" },
     { k: "email",    label: "Email address", ph: "you@email.com" },
     { k: "date",     label: "Wedding date",  ph: "October 2026 — or still deciding" },
     { k: "location", label: "Venue or city", ph: "Austin, TX" },
   ];
+
+  const handleSubmit = async () => {
+    setSending(true);
+    setError(null);
+    try {
+      await emailjs.send(
+        EMAILJS_SERVICE,
+        EMAILJS_TEMPLATE,
+        {
+          name:     form.name,
+          email:    form.email,
+          date:     form.date,
+          location: form.location,
+          vibe:     answers.vibe     || "—",
+          moments:  answers.moments  || "—",
+          size:     answers.size     || "—",
+          found:    answers.found    || "—",
+          frame:    answers.frame    || "—",
+        },
+        EMAILJS_KEY
+      );
+      onSubmit();
+    } catch (err) {
+      setError("Something went wrong — please try again.");
+    } finally {
+      setSending(false);
+    }
+  };
+
   const containerVariants = { hidden: {}, visible: { transition: { staggerChildren: 0.08 } } };
   const itemVariants = {
     hidden: { opacity: 0, y: 14 },
@@ -214,27 +251,39 @@ function ContactForm({ onSubmit }) {
             />
           </motion.div>
         ))}
+
+        {error && (
+          <p style={{
+            fontFamily: "'Manrope', sans-serif",
+            fontSize: "0.8rem",
+            color: FIREBRICK,
+            marginBottom: "0.5rem",
+            opacity: 0.8,
+          }}>{error}</p>
+        )}
+
         <motion.button
           variants={itemVariants}
-          onClick={() => onSubmit(form)}
+          onClick={handleSubmit}
+          disabled={sending}
           whileHover={{ opacity: 0.88 }}
           whileTap={{ scale: 0.98 }}
           style={{
             marginTop: "0.5rem",
             width: "100%",
-            background: FIREBRICK,
+            background: sending ? "rgba(142,29,31,0.5)" : FIREBRICK,
             border: "none",
             color: BISQUE,
             padding: "0.82rem 1.5rem",
             fontFamily: "'Manrope', sans-serif",
             fontSize: "0.78rem",
             fontWeight: 500,
-            cursor: "pointer",
+            cursor: sending ? "not-allowed" : "pointer",
             borderRadius: "999px",
             letterSpacing: "0.12em",
             textTransform: "uppercase",
           }}
-        >Begin the story</motion.button>
+        >{sending ? "Sending..." : "Begin the story"}</motion.button>
       </motion.div>
     </motion.div>
   );
@@ -299,17 +348,19 @@ function ThankYou({ onClose }) {
 
 function QuestionnaireDrawer({ onClose }) {
   const [step, setStep] = useState(0);
+  const [answers, setAnswers] = useState({});
   const [showForm, setShowForm] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSelect = useCallback(() => {
+  const handleSelect = useCallback((opt) => {
     const q = QUESTIONS[step];
+    setAnswers(prev => ({ ...prev, [q.id]: opt }));
     if (q.isFinal) { setShowForm(true); return; }
     setStep(s => s + 1);
   }, [step]);
 
   const handleClose = () => {
-    setStep(0); setShowForm(false); setSubmitted(false);
+    setStep(0); setAnswers({}); setShowForm(false); setSubmitted(false);
     onClose();
   };
 
@@ -393,7 +444,7 @@ function QuestionnaireDrawer({ onClose }) {
           {submitted ? (
             <ThankYou key="thanks" onClose={handleClose} />
           ) : showForm ? (
-            <ContactForm key="form" onSubmit={() => setSubmitted(true)} />
+            <ContactForm key="form" answers={answers} onSubmit={() => setSubmitted(true)} />
           ) : (
             <QuestionPanel key={`q-${step}`} q={QUESTIONS[step]} step={step} onSelect={handleSelect} />
           )}
@@ -422,12 +473,12 @@ export default function SanaaPhotography() {
         button { cursor: pointer; }
         input::placeholder { color: rgba(100,64,40,0.35); }
         .q-btn { -webkit-tap-highlight-color: transparent; }
-.q-btn:active { background: #8E1D1F !important; color: #F7DDC2 !important; }
-.q-btn:active .q-btn-num { color: rgba(247,221,194,0.6) !important; }
-@media (hover: hover) {
-  .q-btn:hover { background: #8E1D1F !important; color: #F7DDC2 !important; }
-  .q-btn:hover .q-btn-num { color: rgba(247,221,194,0.6) !important; }
-}
+        .q-btn:active { background: ${FIREBRICK} !important; color: ${BISQUE} !important; }
+        .q-btn:active .q-btn-num { color: rgba(247,221,194,0.6) !important; }
+        @media (hover: hover) {
+          .q-btn:hover { background: ${FIREBRICK} !important; color: ${BISQUE} !important; }
+          .q-btn:hover .q-btn-num { color: rgba(247,221,194,0.6) !important; }
+        }
       `}</style>
 
       <div style={{
@@ -451,7 +502,6 @@ export default function SanaaPhotography() {
         padding: "3rem 1.5rem",
         textAlign: "center",
       }}>
-
         <motion.div
           initial={{ opacity: 0, y: -18 }}
           animate={{ opacity: 1, y: 0 }}
