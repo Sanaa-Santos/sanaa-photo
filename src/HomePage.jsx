@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import sitePattern from "./assets/sitebg.jpg";
 
@@ -50,36 +50,15 @@ function FadeIn({ children, delay=0, y=20, style={} }) {
   );
 }
 
-// Illustration helper — mix-blend-mode multiply removes black bg
-function Illus({ src, width, style={} }) {
-  return (
-    <div style={{ width, flexShrink:0, pointerEvents:"none",
-      mixBlendMode:"multiply", ...style }}>
-      <img src={src} alt="" style={{ width:"100%", display:"block" }}/>
-    </div>
-  );
-}
-
-// ── PAGE SHELL ────────────────────────────────────────────────────────────────
-// Every section is wrapped: full-width bisque bg + tile pattern on sides,
-// content constrained to MAX_W centered column.
-function Shell({ children, outerBg = BISQUE, innerBg = BISQUE, outerStyle={}, innerStyle={} }) {
+// Shell: full-width outer with tile pattern, centered MAX_W content column
+function Shell({ children, outerBg=BISQUE, innerBg=BISQUE, outerStyle={}, innerStyle={} }) {
   return (
     <div style={{ position:"relative", background:outerBg, ...outerStyle }}>
-      {/* Tile pattern bleeds across the whole viewport */}
-      <div style={{
-        position:"absolute", inset:0, zIndex:0,
-        backgroundImage:`url(${sitePattern})`,
-        backgroundRepeat:"repeat",
-        backgroundSize:"clamp(260px,28vw,480px)",
-        opacity:0.12, pointerEvents:"none",
-      }}/>
-      <div style={{
-        position:"relative", zIndex:1,
-        maxWidth:MAX_W, margin:"0 auto",
-        background:innerBg,
-        ...innerStyle,
-      }}>
+      <div style={{ position:"absolute", inset:0, zIndex:0,
+        backgroundImage:`url(${sitePattern})`, backgroundRepeat:"repeat",
+        backgroundSize:"clamp(260px,28vw,480px)", opacity:0.12, pointerEvents:"none" }}/>
+      <div style={{ position:"relative", zIndex:1, maxWidth:MAX_W, margin:"0 auto",
+        background:innerBg, ...innerStyle }}>
         {children}
       </div>
     </div>
@@ -89,12 +68,24 @@ function Shell({ children, outerBg = BISQUE, innerBg = BISQUE, outerStyle={}, in
 // ── NAV ───────────────────────────────────────────────────────────────────────
 function Nav({ onOpenQuestionnaire }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const navLinks = ["Home","Portfolio","Investment","Experience","About"];
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 60);
+    window.addEventListener("scroll", onScroll, { passive:true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // When scrolled: red bg, cream wordmark. On hero: transparent, red wordmark.
+  const navBg = scrolled ? FIREBRICK : "transparent";
+  const showCream = scrolled || menuOpen;
 
   return (
     <>
       <nav style={{
         position:"fixed", top:0, left:0, right:0, zIndex:100,
+        background:navBg, transition:"background 0.35s ease",
         pointerEvents:"none",
       }}>
         <div style={{
@@ -103,7 +94,7 @@ function Nav({ onOpenQuestionnaire }) {
           padding:"0 1.5rem", position:"relative",
           pointerEvents:"all",
         }}>
-          {/* Hamburger — left */}
+          {/* Hamburger */}
           <button onClick={() => setMenuOpen(true)} aria-label="Open menu"
             style={{ background:"none", border:"none", cursor:"pointer",
               display:"flex", flexDirection:"column", gap:6, padding:"4px", zIndex:1 }}>
@@ -113,22 +104,19 @@ function Nav({ onOpenQuestionnaire }) {
             ))}
           </button>
 
-          {/* Wordmark — truly centered in the column */}
-          <div style={{
-            position:"absolute",
-            left:0, right:0,
-            display:"flex", justifyContent:"center", alignItems:"center",
-            pointerEvents:"none",
-          }}>
-            <div style={{ position:"relative", height:42, display:"flex", alignItems:"center" }}>
+          {/* Centered wordmark — crossfades red↔cream based on scroll */}
+          <div style={{ position:"absolute", left:0, right:0,
+            display:"flex", justifyContent:"center", pointerEvents:"none" }}>
+            <div style={{ position:"relative", height:42, width:160,
+              display:"flex", alignItems:"center", justifyContent:"center" }}>
               <img src={LOGO_RED_WORD} alt="Sansan Stills"
-                style={{ height:42, width:"auto",
-                  opacity:menuOpen ? 0 : 1, transition:"opacity 0.3s",
-                  position:"absolute", left:"50%", transform:"translateX(-50%)" }}/>
+                style={{ height:42, width:"auto", position:"absolute",
+                  opacity: showCream ? 0 : 1,
+                  transition:"opacity 0.35s ease" }}/>
               <img src={LOGO_CREAM_WORD} alt="Sansan Stills"
-                style={{ height:42, width:"auto",
-                  opacity:menuOpen ? 1 : 0, transition:"opacity 0.3s",
-                  position:"absolute", left:"50%", transform:"translateX(-50%)" }}/>
+                style={{ height:42, width:"auto", position:"absolute",
+                  opacity: showCream ? 1 : 0,
+                  transition:"opacity 0.35s ease" }}/>
             </div>
           </div>
         </div>
@@ -139,13 +127,9 @@ function Nav({ onOpenQuestionnaire }) {
           <motion.div key="drawer"
             initial={{ x:"-100%" }} animate={{ x:0 }} exit={{ x:"-100%" }}
             transition={{ duration:0.48, ease:[0.22,1,0.36,1] }}
-            style={{
-              position:"fixed", inset:0, zIndex:200,
-              background:FIREBRICK,
-              display:"flex", flexDirection:"column",
-              justifyContent:"space-between",
-              padding:"1.1rem 2rem 3rem",
-            }}>
+            style={{ position:"fixed", inset:0, zIndex:200, background:FIREBRICK,
+              display:"flex", flexDirection:"column", justifyContent:"space-between",
+              padding:"1.1rem 2rem 3rem" }}>
             <div style={{ display:"flex", alignItems:"center", position:"relative", height:42 }}>
               <button onClick={() => setMenuOpen(false)}
                 style={{ background:"none", border:`1.5px solid rgba(247,221,194,0.45)`,
@@ -241,14 +225,14 @@ function Hero({ onOpenQuestionnaire }) {
 }
 
 // ── INTRO / FRAMES ────────────────────────────────────────────────────────────
-// Layout from mockup:
-//   LEFT col: one landscape photo (wide, shorter)
-//   RIGHT col: square on top, landscape in middle, CIRCLE on bottom
-// Green cats bg at 33%. No illustrations here.
+// Layout: LEFT = one LANDSCAPE photo (wide, short — aspectRatio 3/2)
+//         RIGHT col: square top, landscape middle, circle bottom
+// The left photo is a landscape shot so it's wider/shorter than tall.
+// gridTemplateRows matches the right column natural heights.
 function IntroSection() {
   return (
-    <Shell outerBg={BISQUE} innerBg={BISQUE}>
-      {/* Green cats */}
+    <Shell>
+      {/* Green cats bg */}
       <div style={{ position:"absolute", inset:0, zIndex:0,
         backgroundImage:`url(${CATS_GREEN})`, backgroundRepeat:"repeat",
         backgroundSize:"clamp(280px,38vw,540px)", opacity:0.33, pointerEvents:"none" }}/>
@@ -256,41 +240,49 @@ function IntroSection() {
       <div style={{ position:"relative", zIndex:1, padding:"3rem 1.5rem 3rem" }}>
         <FadeIn>
           <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.95rem", color:SADDLE,
-            lineHeight:1.75, marginBottom:"2rem", maxWidth:300 }}>
+            lineHeight:1.75, marginBottom:"1.8rem", maxWidth:300 }}>
             Candid wedding photography for couples who want to enjoy their day. One flat rate. The whole day.
           </p>
         </FadeIn>
 
-        {/* Grid: left landscape + right column (square, landscape, circle) */}
         <FadeIn delay={0.08}>
-          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8 }}>
+          {/*
+            Grid layout matches mockup exactly:
+            - 2 equal columns
+            - LEFT: landscape photo (3:2) in row 1, empty in rows 2-3
+            - RIGHT col: square (1:1) row1, landscape (3:2) row2, circle (1:1) row3
+            We use CSS grid with explicit row sizing driven by right-col content.
+          */}
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8,
+            gridTemplateRows:"auto auto auto" }}>
 
-            {/* LEFT — landscape spanning full height of right col */}
-            <div style={{ gridRow:"1/4", overflow:"hidden",
-              border:`3px solid ${SADDLE}` }}>
+            {/* LEFT — landscape, only spans row 1 */}
+            <div style={{ gridColumn:"1", gridRow:"1",
+              aspectRatio:"3/2", overflow:"hidden", border:`3px solid ${SADDLE}` }}>
               <img src={FRAME_1} alt=""
                 style={{ width:"100%", height:"100%", objectFit:"cover",
-                  objectPosition:"center center", display:"block" }}/>
+                  objectPosition:"center 40%", display:"block" }}/>
             </div>
 
             {/* RIGHT TOP — square */}
-            <div style={{ aspectRatio:"1/1", overflow:"hidden",
-              border:`3px solid ${SADDLE}` }}>
+            <div style={{ gridColumn:"2", gridRow:"1",
+              aspectRatio:"1/1", overflow:"hidden", border:`3px solid ${SADDLE}` }}>
               <img src={FRAME_2} alt=""
                 style={{ width:"100%", height:"100%", objectFit:"cover",
                   objectPosition:"center top", display:"block" }}/>
             </div>
 
             {/* RIGHT MIDDLE — landscape */}
-            <div style={{ aspectRatio:"4/3", overflow:"hidden",
-              border:`3px solid ${SADDLE}` }}>
+            <div style={{ gridColumn:"2", gridRow:"2",
+              aspectRatio:"3/2", overflow:"hidden", border:`3px solid ${SADDLE}` }}>
               <img src={FRAME_3} alt=""
                 style={{ width:"100%", height:"100%", objectFit:"cover",
                   objectPosition:"center center", display:"block" }}/>
             </div>
 
             {/* RIGHT BOTTOM — circle */}
-            <div style={{ aspectRatio:"1/1", overflow:"hidden",
+            <div style={{ gridColumn:"2", gridRow:"3",
+              aspectRatio:"1/1", overflow:"hidden",
               borderRadius:"50%", border:`3px solid ${SADDLE}` }}>
               <img src={FRAME_4} alt=""
                 style={{ width:"100%", height:"100%", objectFit:"cover",
@@ -303,7 +295,7 @@ function IntroSection() {
         <FadeIn delay={0.14}>
           <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.6rem",
             letterSpacing:"0.18em", textTransform:"uppercase",
-            color:SADDLE, opacity:0.55, marginTop:"1.2rem",
+            color:SADDLE, opacity:0.55, marginTop:"1rem",
             display:"flex", alignItems:"center", gap:"0.45rem" }}>
             <Diamond color={SADDLE} size={6}/>Corbin & Zuleyma — Austin, TX
           </p>
@@ -342,77 +334,80 @@ function Ticker() {
 }
 
 // ── RECENT WEDDINGS ───────────────────────────────────────────────────────────
-// Landscape crop. Illustrations outside each image, right-aligned beside name.
-// Cactus=W1, Boots=W2, Hat=W3
-// SAN SAN positioned so bottom of image overlaps top of green section.
 function RecentWeddings() {
   const weddings = [
     { name:"Megan & Courtney", location:"Austin, TX", img:WEDDING_1,
-      illSrc:CACTUS_URL, illW:130, objPos:"center 30%" },
+      illSrc:CACTUS_URL, illW:160, objPos:"center 75%" },  // lower part of image = people not sky
     { name:"Jake & Farzana",   location:"Austin, TX", img:WEDDING_2,
-      illSrc:BOOTS_URL,  illW:80,  objPos:"center center" },
+      illSrc:BOOTS_URL,  illW:110, objPos:"center center" },
     { name:"Corbin & Zuleyma", location:"Austin, TX", img:WEDDING_3,
-      illSrc:HAT_URL,    illW:90,  objPos:"center center" },
+      illSrc:HAT_URL,    illW:110, objPos:"center center" },
   ];
 
   return (
-    <Shell outerBg={BISQUE} innerBg={BISQUE}>
-      <div style={{ padding:"4rem 1.5rem 0" }}>
+    <Shell>
+      <div style={{ padding:"3.5rem 1.5rem 0" }}>
         <FadeIn>
           <h2 style={{ fontFamily:"'Libre Baskerville', serif",
             fontSize:"clamp(1.9rem, 8vw, 3rem)",
-            fontWeight:400, color:FIREBRICK, lineHeight:1.12, marginBottom:"0.4rem" }}>
+            fontWeight:400, color:FIREBRICK, lineHeight:1.12, marginBottom:"0.35rem" }}>
             Recent <em>weddings</em>
           </h2>
           <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.78rem",
-            color:SADDLE, opacity:0.68, marginBottom:"2.5rem" }}>
+            color:SADDLE, opacity:0.68, marginBottom:"2rem" }}>
             Full days, start to finish — not just the highlights.
           </p>
         </FadeIn>
 
-        <div style={{ display:"flex", flexDirection:"column", gap:"2.5rem" }}>
+        <div style={{ display:"flex", flexDirection:"column", gap:"2rem" }}>
           {weddings.map((w,i) => (
             <FadeIn key={w.name} delay={i*0.08}>
               <div>
-                {/* Landscape crop */}
-                <div style={{ overflow:"hidden", marginBottom:"0.75rem", aspectRatio:"16/9" }}>
+                <div style={{ overflow:"hidden", marginBottom:"0.6rem", aspectRatio:"16/9" }}>
                   <motion.img src={w.img} alt={w.name}
                     whileHover={{ scale:1.03 }} transition={{ duration:0.5 }}
                     style={{ width:"100%", height:"100%", objectFit:"cover",
                       objectPosition:w.objPos, display:"block" }}/>
                 </div>
-                {/* Name + illustration side by side */}
-                <div style={{ display:"flex", alignItems:"flex-end",
+                <div style={{ display:"flex", alignItems:"center",
                   justifyContent:"space-between", gap:"1rem" }}>
                   <div>
                     <h3 style={{ fontFamily:"'Libre Baskerville', serif",
                       fontStyle:"italic", fontSize:"1.35rem",
-                      fontWeight:400, color:FIREBRICK, marginBottom:"0.2rem" }}>{w.name}</h3>
+                      fontWeight:400, color:FIREBRICK, marginBottom:"0.15rem" }}>{w.name}</h3>
                     <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.62rem",
                       letterSpacing:"0.18em", textTransform:"uppercase",
                       color:SADDLE, opacity:0.55 }}>{w.location}</p>
                   </div>
-                  {/* Illustration — beside the name, not overlapping photo */}
-                  <Illus src={w.illSrc} width={w.illW}
-                    style={{ opacity:0.55, flexShrink:0, marginBottom:"0.2rem" }}/>
+                  {/* Illustration beside name */}
+                  <div style={{ width:w.illW, flexShrink:0, pointerEvents:"none",
+                    mixBlendMode:"multiply", opacity:0.55 }}>
+                    <img src={w.illSrc} alt="" style={{ width:"100%", display:"block" }}/>
+                  </div>
                 </div>
               </div>
             </FadeIn>
           ))}
         </div>
 
-        {/* SAN SAN — large, centered, very low opacity.
-            Negative bottom margin pulls the green section up to overlap it,
-            creating the bleed effect. */}
+        {/* SAN SAN + CTA — no extra padding, image bleed into green */}
         <FadeIn delay={0.1}>
-          <div style={{ position:"relative", marginTop:"2rem" }}>
-            {/* SAN SAN image fills the width, bleeds into next section */}
+          <div style={{ position:"relative", marginTop:"1.5rem" }}>
+            {/* SAN SAN: full opacity matching KHAKI bg color, shifted left, bleeds down */}
             <img src={SANSAN_URL} alt=""
-              style={{ width:"100%", display:"block", opacity:0.13,
-                mixBlendMode:"multiply", marginBottom:"-80px",
-                position:"relative", zIndex:1 }}/>
-            {/* CTA button centered over the top half of SAN SAN */}
-            <div style={{ position:"absolute", top:"20%", left:0, right:0,
+              style={{
+                width:"110%",          // wider than container, shift left
+                marginLeft:"-10%",
+                display:"block",
+                // Make it the same color as KHAKI bg so it looks like it fades into it
+                // Use a color-matched opacity — increase opacity for darker match
+                opacity:0.22,
+                mixBlendMode:"multiply",
+                marginBottom:"-100px", // bleed into next section
+                position:"relative", zIndex:1,
+              }}/>
+            {/* Button in upper portion of SAN SAN */}
+            <div style={{ position:"absolute", top:"12%", left:0, right:0,
               display:"flex", justifyContent:"center", zIndex:2 }}>
               <a href="#" style={{
                 display:"inline-block",
@@ -430,8 +425,9 @@ function RecentWeddings() {
   );
 }
 
-// ── HOW WE SHOOT ─────────────────────────────────────────────────────────────
-// KHAKI bg with cream cats. Cat bg continues into top ~50% of slider section.
+// ── HOW WE SHOOT + SLIDER ─────────────────────────────────────────────────────
+// Single seamless KHAKI block with cream cats, containing both text AND slider.
+// No background break between them — pure continuity.
 function HowWeShoot() {
   const points = [
     { label:"We catch it as it happens",
@@ -443,14 +439,16 @@ function HowWeShoot() {
   ];
 
   return (
-    <>
-      {/* Green text section */}
-      <Shell outerBg={KHAKI} innerBg={KHAKI}>
-        {/* Cream cats */}
-        <div style={{ position:"absolute", inset:0, zIndex:0,
-          backgroundImage:`url(${CATS_CREAM})`, backgroundRepeat:"repeat",
-          backgroundSize:"clamp(280px,38vw,540px)", opacity:0.33, pointerEvents:"none" }}/>
-        <div style={{ position:"relative", zIndex:1, padding:"4rem 1.5rem 3rem" }}>
+    // One Shell, one background — no seam
+    <Shell outerBg={KHAKI} innerBg={KHAKI}>
+      {/* Cream cats covering the entire section including slider */}
+      <div style={{ position:"absolute", inset:0, zIndex:0,
+        backgroundImage:`url(${CATS_CREAM})`, backgroundRepeat:"repeat",
+        backgroundSize:"clamp(280px,38vw,540px)", opacity:0.33, pointerEvents:"none" }}/>
+
+      <div style={{ position:"relative", zIndex:1 }}>
+        {/* Text content */}
+        <div style={{ padding:"4rem 1.5rem 3rem" }}>
           <FadeIn>
             <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.62rem",
               letterSpacing:"0.22em", textTransform:"uppercase",
@@ -480,50 +478,28 @@ function HowWeShoot() {
             ))}
           </div>
         </div>
-      </Shell>
 
-      {/* Slider — green bg on top half, bisque on bottom half */}
-      <div style={{ position:"relative" }}>
-        {/* Full-width outer with side tile pattern */}
-        <div style={{ position:"relative", background:BISQUE }}>
-          <div style={{ position:"absolute", inset:0, zIndex:0,
-            backgroundImage:`url(${sitePattern})`, backgroundRepeat:"repeat",
-            backgroundSize:"clamp(260px,28vw,480px)", opacity:0.12, pointerEvents:"none" }}/>
-          <div style={{ position:"relative", zIndex:1, maxWidth:MAX_W, margin:"0 auto", background:BISQUE }}>
-            {/* Top half green with cream cats, blends from section above */}
-            <div style={{ position:"relative" }}>
-              <div style={{ position:"absolute", top:0, left:0, right:0, height:"55%",
-                background:KHAKI, zIndex:0 }}>
-                <div style={{ position:"absolute", inset:0,
-                  backgroundImage:`url(${CATS_CREAM})`, backgroundRepeat:"repeat",
-                  backgroundSize:"clamp(280px,38vw,540px)", opacity:0.33 }}/>
+        {/* Slider — same KHAKI bg, seamless */}
+        <FadeIn delay={0.1}>
+          <div style={{ display:"flex", gap:10, overflowX:"auto",
+            paddingBottom:"3rem", paddingTop:"1rem",
+            scrollbarWidth:"none", WebkitOverflowScrolling:"touch",
+            paddingLeft:"1.5rem", paddingRight:"1.5rem" }}>
+            {[1,2,3,4].map(i => (
+              <div key={i} style={{ flexShrink:0, width:"65vw", maxWidth:240,
+                aspectRatio:"2/3",
+                background:"rgba(247,221,194,0.45)",
+                border:"1px dashed rgba(100,64,40,0.2)",
+                borderRadius:3, display:"flex", alignItems:"center", justifyContent:"center" }}>
+                <span style={{ fontFamily:"'Manrope', sans-serif",
+                  fontSize:"0.6rem", letterSpacing:"0.15em",
+                  textTransform:"uppercase", color:SADDLE, opacity:0.4 }}>Photo {i}</span>
               </div>
-              <div style={{ position:"relative", zIndex:1 }}>
-                <FadeIn delay={0.1}>
-                  <div style={{ display:"flex", gap:10, overflowX:"auto",
-                    paddingBottom:"0.75rem", paddingTop:"2.5rem",
-                    scrollbarWidth:"none", WebkitOverflowScrolling:"touch",
-                    paddingLeft:"1.5rem", paddingRight:"1.5rem" }}>
-                    {[1,2,3,4].map(i => (
-                      <div key={i} style={{ flexShrink:0, width:"65vw", maxWidth:240,
-                        aspectRatio:"2/3",
-                        background:"rgba(247,221,194,0.55)",
-                        border:"1px dashed rgba(100,64,40,0.25)",
-                        borderRadius:3, display:"flex", alignItems:"center", justifyContent:"center" }}>
-                        <span style={{ fontFamily:"'Manrope', sans-serif",
-                          fontSize:"0.6rem", letterSpacing:"0.15em",
-                          textTransform:"uppercase", color:SADDLE, opacity:0.4 }}>Photo {i}</span>
-                      </div>
-                    ))}
-                  </div>
-                </FadeIn>
-                <div style={{ height:"3rem" }}/>
-              </div>
-            </div>
+            ))}
           </div>
-        </div>
+        </FadeIn>
       </div>
-    </>
+    </Shell>
   );
 }
 
@@ -547,8 +523,7 @@ function Testimonial() {
           </blockquote>
           <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.62rem",
             letterSpacing:"0.18em", textTransform:"uppercase",
-            color:SADDLE, opacity:0.55,
-            display:"flex", alignItems:"center", gap:"0.5rem" }}>
+            color:SADDLE, opacity:0.55, display:"flex", alignItems:"center", gap:"0.5rem" }}>
             <Diamond color={SADDLE} size={6}/>Jake & Farzana
           </p>
         </FadeIn>
@@ -558,8 +533,8 @@ function Testimonial() {
 }
 
 // ── PRICING CTA ───────────────────────────────────────────────────────────────
-// Full bleed photo, NO overlay, text & button ALL FIREBRICK RED,
-// CTA button is red with cream text, everything top-aligned so face shows.
+// All text FIREBRICK red. Button red with cream text.
+// Text anchored top so subject face is fully visible below.
 function PricingCTA() {
   return (
     <Shell>
@@ -567,27 +542,25 @@ function PricingCTA() {
         <img src={PRICE_URL} alt=""
           style={{ position:"absolute", inset:0, width:"100%", height:"100%",
             objectFit:"cover", objectPosition:"center center", display:"block" }}/>
-        {/* No overlay — just a very soft vignette at top-left for legibility */}
+        {/* Very soft vignette top-left only for legibility — no full overlay */}
         <div style={{ position:"absolute", inset:0,
-          background:"linear-gradient(160deg, rgba(247,221,194,0.35) 0%, transparent 45%)",
+          background:"linear-gradient(150deg, rgba(247,221,194,0.45) 0%, transparent 40%)",
           pointerEvents:"none" }}/>
-        {/* Text top-left so it doesn't cover the subject */}
         <div style={{ position:"relative", zIndex:1, padding:"2rem 1.5rem 0" }}>
           <FadeIn>
             <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.62rem",
               letterSpacing:"0.22em", textTransform:"uppercase",
-              color:FIREBRICK, opacity:0.85, marginBottom:"0.3rem" }}>The Flat Rate</p>
+              color:FIREBRICK, opacity:0.9, marginBottom:"0.25rem" }}>The Flat Rate</p>
             <h2 style={{ fontFamily:"'Libre Baskerville', serif",
               fontSize:"clamp(1.8rem, 8vw, 2.8rem)",
-              fontWeight:400, color:FIREBRICK, lineHeight:1.1, marginBottom:"0.4rem" }}>
+              fontWeight:400, color:FIREBRICK, lineHeight:1.08, marginBottom:"0.35rem" }}>
               One day.<br/><em>One price.</em>
             </h2>
             <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.78rem",
-              color:FIREBRICK, opacity:0.75, marginBottom:"1.4rem" }}>
+              color:FIREBRICK, opacity:0.8, marginBottom:"1.2rem" }}>
               No surprises at the end of the night.
             </p>
-            <a href="#" style={{
-              display:"inline-block",
+            <a href="#" style={{ display:"inline-block",
               background:FIREBRICK, color:BISQUE,
               padding:"0.85rem 2rem",
               fontFamily:"'Manrope', sans-serif",
