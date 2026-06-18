@@ -27,7 +27,6 @@ const LOGO_RED_WORD   = "https://res.cloudinary.com/drqtl7xy8/image/upload/f_aut
 const LOGO_CREAM_WORD = "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1781813367/Sansan_Stills_name_03_k93cdv.png";
 const LOGO_CREAM_CAT  = "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1781813338/Sansan_Stills_icon_03_ovwd1h.png";
 
-// Max width for the content column — matches hero photo width
 const MAX_W = 680;
 
 const Diamond = ({ color = FIREBRICK, size = 8 }) => (
@@ -51,24 +50,35 @@ function FadeIn({ children, delay=0, y=20, style={} }) {
   );
 }
 
-// ── PAGE SHELL ────────────────────────────────────────────────────────────────
-// Wraps every section so content is constrained to MAX_W with tile bg on sides
-function PageShell({ children, bg = BISQUE, style = {} }) {
+// Illustration helper — mix-blend-mode multiply removes black bg
+function Illus({ src, width, style={} }) {
   return (
-    <div style={{ position:"relative", background:BISQUE, ...style }}>
-      {/* Tile pattern — full width, always visible */}
+    <div style={{ width, flexShrink:0, pointerEvents:"none",
+      mixBlendMode:"multiply", ...style }}>
+      <img src={src} alt="" style={{ width:"100%", display:"block" }}/>
+    </div>
+  );
+}
+
+// ── PAGE SHELL ────────────────────────────────────────────────────────────────
+// Every section is wrapped: full-width bisque bg + tile pattern on sides,
+// content constrained to MAX_W centered column.
+function Shell({ children, outerBg = BISQUE, innerBg = BISQUE, outerStyle={}, innerStyle={} }) {
+  return (
+    <div style={{ position:"relative", background:outerBg, ...outerStyle }}>
+      {/* Tile pattern bleeds across the whole viewport */}
       <div style={{
-        position:"absolute", inset:0,
+        position:"absolute", inset:0, zIndex:0,
         backgroundImage:`url(${sitePattern})`,
         backgroundRepeat:"repeat",
-        backgroundSize:"clamp(260px, 28vw, 480px)",
-        opacity:0.12, pointerEvents:"none", zIndex:0,
+        backgroundSize:"clamp(260px,28vw,480px)",
+        opacity:0.12, pointerEvents:"none",
       }}/>
-      {/* Content column */}
       <div style={{
         position:"relative", zIndex:1,
         maxWidth:MAX_W, margin:"0 auto",
-        background:bg,
+        background:innerBg,
+        ...innerStyle,
       }}>
         {children}
       </div>
@@ -83,48 +93,47 @@ function Nav({ onOpenQuestionnaire }) {
 
   return (
     <>
-      {/* Nav sits above the hero — absolutely positioned so it overlays it */}
       <nav style={{
         position:"fixed", top:0, left:0, right:0, zIndex:100,
-        height:60, display:"flex", alignItems:"center",
         pointerEvents:"none",
       }}>
-        {/* Inner constrained row */}
         <div style={{
-          maxWidth:MAX_W, width:"100%", margin:"0 auto",
-          display:"flex", alignItems:"center",
+          maxWidth:MAX_W, margin:"0 auto",
+          height:60, display:"flex", alignItems:"center",
           padding:"0 1.5rem", position:"relative",
           pointerEvents:"all",
         }}>
-          {/* Hamburger */}
+          {/* Hamburger — left */}
           <button onClick={() => setMenuOpen(true)} aria-label="Open menu"
             style={{ background:"none", border:"none", cursor:"pointer",
-              display:"flex", flexDirection:"column", gap:6, padding:"4px" }}
-          >
+              display:"flex", flexDirection:"column", gap:6, padding:"4px", zIndex:1 }}>
             {[0,1,2].map(i => (
-              <span key={i} style={{
-                display:"block", width:28, height:2.5,
-                background:BISQUE, borderRadius:2,
-              }}/>
+              <span key={i} style={{ display:"block", width:28, height:2.5,
+                background:BISQUE, borderRadius:2 }}/>
             ))}
           </button>
 
-          {/* Wordmark — centered within the constrained column */}
+          {/* Wordmark — truly centered in the column */}
           <div style={{
-            position:"absolute", left:"50%", transform:"translateX(-50%)",
-            height:42, display:"flex", alignItems:"center",
+            position:"absolute",
+            left:0, right:0,
+            display:"flex", justifyContent:"center", alignItems:"center",
+            pointerEvents:"none",
           }}>
-            <img src={LOGO_RED_WORD} alt="Sansan Stills"
-              style={{ height:42, width:"auto", position:"absolute",
-                opacity:menuOpen ? 0 : 1, transition:"opacity 0.3s" }}/>
-            <img src={LOGO_CREAM_WORD} alt="Sansan Stills"
-              style={{ height:42, width:"auto", position:"absolute",
-                opacity:menuOpen ? 1 : 0, transition:"opacity 0.3s" }}/>
+            <div style={{ position:"relative", height:42, display:"flex", alignItems:"center" }}>
+              <img src={LOGO_RED_WORD} alt="Sansan Stills"
+                style={{ height:42, width:"auto",
+                  opacity:menuOpen ? 0 : 1, transition:"opacity 0.3s",
+                  position:"absolute", left:"50%", transform:"translateX(-50%)" }}/>
+              <img src={LOGO_CREAM_WORD} alt="Sansan Stills"
+                style={{ height:42, width:"auto",
+                  opacity:menuOpen ? 1 : 0, transition:"opacity 0.3s",
+                  position:"absolute", left:"50%", transform:"translateX(-50%)" }}/>
+            </div>
           </div>
         </div>
       </nav>
 
-      {/* Hamburger drawer */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div key="drawer"
@@ -136,16 +145,13 @@ function Nav({ onOpenQuestionnaire }) {
               display:"flex", flexDirection:"column",
               justifyContent:"space-between",
               padding:"1.1rem 2rem 3rem",
-            }}
-          >
+            }}>
             <div style={{ display:"flex", alignItems:"center", position:"relative", height:42 }}>
               <button onClick={() => setMenuOpen(false)}
-                style={{
-                  background:"none", border:`1.5px solid rgba(247,221,194,0.45)`,
+                style={{ background:"none", border:`1.5px solid rgba(247,221,194,0.45)`,
                   color:BISQUE, width:38, height:38, borderRadius:"50%",
                   fontSize:"0.85rem", cursor:"pointer",
-                  display:"flex", alignItems:"center", justifyContent:"center",
-                }}>✕</button>
+                  display:"flex", alignItems:"center", justifyContent:"center" }}>✕</button>
               <img src={LOGO_CREAM_WORD} alt="Sansan Stills"
                 style={{ height:42, width:"auto",
                   position:"absolute", left:"50%", transform:"translateX(-50%)" }}/>
@@ -154,37 +160,30 @@ function Nav({ onOpenQuestionnaire }) {
             <div style={{ display:"flex", flexDirection:"column", gap:"0.05rem", paddingLeft:"0.5rem" }}>
               {navLinks.map((link,i) => (
                 <motion.a key={link} href="#"
-                  initial={{ opacity:0, x:-24 }}
-                  animate={{ opacity:1, x:0 }}
+                  initial={{ opacity:0, x:-24 }} animate={{ opacity:1, x:0 }}
                   transition={{ delay:0.08+i*0.07, duration:0.45, ease:[0.22,1,0.36,1] }}
                   onClick={() => setMenuOpen(false)}
-                  style={{
-                    fontFamily:"'Libre Baskerville', serif", fontStyle:"italic",
+                  style={{ fontFamily:"'Libre Baskerville', serif", fontStyle:"italic",
                     fontSize:"clamp(2.2rem, 9vw, 4rem)",
-                    color:BISQUE, textDecoration:"none",
-                    lineHeight:1.25, opacity:0.92,
-                  }}
-                >{link}</motion.a>
+                    color:BISQUE, textDecoration:"none", lineHeight:1.25, opacity:0.92 }}>
+                  {link}
+                </motion.a>
               ))}
               <motion.button
                 initial={{ opacity:0, y:12 }} animate={{ opacity:1, y:0 }}
                 transition={{ delay:0.5, duration:0.4 }}
                 onClick={() => { setMenuOpen(false); onOpenQuestionnaire(); }}
-                style={{
-                  marginTop:"1.8rem",
-                  background:BISQUE, border:"none", color:FIREBRICK,
-                  padding:"0.9rem 2rem",
-                  fontFamily:"'Manrope', sans-serif",
+                style={{ marginTop:"1.8rem", background:BISQUE, border:"none", color:FIREBRICK,
+                  padding:"0.9rem 2rem", fontFamily:"'Manrope', sans-serif",
                   fontSize:"0.75rem", fontWeight:700,
                   letterSpacing:"0.14em", textTransform:"uppercase",
-                  borderRadius:"999px", cursor:"pointer", alignSelf:"flex-start",
-                }}
-              >Tell Us About Your Day</motion.button>
+                  borderRadius:"999px", cursor:"pointer", alignSelf:"flex-start" }}>
+                Tell Us About Your Day
+              </motion.button>
             </div>
 
             <div style={{ display:"flex", justifyContent:"center" }}>
-              <img src={LOGO_CREAM_CAT} alt=""
-                style={{ height:48, width:"auto", opacity:0.8 }}/>
+              <img src={LOGO_CREAM_CAT} alt="" style={{ height:48, width:"auto", opacity:0.8 }}/>
             </div>
           </motion.div>
         )}
@@ -196,129 +195,121 @@ function Nav({ onOpenQuestionnaire }) {
 // ── HERO ──────────────────────────────────────────────────────────────────────
 function Hero({ onOpenQuestionnaire }) {
   return (
-    <PageShell>
+    <Shell>
       <section style={{ position:"relative", minHeight:"100svh", display:"flex", alignItems:"flex-end" }}>
         <img src={HERO_URL} alt="Wedding couple"
           style={{ position:"absolute", inset:0, width:"100%", height:"100%",
             objectFit:"cover", objectPosition:"center top", display:"block" }}/>
-        <div style={{
-          position:"absolute", inset:0,
-          background:"linear-gradient(to top, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.25) 50%, rgba(0,0,0,0.0) 100%)",
-        }}/>
-
+        <div style={{ position:"absolute", inset:0,
+          background:"linear-gradient(to top, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.2) 50%, transparent 100%)" }}/>
         <div style={{ position:"relative", zIndex:2, width:"100%", padding:"0 1.5rem 3.5rem" }}>
           <motion.p initial={{ opacity:0, y:10 }} animate={{ opacity:1, y:0 }}
             transition={{ duration:0.7, delay:0.35 }}
-            style={{
-              fontFamily:"'Manrope', sans-serif", fontSize:"0.62rem",
+            style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.62rem",
               letterSpacing:"0.22em", textTransform:"uppercase",
               color:BISQUE, opacity:0.72, marginBottom:"0.5rem",
-              display:"flex", alignItems:"center", gap:"0.5rem",
-            }}
-          ><Diamond color={FIREBRICK} size={7}/>Austin, TX Based Wedding Photography</motion.p>
-
+              display:"flex", alignItems:"center", gap:"0.5rem" }}>
+            <Diamond color={FIREBRICK} size={7}/>Austin, TX Based Wedding Photography
+          </motion.p>
           <motion.h1 initial={{ opacity:0, y:18 }} animate={{ opacity:1, y:0 }}
             transition={{ duration:0.85, delay:0.5 }}
-            style={{
-              fontFamily:"'Libre Baskerville', serif", fontStyle:"italic",
+            style={{ fontFamily:"'Libre Baskerville', serif", fontStyle:"italic",
               fontSize:"clamp(2.6rem, 11vw, 5rem)",
-              fontWeight:400, color:BISQUE, lineHeight:1.08, marginBottom:"2rem",
-            }}
-          >Real love,<br/>curated</motion.h1>
-
+              fontWeight:400, color:BISQUE, lineHeight:1.08, marginBottom:"2rem" }}>
+            Real love,<br/>curated
+          </motion.h1>
           <motion.div initial={{ opacity:0, y:12 }} animate={{ opacity:1, y:0 }}
             transition={{ duration:0.7, delay:0.65 }}
-            style={{ display:"flex", flexDirection:"column", gap:"0.65rem" }}
-          >
+            style={{ display:"flex", flexDirection:"column", gap:"0.65rem" }}>
             <button onClick={onOpenQuestionnaire} style={{
               background:FIREBRICK, border:"none", color:BISQUE,
               padding:"1rem 2rem", width:"100%",
               fontFamily:"'Manrope', sans-serif", fontSize:"0.72rem", fontWeight:700,
               letterSpacing:"0.16em", textTransform:"uppercase",
-              borderRadius:"999px", cursor:"pointer",
-            }}>Tell Us About Your Day</button>
+              borderRadius:"999px", cursor:"pointer" }}>Tell Us About Your Day</button>
             <button style={{
-              background:"transparent",
-              border:"1.5px solid rgba(247,221,194,0.45)",
+              background:"transparent", border:"1.5px solid rgba(247,221,194,0.45)",
               color:BISQUE, padding:"1rem 2rem", width:"100%",
               fontFamily:"'Manrope', sans-serif", fontSize:"0.72rem", fontWeight:500,
               letterSpacing:"0.16em", textTransform:"uppercase",
-              borderRadius:"999px", cursor:"pointer",
-            }}>See Pricing</button>
+              borderRadius:"999px", cursor:"pointer" }}>See Pricing</button>
           </motion.div>
         </div>
       </section>
-    </PageShell>
+    </Shell>
   );
 }
 
 // ── INTRO / FRAMES ────────────────────────────────────────────────────────────
-// Green cats bg. Layout: tall left photo, 3 stacked right, caption bottom-left.
+// Layout from mockup:
+//   LEFT col: one landscape photo (wide, shorter)
+//   RIGHT col: square on top, landscape in middle, CIRCLE on bottom
+// Green cats bg at 33%. No illustrations here.
 function IntroSection() {
   return (
-    <PageShell>
-      {/* Green cats at 33% opacity */}
-      <div style={{
-        position:"absolute", inset:0, zIndex:0,
-        backgroundImage:`url(${CATS_GREEN})`,
-        backgroundRepeat:"repeat",
-        backgroundSize:"clamp(280px,38vw,540px)",
-        opacity:0.33, pointerEvents:"none",
-      }}/>
+    <Shell outerBg={BISQUE} innerBg={BISQUE}>
+      {/* Green cats */}
+      <div style={{ position:"absolute", inset:0, zIndex:0,
+        backgroundImage:`url(${CATS_GREEN})`, backgroundRepeat:"repeat",
+        backgroundSize:"clamp(280px,38vw,540px)", opacity:0.33, pointerEvents:"none" }}/>
 
-      <div style={{ position:"relative", zIndex:1, padding:"3rem 1.5rem 3.5rem" }}>
+      <div style={{ position:"relative", zIndex:1, padding:"3rem 1.5rem 3rem" }}>
         <FadeIn>
-          <p style={{
-            fontFamily:"'Manrope', sans-serif",
-            fontSize:"0.95rem", color:SADDLE,
-            lineHeight:1.75, marginBottom:"2rem", maxWidth:300,
-          }}>
+          <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.95rem", color:SADDLE,
+            lineHeight:1.75, marginBottom:"2rem", maxWidth:300 }}>
             Candid wedding photography for couples who want to enjoy their day. One flat rate. The whole day.
           </p>
         </FadeIn>
 
-        {/* Photo grid: left tall + right column of 3 */}
+        {/* Grid: left landscape + right column (square, landscape, circle) */}
         <FadeIn delay={0.08}>
-          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:6 }}>
-            {/* Left — tall portrait spanning all 3 rows */}
-            <div style={{
-              gridRow:"1/4", overflow:"hidden",
-              border:`3px solid ${SADDLE}`,
-              aspectRatio:"2/3",
-            }}>
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8 }}>
+
+            {/* LEFT — landscape spanning full height of right col */}
+            <div style={{ gridRow:"1/4", overflow:"hidden",
+              border:`3px solid ${SADDLE}` }}>
               <img src={FRAME_1} alt=""
-                style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center", display:"block" }}/>
+                style={{ width:"100%", height:"100%", objectFit:"cover",
+                  objectPosition:"center center", display:"block" }}/>
             </div>
-            {/* Right top */}
-            <div style={{ overflow:"hidden", border:`3px solid ${SADDLE}`, aspectRatio:"3/2" }}>
+
+            {/* RIGHT TOP — square */}
+            <div style={{ aspectRatio:"1/1", overflow:"hidden",
+              border:`3px solid ${SADDLE}` }}>
               <img src={FRAME_2} alt=""
-                style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center", display:"block" }}/>
+                style={{ width:"100%", height:"100%", objectFit:"cover",
+                  objectPosition:"center top", display:"block" }}/>
             </div>
-            {/* Right middle */}
-            <div style={{ overflow:"hidden", border:`3px solid ${SADDLE}`, aspectRatio:"3/2" }}>
+
+            {/* RIGHT MIDDLE — landscape */}
+            <div style={{ aspectRatio:"4/3", overflow:"hidden",
+              border:`3px solid ${SADDLE}` }}>
               <img src={FRAME_3} alt=""
-                style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center", display:"block" }}/>
+                style={{ width:"100%", height:"100%", objectFit:"cover",
+                  objectPosition:"center center", display:"block" }}/>
             </div>
-            {/* Right bottom */}
-            <div style={{ overflow:"hidden", border:`3px solid ${SADDLE}`, aspectRatio:"3/2" }}>
+
+            {/* RIGHT BOTTOM — circle */}
+            <div style={{ aspectRatio:"1/1", overflow:"hidden",
+              borderRadius:"50%", border:`3px solid ${SADDLE}` }}>
               <img src={FRAME_4} alt=""
-                style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center", display:"block" }}/>
+                style={{ width:"100%", height:"100%", objectFit:"cover",
+                  objectPosition:"center center", display:"block" }}/>
             </div>
+
           </div>
         </FadeIn>
 
         <FadeIn delay={0.14}>
-          <p style={{
-            fontFamily:"'Manrope', sans-serif", fontSize:"0.6rem",
+          <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.6rem",
             letterSpacing:"0.18em", textTransform:"uppercase",
-            color:SADDLE, opacity:0.55, marginTop:"1rem",
-            display:"flex", alignItems:"center", gap:"0.45rem",
-          }}>
+            color:SADDLE, opacity:0.55, marginTop:"1.2rem",
+            display:"flex", alignItems:"center", gap:"0.45rem" }}>
             <Diamond color={SADDLE} size={6}/>Corbin & Zuleyma — Austin, TX
           </p>
         </FadeIn>
       </div>
-    </PageShell>
+    </Shell>
   );
 }
 
@@ -331,143 +322,116 @@ function Ticker() {
     "Full day coverage","Austin, TX based","Documentary style",
   ];
   return (
-    <PageShell bg={FIREBRICK} style={{ background:FIREBRICK }}>
-      <div style={{ overflow:"hidden", padding:"0.9rem 0", background:FIREBRICK }}>
+    <Shell outerBg={FIREBRICK} innerBg={FIREBRICK}>
+      <div style={{ overflow:"hidden", padding:"0.9rem 0" }}>
         <motion.div
           animate={{ x:["0%","-50%"] }}
           transition={{ duration:28, repeat:Infinity, ease:"linear" }}
-          style={{ display:"flex", whiteSpace:"nowrap", width:"max-content" }}
-        >
+          style={{ display:"flex", whiteSpace:"nowrap", width:"max-content" }}>
           {[...items,...items].map((item,i) => (
-            <span key={i} style={{
-              display:"inline-flex", alignItems:"center", gap:"0.8rem",
-              fontFamily:"'Manrope', sans-serif",
-              fontSize:"0.65rem", letterSpacing:"0.22em",
-              textTransform:"uppercase", color:BISQUE,
-              opacity:0.88, paddingRight:"2rem",
-            }}>
+            <span key={i} style={{ display:"inline-flex", alignItems:"center", gap:"0.8rem",
+              fontFamily:"'Manrope', sans-serif", fontSize:"0.65rem", letterSpacing:"0.22em",
+              textTransform:"uppercase", color:BISQUE, opacity:0.88, paddingRight:"2rem" }}>
               <Diamond color={BISQUE} size={6}/>{item}
             </span>
           ))}
         </motion.div>
       </div>
-    </PageShell>
+    </Shell>
   );
 }
 
 // ── RECENT WEDDINGS ───────────────────────────────────────────────────────────
-// Landscape/cinematic 16:9 crop. Illustrations: cactus=W1, boots=W2, hat=W3
+// Landscape crop. Illustrations outside each image, right-aligned beside name.
+// Cactus=W1, Boots=W2, Hat=W3
+// SAN SAN positioned so bottom of image overlaps top of green section.
 function RecentWeddings() {
   const weddings = [
     { name:"Megan & Courtney", location:"Austin, TX", img:WEDDING_1,
-      illustration:CACTUS_URL, illW:160, illRight:-20, illBottom:-30, illRotate:"0deg" },
+      illSrc:CACTUS_URL, illW:130, objPos:"center 30%" },
     { name:"Jake & Farzana",   location:"Austin, TX", img:WEDDING_2,
-      illustration:BOOTS_URL,  illW:100, illRight:-15, illBottom:-20, illRotate:"0deg" },
+      illSrc:BOOTS_URL,  illW:80,  objPos:"center center" },
     { name:"Corbin & Zuleyma", location:"Austin, TX", img:WEDDING_3,
-      illustration:HAT_URL,    illW:110, illRight:-15, illBottom:-15, illRotate:"10deg" },
+      illSrc:HAT_URL,    illW:90,  objPos:"center center" },
   ];
 
   return (
-    <PageShell>
+    <Shell outerBg={BISQUE} innerBg={BISQUE}>
       <div style={{ padding:"4rem 1.5rem 0" }}>
         <FadeIn>
-          <h2 style={{
-            fontFamily:"'Libre Baskerville', serif",
+          <h2 style={{ fontFamily:"'Libre Baskerville', serif",
             fontSize:"clamp(1.9rem, 8vw, 3rem)",
-            fontWeight:400, color:FIREBRICK,
-            lineHeight:1.12, marginBottom:"0.4rem",
-          }}>Recent <em>weddings</em></h2>
-          <p style={{
-            fontFamily:"'Manrope', sans-serif",
-            fontSize:"0.78rem", color:SADDLE, opacity:0.68,
-            marginBottom:"2.5rem",
-          }}>Full days, start to finish — not just the highlights.</p>
+            fontWeight:400, color:FIREBRICK, lineHeight:1.12, marginBottom:"0.4rem" }}>
+            Recent <em>weddings</em>
+          </h2>
+          <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.78rem",
+            color:SADDLE, opacity:0.68, marginBottom:"2.5rem" }}>
+            Full days, start to finish — not just the highlights.
+          </p>
         </FadeIn>
 
-        <div style={{ display:"flex", flexDirection:"column", gap:"3rem" }}>
+        <div style={{ display:"flex", flexDirection:"column", gap:"2.5rem" }}>
           {weddings.map((w,i) => (
             <FadeIn key={w.name} delay={i*0.08}>
               <div>
-                {/* Cinematic 16:9 crop */}
-                <div style={{
-                  overflow:"hidden", marginBottom:"0.8rem",
-                  aspectRatio:"16/9", position:"relative",
-                }}>
+                {/* Landscape crop */}
+                <div style={{ overflow:"hidden", marginBottom:"0.75rem", aspectRatio:"16/9" }}>
                   <motion.img src={w.img} alt={w.name}
                     whileHover={{ scale:1.03 }} transition={{ duration:0.5 }}
                     style={{ width:"100%", height:"100%", objectFit:"cover",
-                      objectPosition:"center", display:"block" }}/>
-                  {/* Illustration per wedding */}
-                  <div style={{
-                    position:"absolute",
-                    right:w.illRight, bottom:w.illBottom,
-                    width:w.illW, pointerEvents:"none",
-                    mixBlendMode:"multiply", opacity:0.5,
-                    transform:`rotate(${w.illRotate})`,
-                    zIndex:2,
-                  }}>
-                    <img src={w.illustration} alt=""
-                      style={{ width:"100%", display:"block" }}/>
-                  </div>
+                      objectPosition:w.objPos, display:"block" }}/>
                 </div>
-                <h3 style={{
-                  fontFamily:"'Libre Baskerville', serif",
-                  fontStyle:"italic", fontSize:"1.35rem",
-                  fontWeight:400, color:FIREBRICK, marginBottom:"0.2rem",
-                }}>{w.name}</h3>
-                <p style={{
-                  fontFamily:"'Manrope', sans-serif", fontSize:"0.62rem",
-                  letterSpacing:"0.18em", textTransform:"uppercase",
-                  color:SADDLE, opacity:0.55,
-                }}>{w.location}</p>
+                {/* Name + illustration side by side */}
+                <div style={{ display:"flex", alignItems:"flex-end",
+                  justifyContent:"space-between", gap:"1rem" }}>
+                  <div>
+                    <h3 style={{ fontFamily:"'Libre Baskerville', serif",
+                      fontStyle:"italic", fontSize:"1.35rem",
+                      fontWeight:400, color:FIREBRICK, marginBottom:"0.2rem" }}>{w.name}</h3>
+                    <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.62rem",
+                      letterSpacing:"0.18em", textTransform:"uppercase",
+                      color:SADDLE, opacity:0.55 }}>{w.location}</p>
+                  </div>
+                  {/* Illustration — beside the name, not overlapping photo */}
+                  <Illus src={w.illSrc} width={w.illW}
+                    style={{ opacity:0.55, flexShrink:0, marginBottom:"0.2rem" }}/>
+                </div>
               </div>
             </FadeIn>
           ))}
         </div>
 
-        {/* SAN SAN bleeds down — large, low opacity, centered */}
+        {/* SAN SAN — large, centered, very low opacity.
+            Negative bottom margin pulls the green section up to overlap it,
+            creating the bleed effect. */}
         <FadeIn delay={0.1}>
-          <div style={{ position:"relative", marginTop:"3rem", paddingBottom:"2rem" }}>
-            {/* SAN SAN image — centered, very large, bleeds visually into next section */}
-            <div style={{
-              display:"flex", justifyContent:"center",
-              marginLeft:"-1.5rem", marginRight:"-1.5rem",
-            }}>
-              <img src={SANSAN_URL} alt=""
-                style={{
-                  width:"100%", maxWidth:500,
-                  opacity:0.13,
-                  mixBlendMode:"multiply",
-                  display:"block",
-                  marginBottom:"-60px", // bleed into the next section
-                  position:"relative", zIndex:2,
-                }}/>
-            </div>
-            <div style={{
-              position:"absolute", top:"50%", left:0, right:0,
-              transform:"translateY(-50%)",
-              display:"flex", justifyContent:"center", zIndex:3,
-            }}>
+          <div style={{ position:"relative", marginTop:"2rem" }}>
+            {/* SAN SAN image fills the width, bleeds into next section */}
+            <img src={SANSAN_URL} alt=""
+              style={{ width:"100%", display:"block", opacity:0.13,
+                mixBlendMode:"multiply", marginBottom:"-80px",
+                position:"relative", zIndex:1 }}/>
+            {/* CTA button centered over the top half of SAN SAN */}
+            <div style={{ position:"absolute", top:"20%", left:0, right:0,
+              display:"flex", justifyContent:"center", zIndex:2 }}>
               <a href="#" style={{
                 display:"inline-block",
                 border:`1.5px solid ${FIREBRICK}`,
                 color:FIREBRICK, padding:"0.85rem 2.5rem",
-                fontFamily:"'Manrope', sans-serif",
-                fontSize:"0.72rem", fontWeight:600,
+                fontFamily:"'Manrope', sans-serif", fontSize:"0.72rem", fontWeight:600,
                 letterSpacing:"0.16em", textTransform:"uppercase",
                 borderRadius:"999px", textDecoration:"none",
-                background:BISQUE,
-              }}>View Full Portfolio</a>
+                background:BISQUE }}>View Full Portfolio</a>
             </div>
           </div>
         </FadeIn>
       </div>
-    </PageShell>
+    </Shell>
   );
 }
 
 // ── HOW WE SHOOT ─────────────────────────────────────────────────────────────
-// Green (KHAKI) bg with cream cats continues halfway into slider section
+// KHAKI bg with cream cats. Cat bg continues into top ~50% of slider section.
 function HowWeShoot() {
   const points = [
     { label:"We catch it as it happens",
@@ -479,192 +443,161 @@ function HowWeShoot() {
   ];
 
   return (
-    <div style={{ position:"relative" }}>
-      {/* Green section — text */}
-      <PageShell bg={KHAKI} style={{ background:BISQUE }}>
-        {/* Cream cats bg */}
-        <div style={{
-          position:"absolute", inset:0, zIndex:0,
-          backgroundImage:`url(${CATS_CREAM})`,
-          backgroundRepeat:"repeat",
-          backgroundSize:"clamp(280px,38vw,540px)",
-          opacity:0.33, pointerEvents:"none",
-        }}/>
-        <div style={{ position:"relative", zIndex:1, padding:"4rem 1.5rem 3rem", background:KHAKI }}>
+    <>
+      {/* Green text section */}
+      <Shell outerBg={KHAKI} innerBg={KHAKI}>
+        {/* Cream cats */}
+        <div style={{ position:"absolute", inset:0, zIndex:0,
+          backgroundImage:`url(${CATS_CREAM})`, backgroundRepeat:"repeat",
+          backgroundSize:"clamp(280px,38vw,540px)", opacity:0.33, pointerEvents:"none" }}/>
+        <div style={{ position:"relative", zIndex:1, padding:"4rem 1.5rem 3rem" }}>
           <FadeIn>
-            <p style={{
-              fontFamily:"'Manrope', sans-serif", fontSize:"0.62rem",
+            <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.62rem",
               letterSpacing:"0.22em", textTransform:"uppercase",
-              color:FIREBRICK, marginBottom:"0.4rem",
-            }}>How We Shoot</p>
-            <h2 style={{
-              fontFamily:"'Libre Baskerville', serif",
+              color:FIREBRICK, marginBottom:"0.4rem" }}>How We Shoot</p>
+            <h2 style={{ fontFamily:"'Libre Baskerville', serif",
               fontSize:"clamp(1.8rem, 7.5vw, 2.9rem)",
-              fontWeight:400, color:FIREBRICK,
-              lineHeight:1.15, marginBottom:"2.5rem",
-            }}>A Rundown of the <em>Big Day</em></h2>
+              fontWeight:400, color:FIREBRICK, lineHeight:1.15, marginBottom:"2.5rem" }}>
+              A Rundown of the <em>Big Day</em>
+            </h2>
           </FadeIn>
-
           <div style={{ display:"flex", flexDirection:"column", gap:"2.2rem" }}>
             {points.map((pt,i) => (
               <FadeIn key={i} delay={i*0.1}>
                 <div>
-                  <p style={{
-                    fontFamily:"'Manrope', sans-serif", fontSize:"0.6rem",
+                  <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.6rem",
                     letterSpacing:"0.2em", textTransform:"uppercase",
-                    color:FIREBRICK, fontWeight:700,
-                    marginBottom:"0.4rem",
-                    display:"flex", alignItems:"center", gap:"0.5rem",
-                  }}><Diamond color={FIREBRICK} size={7}/>{pt.label}</p>
-                  <p style={{
-                    fontFamily:"'Manrope', sans-serif",
-                    fontSize:"0.9rem", color:SADDLE,
-                    lineHeight:1.78, opacity:0.9,
-                  }}>{pt.body}</p>
+                    color:FIREBRICK, fontWeight:700, marginBottom:"0.4rem",
+                    display:"flex", alignItems:"center", gap:"0.5rem" }}>
+                    <Diamond color={FIREBRICK} size={7}/>{pt.label}
+                  </p>
+                  <p style={{ fontFamily:"'Manrope', sans-serif",
+                    fontSize:"0.9rem", color:SADDLE, lineHeight:1.78, opacity:0.9 }}>
+                    {pt.body}
+                  </p>
                 </div>
               </FadeIn>
             ))}
           </div>
         </div>
-      </PageShell>
+      </Shell>
 
-      {/* Slider section — green bg continues ~50% then cuts to bisque */}
-      <PageShell bg={BISQUE} style={{ background:BISQUE }}>
-        {/* Cream cats continue in the top half of this section */}
-        <div style={{
-          position:"absolute", top:0, left:0, right:0, height:"50%", zIndex:0,
-          backgroundImage:`url(${CATS_CREAM})`,
-          backgroundRepeat:"repeat",
-          backgroundSize:"clamp(280px,38vw,540px)",
-          opacity:0.33, pointerEvents:"none",
-          // Green bg for the top half
-        }}/>
-        <div style={{
-          position:"absolute", top:0, left:0, right:0, height:"50%", zIndex:0,
-          background:KHAKI,
-        }}/>
-
-        <div style={{ position:"relative", zIndex:1 }}>
-          <FadeIn delay={0.1}>
-            <div style={{
-              display:"flex", gap:8, overflowX:"auto",
-              paddingBottom:"0.75rem", paddingTop:"2.5rem",
-              scrollbarWidth:"none", WebkitOverflowScrolling:"touch",
-              paddingLeft:"1.5rem", paddingRight:"1.5rem",
-            }}>
-              {[1,2,3,4].map(i => (
-                <div key={i} style={{
-                  flexShrink:0, width:"72vw", maxWidth:260,
-                  aspectRatio:"2/3",
-                  background:"rgba(247,221,194,0.6)",
-                  border:"1px dashed rgba(100,64,40,0.22)",
-                  borderRadius:3,
-                  display:"flex", alignItems:"center", justifyContent:"center",
-                }}>
-                  <span style={{
-                    fontFamily:"'Manrope', sans-serif",
-                    fontSize:"0.6rem", letterSpacing:"0.15em",
-                    textTransform:"uppercase", color:SADDLE, opacity:0.4,
-                  }}>Photo {i}</span>
-                </div>
-              ))}
+      {/* Slider — green bg on top half, bisque on bottom half */}
+      <div style={{ position:"relative" }}>
+        {/* Full-width outer with side tile pattern */}
+        <div style={{ position:"relative", background:BISQUE }}>
+          <div style={{ position:"absolute", inset:0, zIndex:0,
+            backgroundImage:`url(${sitePattern})`, backgroundRepeat:"repeat",
+            backgroundSize:"clamp(260px,28vw,480px)", opacity:0.12, pointerEvents:"none" }}/>
+          <div style={{ position:"relative", zIndex:1, maxWidth:MAX_W, margin:"0 auto", background:BISQUE }}>
+            {/* Top half green with cream cats, blends from section above */}
+            <div style={{ position:"relative" }}>
+              <div style={{ position:"absolute", top:0, left:0, right:0, height:"55%",
+                background:KHAKI, zIndex:0 }}>
+                <div style={{ position:"absolute", inset:0,
+                  backgroundImage:`url(${CATS_CREAM})`, backgroundRepeat:"repeat",
+                  backgroundSize:"clamp(280px,38vw,540px)", opacity:0.33 }}/>
+              </div>
+              <div style={{ position:"relative", zIndex:1 }}>
+                <FadeIn delay={0.1}>
+                  <div style={{ display:"flex", gap:10, overflowX:"auto",
+                    paddingBottom:"0.75rem", paddingTop:"2.5rem",
+                    scrollbarWidth:"none", WebkitOverflowScrolling:"touch",
+                    paddingLeft:"1.5rem", paddingRight:"1.5rem" }}>
+                    {[1,2,3,4].map(i => (
+                      <div key={i} style={{ flexShrink:0, width:"65vw", maxWidth:240,
+                        aspectRatio:"2/3",
+                        background:"rgba(247,221,194,0.55)",
+                        border:"1px dashed rgba(100,64,40,0.25)",
+                        borderRadius:3, display:"flex", alignItems:"center", justifyContent:"center" }}>
+                        <span style={{ fontFamily:"'Manrope', sans-serif",
+                          fontSize:"0.6rem", letterSpacing:"0.15em",
+                          textTransform:"uppercase", color:SADDLE, opacity:0.4 }}>Photo {i}</span>
+                      </div>
+                    ))}
+                  </div>
+                </FadeIn>
+                <div style={{ height:"3rem" }}/>
+              </div>
             </div>
-          </FadeIn>
-          <div style={{ height:"3rem", background:BISQUE }}/>
+          </div>
         </div>
-      </PageShell>
-    </div>
+      </div>
+    </>
   );
 }
 
 // ── TESTIMONIAL ───────────────────────────────────────────────────────────────
 function Testimonial() {
   return (
-    <PageShell>
+    <Shell>
       <div style={{ padding:"4rem 1.5rem" }}>
         <FadeIn>
-          {/* 4:3 landscape crop focused on subjects, not sky */}
           <div style={{ overflow:"hidden", aspectRatio:"4/3", marginBottom:"2rem" }}>
             <img src={REVIEW_URL} alt="Jake & Farzana"
               style={{ width:"100%", height:"100%", objectFit:"cover",
-                objectPosition:"center 60%", display:"block" }}/>
+                objectPosition:"center 65%", display:"block" }}/>
           </div>
         </FadeIn>
         <FadeIn delay={0.1}>
-          <blockquote style={{
-            fontFamily:"'Libre Baskerville', serif", fontStyle:"italic",
+          <blockquote style={{ fontFamily:"'Libre Baskerville', serif", fontStyle:"italic",
             fontSize:"clamp(1.15rem, 5vw, 1.6rem)",
-            fontWeight:400, color:FIREBRICK,
-            lineHeight:1.5, marginBottom:"1rem",
-          }}>
+            fontWeight:400, color:FIREBRICK, lineHeight:1.5, marginBottom:"1rem" }}>
             "I can say with 100% confidence that having Sanaa capture our best day was the highlight of our entire experience."
           </blockquote>
-          <p style={{
-            fontFamily:"'Manrope', sans-serif", fontSize:"0.62rem",
+          <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.62rem",
             letterSpacing:"0.18em", textTransform:"uppercase",
             color:SADDLE, opacity:0.55,
-            display:"flex", alignItems:"center", gap:"0.5rem",
-          }}><Diamond color={SADDLE} size={6}/>Jake & Farzana</p>
+            display:"flex", alignItems:"center", gap:"0.5rem" }}>
+            <Diamond color={SADDLE} size={6}/>Jake & Farzana
+          </p>
         </FadeIn>
       </div>
-    </PageShell>
+    </Shell>
   );
 }
 
 // ── PRICING CTA ───────────────────────────────────────────────────────────────
-// Full bleed photo, NO overlay, text bottom-left, bisque color text
+// Full bleed photo, NO overlay, text & button ALL FIREBRICK RED,
+// CTA button is red with cream text, everything top-aligned so face shows.
 function PricingCTA() {
   return (
-    <PageShell>
-      <section style={{
-        position:"relative", overflow:"hidden",
-        minHeight:"85vw", maxHeight:700,
-        display:"flex", alignItems:"flex-end",
-      }}>
+    <Shell>
+      <section style={{ position:"relative", overflow:"hidden", aspectRatio:"3/4" }}>
         <img src={PRICE_URL} alt=""
-          style={{
-            position:"absolute", inset:0,
-            width:"100%", height:"100%",
-            objectFit:"cover", objectPosition:"center center",
-            display:"block",
-          }}/>
-        {/* Subtle gradient ONLY at bottom-left for text legibility — no full overlay */}
-        <div style={{
-          position:"absolute", inset:0,
-          background:"linear-gradient(135deg, rgba(0,0,0,0.52) 0%, transparent 55%)",
-          pointerEvents:"none",
-        }}/>
-        <div style={{ position:"relative", zIndex:1, padding:"2rem 1.5rem 3rem", maxWidth:340 }}>
+          style={{ position:"absolute", inset:0, width:"100%", height:"100%",
+            objectFit:"cover", objectPosition:"center center", display:"block" }}/>
+        {/* No overlay — just a very soft vignette at top-left for legibility */}
+        <div style={{ position:"absolute", inset:0,
+          background:"linear-gradient(160deg, rgba(247,221,194,0.35) 0%, transparent 45%)",
+          pointerEvents:"none" }}/>
+        {/* Text top-left so it doesn't cover the subject */}
+        <div style={{ position:"relative", zIndex:1, padding:"2rem 1.5rem 0" }}>
           <FadeIn>
-            <p style={{
-              fontFamily:"'Manrope', sans-serif", fontSize:"0.62rem",
+            <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.62rem",
               letterSpacing:"0.22em", textTransform:"uppercase",
-              color:BISQUE, opacity:0.75, marginBottom:"0.35rem",
-            }}>The Flat Rate</p>
-            <h2 style={{
-              fontFamily:"'Libre Baskerville', serif",
-              fontSize:"clamp(2rem, 9vw, 3.2rem)",
-              fontWeight:400, color:BISQUE,
-              lineHeight:1.1, marginBottom:"0.5rem",
-            }}>One day.<br/><em>One price.</em></h2>
-            <p style={{
-              fontFamily:"'Manrope', sans-serif",
-              fontSize:"0.8rem", color:BISQUE,
-              opacity:0.7, marginBottom:"1.6rem",
-            }}>No surprises at the end of the night.</p>
+              color:FIREBRICK, opacity:0.85, marginBottom:"0.3rem" }}>The Flat Rate</p>
+            <h2 style={{ fontFamily:"'Libre Baskerville', serif",
+              fontSize:"clamp(1.8rem, 8vw, 2.8rem)",
+              fontWeight:400, color:FIREBRICK, lineHeight:1.1, marginBottom:"0.4rem" }}>
+              One day.<br/><em>One price.</em>
+            </h2>
+            <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.78rem",
+              color:FIREBRICK, opacity:0.75, marginBottom:"1.4rem" }}>
+              No surprises at the end of the night.
+            </p>
             <a href="#" style={{
               display:"inline-block",
-              background:BISQUE, color:FIREBRICK,
+              background:FIREBRICK, color:BISQUE,
               padding:"0.85rem 2rem",
               fontFamily:"'Manrope', sans-serif",
               fontSize:"0.7rem", fontWeight:700,
               letterSpacing:"0.14em", textTransform:"uppercase",
-              borderRadius:"999px", textDecoration:"none",
-            }}>See What's Included</a>
+              borderRadius:"999px", textDecoration:"none" }}>See What's Included</a>
           </FadeIn>
         </div>
       </section>
-    </PageShell>
+    </Shell>
   );
 }
 
@@ -672,54 +605,39 @@ function PricingCTA() {
 function Footer({ onOpenQuestionnaire }) {
   const links = ["Home","Portfolio","Investment","Experience","About"];
   return (
-    <PageShell bg={FIREBRICK} style={{ background:FIREBRICK }}>
-      <footer style={{ background:FIREBRICK, padding:"3.5rem 1.5rem 2.5rem", textAlign:"center" }}>
+    <Shell outerBg={FIREBRICK} innerBg={FIREBRICK}>
+      <footer style={{ padding:"3.5rem 1.5rem 2.5rem", textAlign:"center" }}>
         <img src={LOGO_CREAM_CAT} alt=""
           style={{ height:48, width:"auto", marginBottom:"2rem" }}/>
-
-        <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:"0.05rem", marginBottom:"2rem" }}>
+        <div style={{ display:"flex", flexDirection:"column", alignItems:"center",
+          gap:"0.05rem", marginBottom:"2rem" }}>
           {links.map(link => (
-            <a key={link} href="#" style={{
-              fontFamily:"'Libre Baskerville', serif", fontStyle:"italic",
-              fontSize:"clamp(1.4rem, 5vw, 2rem)",
-              color:BISQUE, textDecoration:"none",
-              lineHeight:1.3, opacity:0.88,
-            }}>{link}</a>
+            <a key={link} href="#" style={{ fontFamily:"'Libre Baskerville', serif",
+              fontStyle:"italic", fontSize:"clamp(1.4rem, 5vw, 2rem)",
+              color:BISQUE, textDecoration:"none", lineHeight:1.3, opacity:0.88 }}>
+              {link}
+            </a>
           ))}
         </div>
-
         <div style={{ marginBottom:"2.5rem" }}>
           <button onClick={onOpenQuestionnaire} style={{
             background:BISQUE, border:"none", color:FIREBRICK,
-            padding:"0.9rem 2.2rem",
-            fontFamily:"'Manrope', sans-serif",
+            padding:"0.9rem 2.2rem", fontFamily:"'Manrope', sans-serif",
             fontSize:"0.7rem", fontWeight:700,
             letterSpacing:"0.14em", textTransform:"uppercase",
-            borderRadius:"999px", cursor:"pointer",
-          }}>Tell Us About Your Day</button>
+            borderRadius:"999px", cursor:"pointer" }}>Tell Us About Your Day</button>
         </div>
-
-        <div style={{
-          borderTop:"1px solid rgba(247,221,194,0.18)",
-          paddingTop:"1.5rem",
-          display:"flex", flexDirection:"column",
-          alignItems:"center", gap:"0.35rem",
-        }}>
-          <p style={{
-            fontFamily:"'Manrope', sans-serif", fontSize:"0.62rem",
-            letterSpacing:"0.12em", color:BISQUE, opacity:0.45,
-          }}>Austin, TX · Worldwide</p>
-          <p style={{
-            fontFamily:"'Manrope', sans-serif", fontSize:"0.62rem",
-            letterSpacing:"0.1em", color:BISQUE, opacity:0.45,
-          }}>@sansanstills · sanaa@sansanstills.com</p>
-          <p style={{
-            fontFamily:"'Manrope', sans-serif", fontSize:"0.58rem",
-            color:BISQUE, opacity:0.28, marginTop:"0.4rem",
-          }}>© Sansan Stills 2026</p>
+        <div style={{ borderTop:"1px solid rgba(247,221,194,0.18)", paddingTop:"1.5rem",
+          display:"flex", flexDirection:"column", alignItems:"center", gap:"0.35rem" }}>
+          <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.62rem",
+            letterSpacing:"0.12em", color:BISQUE, opacity:0.45 }}>Austin, TX · Worldwide</p>
+          <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.62rem",
+            letterSpacing:"0.1em", color:BISQUE, opacity:0.45 }}>@sansanstills · sanaa@sansanstills.com</p>
+          <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.58rem",
+            color:BISQUE, opacity:0.28, marginTop:"0.4rem" }}>© Sansan Stills 2026</p>
         </div>
       </footer>
-    </PageShell>
+    </Shell>
   );
 }
 
