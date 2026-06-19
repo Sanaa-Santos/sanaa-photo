@@ -320,7 +320,6 @@ function IntroSection() {
 
 // ── TICKER ────────────────────────────────────────────────────────────────────
 function Ticker() {
-  const isDesktop = useIsDesktop();
   const items = [
     "Real, not performative","One flat rate","No overtime charges",
     "Full day coverage","Austin, TX based","Documentary style",
@@ -328,12 +327,7 @@ function Ticker() {
     "Full day coverage","Austin, TX based","Documentary style",
   ];
   return (
-    <div style={{ position:"relative", background:BISQUE }}>
-      <div style={{ position:"absolute", inset:0, zIndex:0,
-        backgroundImage:`url(${sitePattern})`, backgroundRepeat:"repeat",
-        backgroundSize:"clamp(260px,28vw,480px)", opacity:0.12, pointerEvents:"none" }}/>
-      <div style={{ position:"relative", zIndex:1,
-        maxWidth: isDesktop ? 1100 : MAX_W, margin:"0 auto", background:FIREBRICK }}>
+    <Shell outerBg={FIREBRICK} innerBg={FIREBRICK}>
         <div style={{ overflow:"hidden", padding:"0.9rem 0" }}>
           <motion.div
             animate={{ x:["0%","-50%"] }}
@@ -348,8 +342,7 @@ function Ticker() {
             ))}
           </motion.div>
         </div>
-      </div>
-    </div>
+    </Shell>
   );
 }
 
@@ -462,7 +455,6 @@ function RecentWeddings() {
 // Bottom half of slider transitions to BISQUE.
 // Implemented as one outer div with the KHAKI bg, then a BISQUE bottom half.
 function HowWeShoot() {
-  const isDesktop = useIsDesktop();
   const points = [
     { label:"We catch it as it happens",
       body:"We document the real day, the planned and unplanned parts, and all the in-between moments you didn't even realize were happening." },
@@ -478,15 +470,16 @@ function HowWeShoot() {
   // at any boundary. SAN SAN lives in RecentWeddings (on bisque) and dips
   // down into this section's khaki via a negative bottom margin there.
   // The whole khaki block sits inside the same bisque+tile-pattern outer
-  // treatment as every other section, so on desktop it's confined to the
-  // content column instead of breaking out to the full viewport width.
+  // treatment as every other section, using the SAME content-column width
+  // (MAX_W) as every other section so it never sticks out wider than the
+  // rest of the page.
   return (
     <div style={{ position:"relative", background:BISQUE }}>
       <div style={{ position:"absolute", inset:0, zIndex:0,
         backgroundImage:`url(${sitePattern})`, backgroundRepeat:"repeat",
         backgroundSize:"clamp(260px,28vw,480px)", opacity:0.12, pointerEvents:"none" }}/>
       <div style={{ position:"relative", zIndex:1,
-        maxWidth: isDesktop ? 1100 : MAX_W, margin:"0 auto",
+        maxWidth:MAX_W, margin:"0 auto",
         background:KHAKI, overflow:"hidden" }}>
         {/* Single continuous cat-pattern layer spanning SAN SAN + text + slider-top */}
         <div className="howweshoot-cats" style={{ position:"absolute", inset:0, zIndex:0,
