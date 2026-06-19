@@ -1,8 +1,10 @@
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import emailjs from "@emailjs/browser";
 import sitePattern from "./assets/sitebg.jpg";
 import HomePage from "./HomePage";
+import PortfolioPage from "./PortfolioPage";
 
 const BISQUE    = "#F7DDC2";
 const FIREBRICK = "#8E1D1F";
@@ -379,7 +381,12 @@ export default function SanaaPhotography() {
         ::-webkit-scrollbar { display: none; }
       `}</style>
 
-      <HomePage onOpenQuestionnaire={() => setQuestOpen(true)} />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<HomePage onOpenQuestionnaire={() => setQuestOpen(true)} />} />
+          <Route path="/portfolio" element={<PortfolioPage onOpenQuestionnaire={() => setQuestOpen(true)} />} />
+        </Routes>
+      </BrowserRouter>
 
       <AnimatePresence>
         {questOpen && (
