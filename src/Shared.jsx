@@ -86,7 +86,7 @@ export function Nav({ onOpenQuestionnaire }) {
   const navLinks = [
     { label:"Home", href:"/" },
     { label:"Portfolio", href:"/portfolio" },
-    { label:"Investment", href:"#" },
+    { label:"Investment", href:"/investment" },
     { label:"Experience", href:"#" },
     { label:"About", href:"#" },
   ];
@@ -208,7 +208,7 @@ export function Footer({ onOpenQuestionnaire }) {
   const links = [
     { label:"Home", href:"/" },
     { label:"Portfolio", href:"/portfolio" },
-    { label:"Investment", href:"#" },
+    { label:"Investment", href:"/investment" },
     { label:"Experience", href:"#" },
     { label:"About", href:"#" },
   ];

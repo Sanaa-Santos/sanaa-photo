@@ -5,6 +5,7 @@ import emailjs from "@emailjs/browser";
 import sitePattern from "./assets/sitebg.jpg";
 import HomePage from "./HomePage";
 import PortfolioPage from "./PortfolioPage";
+import InvestmentPage from "./InvestmentPage";
 
 const BISQUE    = "#F7DDC2";
 const FIREBRICK = "#8E1D1F";
@@ -385,6 +386,7 @@ export default function SanaaPhotography() {
         <Routes>
           <Route path="/" element={<HomePage onOpenQuestionnaire={() => setQuestOpen(true)} />} />
           <Route path="/portfolio" element={<PortfolioPage onOpenQuestionnaire={() => setQuestOpen(true)} />} />
+          <Route path="/investment" element={<InvestmentPage onOpenQuestionnaire={() => setQuestOpen(true)} />} />
         </Routes>
       </BrowserRouter>
 

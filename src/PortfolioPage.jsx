@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import {
   BISQUE, FIREBRICK, SADDLE, MAX_W, DESKTOP_BREAKPOINT,
   useIsDesktop, Diamond, FadeIn, Shell, Nav, Footer,
@@ -139,13 +140,13 @@ function PricingCTA() {
               color:FIREBRICK, opacity:0.8, marginBottom: isDesktop ? "1.8rem" : "1.2rem" }}>
               No surprises at the end of the night.
             </p>
-            <a href="#" style={{ display:"inline-block",
+            <Link to="/investment" style={{ display:"inline-block",
               background:FIREBRICK, color:BISQUE,
               padding: isDesktop ? "1.1rem 2.6rem" : "0.85rem 2rem",
               fontFamily:"'Manrope', sans-serif",
               fontSize: isDesktop ? "0.85rem" : "0.7rem", fontWeight:700,
               letterSpacing:"0.14em", textTransform:"uppercase",
-              borderRadius:"999px", textDecoration:"none" }}>See What's Included</a>
+              borderRadius:"999px", textDecoration:"none" }}>See What's Included</Link>
           </FadeIn>
         </div>
       </section>

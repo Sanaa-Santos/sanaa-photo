@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence, useInView } from "framer-motion";
+import { Link } from "react-router-dom";
 import sitePattern from "./assets/sitebg.jpg";
 import {
   BISQUE, FIREBRICK, SADDLE, KHAKI, MAX_W,
@@ -58,12 +59,13 @@ function Hero({ onOpenQuestionnaire }) {
               fontFamily:"'Manrope', sans-serif", fontSize:"0.72rem", fontWeight:700,
               letterSpacing:"0.16em", textTransform:"uppercase",
               borderRadius:"999px", cursor:"pointer" }}>Tell Us About Your Day</button>
-            <button style={{
+            <Link to="/investment" style={{
               background:"transparent", border:"1.5px solid rgba(247,221,194,0.45)",
               color:BISQUE, padding:"1rem 2rem", width:"100%",
               fontFamily:"'Manrope', sans-serif", fontSize:"0.72rem", fontWeight:500,
               letterSpacing:"0.16em", textTransform:"uppercase",
-              borderRadius:"999px", cursor:"pointer" }}>See Pricing</button>
+              borderRadius:"999px", cursor:"pointer", textDecoration:"none",
+              display:"block", textAlign:"center", boxSizing:"border-box" }}>See Pricing</Link>
           </motion.div>
         </div>
       </section>
@@ -265,14 +267,14 @@ function RecentWeddings() {
             {/* Button centered over the gap between the two stacked SAN words */}
             <div style={{ position:"absolute", top:"42%", left:0, right:0,
               display:"flex", justifyContent:"center", zIndex:2 }}>
-              <a href="/portfolio" style={{
+              <Link to="/portfolio" style={{
                 display:"inline-block",
                 border:`1.5px solid ${FIREBRICK}`,
                 color:FIREBRICK, padding:"0.85rem 2.5rem",
                 fontFamily:"'Manrope', sans-serif", fontSize:"0.72rem", fontWeight:600,
                 letterSpacing:"0.16em", textTransform:"uppercase",
                 borderRadius:"999px", textDecoration:"none",
-                background:BISQUE }}>View Full Portfolio</a>
+                background:BISQUE }}>View Full Portfolio</Link>
             </div>
           </div>
         </FadeIn>
@@ -444,13 +446,13 @@ function PricingCTA() {
               color:FIREBRICK, opacity:0.8, marginBottom: isDesktop ? "1.8rem" : "1.2rem" }}>
               No surprises at the end of the night.
             </p>
-            <a href="#" style={{ display:"inline-block",
+            <Link to="/investment" style={{ display:"inline-block",
               background:FIREBRICK, color:BISQUE,
               padding: isDesktop ? "1.1rem 2.6rem" : "0.85rem 2rem",
               fontFamily:"'Manrope', sans-serif",
               fontSize: isDesktop ? "0.85rem" : "0.7rem", fontWeight:700,
               letterSpacing:"0.14em", textTransform:"uppercase",
-              borderRadius:"999px", textDecoration:"none" }}>See What's Included</a>
+              borderRadius:"999px", textDecoration:"none" }}>See What's Included</Link>
           </FadeIn>
         </div>
       </section>
