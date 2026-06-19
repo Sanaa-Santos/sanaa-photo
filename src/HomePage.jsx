@@ -224,10 +224,10 @@ function Hero({ onOpenQuestionnaire }) {
 
 // ── INTRO / FRAMES ────────────────────────────────────────────────────────────
 // Layout per mockup screenshot:
-//  - Blurb text top-left
-//  - LEFT col: one large landscape photo (spans ~2/3 height of right col)
-//  - RIGHT col: smaller square, smaller landscape, smaller circle
-//  - Caption below left image, to the left of the right col
+//  - LEFT col: blurb text, then the large landscape photo, then the caption —
+//    all stacked together, the column's width matching the photo (+5px)
+//  - RIGHT col: square, landscape, and circle photos stacked, each ~10% smaller,
+//    with more breathing room between them
 function IntroSection() {
   return (
     <Shell>
@@ -236,64 +236,65 @@ function IntroSection() {
         backgroundSize:"clamp(280px,38vw,540px)", opacity:0.33, pointerEvents:"none" }}/>
 
       <div style={{ position:"relative", zIndex:1, padding:"2.5rem 1.5rem 2.5rem" }}>
-        {/* Blurb text — top left, before the grid */}
-        <FadeIn>
-          <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.95rem", color:SADDLE,
-            lineHeight:1.75, marginBottom:"1.5rem", maxWidth:"55%" }}>
-            Candid wedding photography for couples who want to enjoy their day. One flat rate. The whole day.
-          </p>
-        </FadeIn>
+        {/* Grid: left col = text + photo + caption stacked; right col = 3 smaller photos */}
+        <div style={{ display:"grid", gridTemplateColumns:"calc(55% + 5px) calc(45% - 5px)", gap:8,
+          alignItems:"start" }}>
 
-        {/* Grid: 55% left col, 45% right col */}
-        <FadeIn delay={0.08}>
-          <div style={{ display:"grid", gridTemplateColumns:"55% 45%", gap:8,
-            alignItems:"start" }}>
+          {/* LEFT COLUMN — text, photo, caption */}
+          <div>
+            <FadeIn>
+              <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.95rem", color:SADDLE,
+                lineHeight:1.75, marginBottom:"1.5rem" }}>
+                Candid wedding photography for couples who want to enjoy their day. One flat rate. The whole day.
+              </p>
+            </FadeIn>
 
-            {/* LEFT — large landscape photo */}
-            <div style={{ aspectRatio:"3/2.5", overflow:"hidden",
-              border:`3px solid ${SADDLE}` }}>
-              <img src={FRAME_1} alt=""
-                style={{ width:"100%", height:"100%", objectFit:"cover",
-                  objectPosition:"center 40%", display:"block" }}/>
-            </div>
-
-            {/* RIGHT col — 3 stacked smaller photos */}
-            <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
-              {/* Square */}
-              <div style={{ aspectRatio:"1/1", overflow:"hidden",
+            <FadeIn delay={0.08}>
+              <div style={{ aspectRatio:"3/2.5", overflow:"hidden",
                 border:`3px solid ${SADDLE}` }}>
-                <img src={FRAME_2} alt=""
+                <img src={FRAME_1} alt=""
                   style={{ width:"100%", height:"100%", objectFit:"cover",
-                    objectPosition:"center top", display:"block" }}/>
+                    objectPosition:"center 40%", display:"block" }}/>
               </div>
-              {/* Landscape */}
-              <div style={{ aspectRatio:"4/3", overflow:"hidden",
-                border:`3px solid ${SADDLE}` }}>
-                <img src={FRAME_3} alt=""
-                  style={{ width:"100%", height:"100%", objectFit:"cover",
-                    objectPosition:"center center", display:"block" }}/>
-              </div>
-              {/* Circle */}
-              <div style={{ aspectRatio:"1/1", overflow:"hidden",
-                borderRadius:"50%", border:`3px solid ${SADDLE}` }}>
-                <img src={FRAME_4} alt=""
-                  style={{ width:"100%", height:"100%", objectFit:"cover",
-                    objectPosition:"center center", display:"block" }}/>
-              </div>
-            </div>
+            </FadeIn>
 
+            <FadeIn delay={0.14}>
+              <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.6rem",
+                letterSpacing:"0.18em", textTransform:"uppercase",
+                color:SADDLE, opacity:0.65, marginTop:"0.9rem", fontWeight:700,
+                display:"flex", alignItems:"center", gap:"0.45rem" }}>
+                <Diamond color={SADDLE} size={6}/>Corbin & Zuleyma — Austin, TX
+              </p>
+            </FadeIn>
           </div>
-        </FadeIn>
 
-        {/* Caption below */}
-        <FadeIn delay={0.14}>
-          <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.6rem",
-            letterSpacing:"0.18em", textTransform:"uppercase",
-            color:SADDLE, opacity:0.55, marginTop:"0.9rem",
-            display:"flex", alignItems:"center", gap:"0.45rem" }}>
-            <Diamond color={SADDLE} size={6}/>Corbin & Zuleyma — Austin, TX
-          </p>
-        </FadeIn>
+          {/* RIGHT COLUMN — 3 stacked smaller photos, ~10% smaller, more gap */}
+          <div style={{ display:"flex", flexDirection:"column", gap:24,
+            width:"88%", justifySelf:"end" }}>
+            {/* Square */}
+            <div style={{ aspectRatio:"1/1", overflow:"hidden",
+              border:`3px solid ${SADDLE}` }}>
+              <img src={FRAME_2} alt=""
+                style={{ width:"100%", height:"100%", objectFit:"cover",
+                  objectPosition:"center top", display:"block" }}/>
+            </div>
+            {/* Landscape */}
+            <div style={{ aspectRatio:"4/3", overflow:"hidden",
+              border:`3px solid ${SADDLE}` }}>
+              <img src={FRAME_3} alt=""
+                style={{ width:"100%", height:"100%", objectFit:"cover",
+                  objectPosition:"center center", display:"block" }}/>
+            </div>
+            {/* Circle */}
+            <div style={{ aspectRatio:"1/1", overflow:"hidden",
+              borderRadius:"50%", border:`3px solid ${SADDLE}` }}>
+              <img src={FRAME_4} alt=""
+                style={{ width:"100%", height:"100%", objectFit:"cover",
+                  objectPosition:"center center", display:"block" }}/>
+            </div>
+          </div>
+
+        </div>
       </div>
     </Shell>
   );
@@ -353,11 +354,11 @@ function RecentWeddings() {
           </p>
         </FadeIn>
 
-        <div style={{ display:"flex", flexDirection:"column", gap:"1.5rem" }}>
+        <div style={{ display:"flex", flexDirection:"column", gap:"0.4rem" }}>
           {weddings.map((w,i) => (
             <FadeIn key={w.name} delay={i*0.08}>
               <div>
-                <div style={{ overflow:"hidden", marginBottom:"0.5rem", aspectRatio:"16/9" }}>
+                <div style={{ overflow:"hidden", marginBottom:"15px", aspectRatio:"16/9" }}>
                   <motion.img src={w.img} alt={w.name}
                     whileHover={{ scale:1.03 }} transition={{ duration:0.5 }}
                     style={{ width:"100%", height:"100%", objectFit:"cover",
@@ -383,30 +384,33 @@ function RecentWeddings() {
           ))}
         </div>
 
-        {/* SAN SAN — exact KHAKI color, no opacity, bleeds into next section */}
+        {/* SAN SAN — exact flat KHAKI color via mask, no blend mode, bleeds into next section */}
         <FadeIn delay={0.1}>
-          <div style={{ position:"relative", marginTop:"1.5rem" }}>
-            {/* 
-              The SAN SAN PNG has a black background with khaki/green lettering.
-              We use CSS filter to recolor it to exactly match KHAKI (#ACAF9A),
-              using hue-rotate + saturate + brightness to map the khaki color.
-              mix-blend-mode:multiply removes the black background entirely.
+          <div style={{ position:"relative", marginTop:"0.3rem", marginBottom:"-108px" }}>
+            {/*
+              The SAN SAN PNG is used purely as a shape mask. We apply it as a
+              mask-image on a div filled with solid KHAKI (#ACAF9A) — this gives
+              an exact, flat color match to the next section's background,
+              with no blend-mode color mixing against bisque. The real <img> is
+              kept (invisible) to drive the container's natural aspect ratio.
             */}
-            <img src={SANSAN_URL} alt=""
-              style={{
-                width:"115%",
-                marginLeft:"-8%",
-                display:"block",
-                mixBlendMode:"multiply",
-                // No opacity — full color. The multiply blend removes black bg.
-                // The khaki letters in the PNG multiply against the bisque bg
-                // producing a color close to KHAKI on bisque.
-                opacity:1,
-                marginBottom:"-120px",
-                position:"relative", zIndex:1,
+            <div style={{ position:"relative", width:"102%", marginLeft:"-1%" }}>
+              <img src={SANSAN_URL} alt="San San" style={{ width:"100%", display:"block", visibility:"hidden" }}/>
+              <div style={{
+                position:"absolute", inset:0,
+                backgroundColor: KHAKI,
+                WebkitMaskImage: `url(${SANSAN_URL})`,
+                maskImage: `url(${SANSAN_URL})`,
+                WebkitMaskRepeat: "no-repeat",
+                maskRepeat: "no-repeat",
+                WebkitMaskSize: "contain",
+                maskSize: "contain",
+                WebkitMaskPosition: "center",
+                maskPosition: "center",
               }}/>
+            </div>
             {/* Button centered over the top ~25% of SAN SAN */}
-            <div style={{ position:"absolute", top:"15%", left:0, right:0,
+            <div style={{ position:"absolute", top:"10%", left:0, right:0,
               display:"flex", justifyContent:"center", zIndex:2 }}>
               <a href="#" style={{
                 display:"inline-block",
@@ -439,15 +443,20 @@ function HowWeShoot() {
   ];
 
   // Slider card height for calculating the 50% cut
-  // We render the slider inside a wrapper that has KHAKI top half, BISQUE bottom half
+  // The KHAKI + cream-cats area spans from the top of the text section down
+  // through the top half of the slider — rendered as ONE continuous tiled
+  // background (single element) so the pattern never restarts/seams at the
+  // boundary between the two sections.
   return (
-    <>
-      {/* Text section — full KHAKI with cream cats */}
-      <Shell outerBg={KHAKI} innerBg={KHAKI}>
-        <div style={{ position:"absolute", inset:0, zIndex:0,
-          backgroundImage:`url(${CATS_CREAM})`, backgroundRepeat:"repeat",
-          backgroundSize:"clamp(280px,38vw,540px)", opacity:0.33, pointerEvents:"none" }}/>
-        <div style={{ position:"relative", zIndex:1, padding:"4rem 1.5rem 3rem" }}>
+    <div style={{ position:"relative", background:KHAKI }}>
+      {/* Single continuous cat-pattern layer spanning text + slider-top */}
+      <div className="howweshoot-cats" style={{ position:"absolute", inset:0, zIndex:0,
+        backgroundImage:`url(${CATS_CREAM})`, backgroundRepeat:"repeat",
+        backgroundSize:"clamp(280px,38vw,540px)", opacity:0.33, pointerEvents:"none" }}/>
+
+      {/* Text content */}
+      <div style={{ position:"relative", zIndex:1, maxWidth:MAX_W, margin:"0 auto" }}>
+        <div style={{ padding:"4rem 1.5rem 3rem" }}>
           <FadeIn>
             <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.62rem",
               letterSpacing:"0.22em", textTransform:"uppercase",
@@ -477,53 +486,38 @@ function HowWeShoot() {
             ))}
           </div>
         </div>
-      </Shell>
 
-      {/* Slider section — KHAKI top half, BISQUE bottom half */}
-      {/* Outer wrapper sets the outer bisque+tile bg */}
-      <div style={{ position:"relative", background:BISQUE }}>
-        <div style={{ position:"absolute", inset:0, zIndex:0,
-          backgroundImage:`url(${sitePattern})`, backgroundRepeat:"repeat",
-          backgroundSize:"clamp(260px,28vw,480px)", opacity:0.12, pointerEvents:"none" }}/>
-        <div style={{ position:"relative", zIndex:1, maxWidth:MAX_W, margin:"0 auto", background:BISQUE }}>
-          {/* Inner: top 50% = KHAKI with cream cats, bottom 50% = BISQUE */}
-          <div style={{ position:"relative", overflow:"hidden" }}>
-            {/* KHAKI band — top half */}
-            <div style={{ position:"absolute", top:0, left:0, right:0, height:"50%",
-              background:KHAKI, zIndex:0 }}>
-              <div style={{ position:"absolute", inset:0,
-                backgroundImage:`url(${CATS_CREAM})`, backgroundRepeat:"repeat",
-                backgroundSize:"clamp(280px,38vw,540px)", opacity:0.33 }}/>
-            </div>
-            {/* BISQUE band — bottom half */}
-            <div style={{ position:"absolute", bottom:0, left:0, right:0, height:"50%",
-              background:BISQUE, zIndex:0 }}/>
+        {/* Slider — sits directly under the text, still within the same
+            continuous KHAKI + cats background. A BISQUE band is layered on
+            top to cover the bottom half of the slider only. */}
+        <div style={{ position:"relative", overflow:"hidden" }}>
+          {/* BISQUE band — bottom half, drawn over the continuous cat bg */}
+          <div style={{ position:"absolute", bottom:0, left:0, right:0, height:"50%",
+            background:BISQUE, zIndex:0 }}/>
 
-            {/* Slider scrolls over both halves */}
-            <div style={{ position:"relative", zIndex:1 }}>
-              <FadeIn delay={0.1}>
-                <div style={{ display:"flex", gap:10, overflowX:"auto",
-                  paddingBottom:"3rem", paddingTop:"2rem",
-                  scrollbarWidth:"none", WebkitOverflowScrolling:"touch",
-                  paddingLeft:"1.5rem", paddingRight:"1.5rem" }}>
-                  {[1,2,3,4].map(i => (
-                    <div key={i} style={{ flexShrink:0, width:"65vw", maxWidth:240,
-                      aspectRatio:"2/3",
-                      background:"rgba(247,221,194,0.55)",
-                      border:"1px dashed rgba(100,64,40,0.22)",
-                      borderRadius:3, display:"flex", alignItems:"center", justifyContent:"center" }}>
-                      <span style={{ fontFamily:"'Manrope', sans-serif",
-                        fontSize:"0.6rem", letterSpacing:"0.15em",
-                        textTransform:"uppercase", color:SADDLE, opacity:0.4 }}>Photo {i}</span>
-                    </div>
-                  ))}
-                </div>
-              </FadeIn>
-            </div>
+          <div style={{ position:"relative", zIndex:1 }}>
+            <FadeIn delay={0.1}>
+              <div style={{ display:"flex", gap:10, overflowX:"auto",
+                paddingBottom:"3rem", paddingTop:"2rem",
+                scrollbarWidth:"none", WebkitOverflowScrolling:"touch",
+                paddingLeft:"1.5rem", paddingRight:"1.5rem" }}>
+                {[1,2,3,4].map(i => (
+                  <div key={i} style={{ flexShrink:0, width:"65vw", maxWidth:240,
+                    aspectRatio:"2/3",
+                    background:"rgba(247,221,194,0.55)",
+                    border:"1px dashed rgba(100,64,40,0.22)",
+                    borderRadius:3, display:"flex", alignItems:"center", justifyContent:"center" }}>
+                    <span style={{ fontFamily:"'Manrope', sans-serif",
+                      fontSize:"0.6rem", letterSpacing:"0.15em",
+                      textTransform:"uppercase", color:SADDLE, opacity:0.4 }}>Photo {i}</span>
+                  </div>
+                ))}
+              </div>
+            </FadeIn>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
