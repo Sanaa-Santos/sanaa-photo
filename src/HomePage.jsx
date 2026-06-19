@@ -334,7 +334,7 @@ function RecentWeddings() {
     { name:"Megan & Courtney", location:"Austin, TX", img:WEDDING_1,
       illSrc:CACTUS_URL, illW:170, objPos:"center 75%" },
     { name:"Jake & Farzana",   location:"Austin, TX", img:WEDDING_2,
-      illSrc:BOOTS_URL,  illW:120, objPos:"center center" },
+      illSrc:BOOTS_URL,  illW:88, objPos:"center center" },
     { name:"Corbin & Zuleyma", location:"Austin, TX", img:WEDDING_3,
       illSrc:HAT_URL,    illW:120, objPos:"center center" },
   ];
@@ -419,12 +419,15 @@ function HowWeShoot() {
         backgroundSize:"clamp(280px,38vw,540px)", opacity:0.33, pointerEvents:"none" }}/>
 
       {/* SAN SAN — sits on the continuous khaki+cats layer. A bisque panel
-          covers only its top half so the upper "SAN" reads against bisque
-          (matching the section above), while the lower "SAN" blends into
-          the khaki+cats backdrop with no seam. */}
+          covers only the very top sliver of it so the upper "SAN" reads
+          against bisque, while the rest of the graphic shows clearly on
+          khaki — with only its bottom edge dipping slightly into the
+          cats-pattern area below it. The graphic itself is capped to a
+          modest width so the whole wordmark sits compactly on khaki rather
+          than being mostly hidden by the bisque cap. */}
       <div style={{ position:"relative", zIndex:1, maxWidth:MAX_W, margin:"0 auto" }}>
-        <div style={{ position:"relative" }}>
-          <div style={{ position:"absolute", left:0, right:0, top:0, height:"30%",
+        <div style={{ position:"relative", maxWidth:340, margin:"0 auto" }}>
+          <div style={{ position:"absolute", left:0, right:0, top:0, height:18,
             background:BISQUE, zIndex:1 }}/>
           <div style={{ position:"relative", zIndex:2, padding:"0 1.5rem" }}>
             <FadeIn delay={0.1}>
@@ -451,8 +454,8 @@ function HowWeShoot() {
                     maskPosition: "center",
                   }}/>
                 </div>
-                {/* Button positioned near the top of SAN SAN, mostly on the bisque portion */}
-                <div style={{ position:"absolute", top:"2%", left:0, right:0,
+                {/* Button positioned at the very top of SAN SAN, mostly on the bisque sliver */}
+                <div style={{ position:"absolute", top:-8, left:0, right:0,
                   display:"flex", justifyContent:"center", zIndex:3 }}>
                   <a href="#" style={{
                     display:"inline-block",
@@ -467,7 +470,9 @@ function HowWeShoot() {
             </FadeIn>
           </div>
         </div>
+      </div>
 
+      <div style={{ position:"relative", zIndex:1, maxWidth:MAX_W, margin:"0 auto" }}>
         <div style={{ padding:"1.5rem 1.5rem 3rem" }}>
           <FadeIn>
             <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.62rem",
