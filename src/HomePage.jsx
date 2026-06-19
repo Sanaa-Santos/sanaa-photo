@@ -364,7 +364,7 @@ function RecentWeddings() {
                     style={{ width:"100%", height:"100%", objectFit:"cover",
                       objectPosition:w.objPos, display:"block" }}/>
                 </div>
-                <div style={{ display:"flex", alignItems:"center",
+                <div style={{ display:"flex", alignItems:"flex-start",
                   justifyContent:"space-between", gap:"0.75rem" }}>
                   <div style={{ display:"flex", flexDirection:"column", gap:"0.15rem" }}>
                     <h3 style={{ fontFamily:"'Libre Baskerville', serif",
@@ -424,7 +424,7 @@ function HowWeShoot() {
           the khaki+cats backdrop with no seam. */}
       <div style={{ position:"relative", zIndex:1, maxWidth:MAX_W, margin:"0 auto" }}>
         <div style={{ position:"relative" }}>
-          <div style={{ position:"absolute", left:0, right:0, top:0, height:"50%",
+          <div style={{ position:"absolute", left:0, right:0, top:0, height:"30%",
             background:BISQUE, zIndex:1 }}/>
           <div style={{ position:"relative", zIndex:2, padding:"0 1.5rem" }}>
             <FadeIn delay={0.1}>
@@ -451,8 +451,8 @@ function HowWeShoot() {
                     maskPosition: "center",
                   }}/>
                 </div>
-                {/* Button centered over the top ~25% of SAN SAN, on the bisque portion */}
-                <div style={{ position:"absolute", top:"10%", left:0, right:0,
+                {/* Button positioned near the top of SAN SAN, mostly on the bisque portion */}
+                <div style={{ position:"absolute", top:"2%", left:0, right:0,
                   display:"flex", justifyContent:"center", zIndex:3 }}>
                   <a href="#" style={{
                     display:"inline-block",
@@ -468,7 +468,7 @@ function HowWeShoot() {
           </div>
         </div>
 
-        <div style={{ padding:"3.5rem 1.5rem 3rem" }}>
+        <div style={{ padding:"1.5rem 1.5rem 3rem" }}>
           <FadeIn>
             <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.62rem",
               letterSpacing:"0.22em", textTransform:"uppercase",
