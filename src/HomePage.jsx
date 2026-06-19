@@ -251,7 +251,7 @@ function IntroSection() {
 
             <FadeIn delay={0.08}>
               <div style={{ aspectRatio:"3/2.5", overflow:"hidden",
-                border:`3px solid ${SADDLE}` }}>
+                border:`3px solid ${FIREBRICK}` }}>
                 <img src={FRAME_1} alt=""
                   style={{ width:"100%", height:"100%", objectFit:"cover",
                     objectPosition:"center 40%", display:"block" }}/>
@@ -273,21 +273,21 @@ function IntroSection() {
             width:"88%", justifySelf:"end" }}>
             {/* Square */}
             <div style={{ aspectRatio:"1/1", overflow:"hidden",
-              border:`3px solid ${SADDLE}` }}>
+              border:`3px solid ${FIREBRICK}` }}>
               <img src={FRAME_2} alt=""
                 style={{ width:"100%", height:"100%", objectFit:"cover",
                   objectPosition:"center top", display:"block" }}/>
             </div>
             {/* Landscape */}
             <div style={{ aspectRatio:"4/3", overflow:"hidden",
-              border:`3px solid ${SADDLE}` }}>
+              border:`3px solid ${FIREBRICK}` }}>
               <img src={FRAME_3} alt=""
                 style={{ width:"100%", height:"100%", objectFit:"cover",
                   objectPosition:"center center", display:"block" }}/>
             </div>
             {/* Circle */}
             <div style={{ aspectRatio:"1/1", overflow:"hidden",
-              borderRadius:"50%", border:`3px solid ${SADDLE}` }}>
+              borderRadius:"50%", border:`3px solid ${FIREBRICK}` }}>
               <img src={FRAME_4} alt=""
                 style={{ width:"100%", height:"100%", objectFit:"cover",
                   objectPosition:"center center", display:"block" }}/>
@@ -369,10 +369,10 @@ function RecentWeddings() {
                   <div>
                     <h3 style={{ fontFamily:"'Libre Baskerville', serif",
                       fontStyle:"italic", fontSize:"1.35rem",
-                      fontWeight:400, color:FIREBRICK, marginBottom:"0.1rem" }}>{w.name}</h3>
+                      fontWeight:400, color:FIREBRICK, margin:"0 0 0.1rem" }}>{w.name}</h3>
                     <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.62rem",
                       letterSpacing:"0.18em", textTransform:"uppercase",
-                      color:SADDLE, opacity:0.55 }}>{w.location}</p>
+                      color:SADDLE, opacity:0.55, margin:0 }}>{w.location}</p>
                   </div>
                   <div style={{ width:w.illW, flexShrink:0, pointerEvents:"none",
                     mixBlendMode:"multiply", opacity:0.55 }}>
@@ -386,7 +386,7 @@ function RecentWeddings() {
 
         {/* SAN SAN — exact flat KHAKI color via mask, no blend mode, bleeds into next section */}
         <FadeIn delay={0.1}>
-          <div style={{ position:"relative", marginTop:"0.3rem", marginBottom:"-108px" }}>
+          <div style={{ position:"relative", marginTop:"0.3rem", marginBottom:"-180px" }}>
             {/*
               The SAN SAN PNG is used purely as a shape mask. We apply it as a
               mask-image on a div filled with solid KHAKI (#ACAF9A) — this gives
@@ -456,7 +456,7 @@ function HowWeShoot() {
 
       {/* Text content */}
       <div style={{ position:"relative", zIndex:1, maxWidth:MAX_W, margin:"0 auto" }}>
-        <div style={{ padding:"4rem 1.5rem 3rem" }}>
+        <div style={{ padding:"11.5rem 1.5rem 3rem" }}>
           <FadeIn>
             <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.62rem",
               letterSpacing:"0.22em", textTransform:"uppercase",
