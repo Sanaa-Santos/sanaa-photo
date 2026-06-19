@@ -1,4 +1,3 @@
-import sitePattern from "./assets/sitebg.jpg";
 import {
   BISQUE, FIREBRICK, SADDLE, MAX_W, DESKTOP_BREAKPOINT,
   useIsDesktop, Diamond, FadeIn, Shell, Nav, Footer,
@@ -39,81 +38,72 @@ function PlaceholderFrame({ ratio, id }) {
   );
 }
 
-// ── HEADER + GALLERY ──────────────────────────────────────────────────────────
-// Header and Gallery share ONE continuous tile-pattern background (single
-// element) so the pattern never restarts/seams at the boundary between them
-// — same technique used for the homepage's "How We Shoot" section. Both are
-// BISQUE throughout, so there's no color change to break up, just one
-// uninterrupted tiled backdrop from the top of the page through the gallery.
-function PortfolioHeaderAndGallery() {
+// ── HERO + GALLERY ────────────────────────────────────────────────────────────
+// Hero functions identically to the homepage Hero: a Shell-wrapped, 100svh-tall
+// image with the header copy overlaid directly on it (gradient for legibility,
+// text pinned to the bottom), sitting under the fixed/transparent Nav so it
+// reads as full-bleed at the top of the page — same structure, same behavior.
+// The Gallery below shares a separate, single continuous tile-pattern
+// background (its own Shell) so there's no seam within the gallery itself.
+function PortfolioHero() {
+  return (
+    <Shell>
+      <section style={{ position:"relative", minHeight:"100svh", display:"flex", alignItems:"flex-end" }}>
+        <img src={HERO_URL} alt="Jake & Farzana"
+          style={{ position:"absolute", inset:0, width:"100%", height:"100%",
+            objectFit:"cover", objectPosition:"center center", display:"block" }}/>
+        <div style={{ position:"absolute", inset:0,
+          background:"linear-gradient(to top, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.2) 50%, transparent 100%)" }}/>
+        <div style={{ position:"relative", zIndex:2, width:"100%", padding:"0 1.5rem 3.5rem" }}>
+          <FadeIn>
+            <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.62rem",
+              letterSpacing:"0.22em", textTransform:"uppercase",
+              color:BISQUE, opacity:0.72, marginBottom:"0.5rem",
+              display:"flex", alignItems:"center", gap:"0.5rem" }}>
+              <Diamond color={FIREBRICK} size={7}/>Portfolio
+            </p>
+            <h1 style={{ fontFamily:"'Libre Baskerville', serif", fontStyle:"italic",
+              fontSize:"clamp(2.6rem, 11vw, 5rem)",
+              fontWeight:400, color:BISQUE, lineHeight:1.08, marginBottom:"0.75rem" }}>
+              The <em>work</em>
+            </h1>
+            <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.95rem",
+              color:BISQUE, opacity:0.85 }}>
+              Every photo below was delivered to a real couple.
+            </p>
+          </FadeIn>
+        </div>
+      </section>
+    </Shell>
+  );
+}
+
+function PortfolioGallery() {
   const isDesktop = useIsDesktop();
   const left = PLACEHOLDER_PHOTOS.filter((_,i) => i % 2 === 0);
   const right = PLACEHOLDER_PHOTOS.filter((_,i) => i % 2 === 1);
 
   return (
-    <div style={{ position:"relative", background:BISQUE }}>
-      <div style={{ position:"absolute", inset:0, zIndex:0,
-        backgroundImage:`url(${sitePattern})`, backgroundRepeat:"repeat",
-        backgroundSize:"clamp(260px,28vw,480px)", opacity:0.12, pointerEvents:"none" }}/>
-
-      <div style={{ position:"relative", zIndex:1, maxWidth:MAX_W, margin:"0 auto" }}>
-        {/* Header */}
-        <div style={{ position:"relative", paddingTop:"7rem" }}>
-          <div style={{ padding:"0 1.5rem 2.5rem" }}>
-            <FadeIn>
-              <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.62rem",
-                letterSpacing:"0.22em", textTransform:"uppercase",
-                color:FIREBRICK, opacity:0.72, marginBottom:"0.5rem",
-                display:"flex", alignItems:"center", gap:"0.5rem" }}>
-                <Diamond color={FIREBRICK} size={7}/>Portfolio
-              </p>
-              <h1 style={{ fontFamily:"'Libre Baskerville', serif", fontStyle:"italic",
-                fontSize:"clamp(2.4rem, 10vw, 4.2rem)",
-                fontWeight:400, color:FIREBRICK, lineHeight:1.08, marginBottom:"0.75rem" }}>
-                The <em>work</em>
-              </h1>
-              <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.95rem",
-                color:SADDLE, opacity:0.75 }}>
-                Every photo below was delivered to a real couple.
-              </p>
-            </FadeIn>
+    <Shell>
+      <div style={{ padding:"2.5rem 1.5rem 3rem" }}>
+        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:isDesktop ? 16 : 10 }}>
+          <div style={{ display:"flex", flexDirection:"column", gap:isDesktop ? 16 : 10 }}>
+            {left.map((photo,i) => (
+              <FadeIn key={photo.id} delay={i*0.05}>
+                <PlaceholderFrame ratio={photo.ratio} id={photo.id}/>
+              </FadeIn>
+            ))}
           </div>
-        </div>
-
-        {/* Hero image — full-width within the column */}
-        <FadeIn delay={0.08}>
-          <div style={{ padding:"0 1.5rem 2.5rem" }}>
-            <div style={{ aspectRatio:"4/5", overflow:"hidden" }}>
-              <img src={HERO_URL} alt="Jake & Farzana"
-                style={{ width:"100%", height:"100%", objectFit:"cover",
-                  objectPosition:"center center", display:"block" }}/>
-            </div>
-          </div>
-        </FadeIn>
-
-        {/* Gallery — two independent columns (masonry), matching
-            mathilde-rietsch.com/portfolio/mariage: photos are distributed
-            alternately so each column's height flows independently. */}
-        <div style={{ padding:"0 1.5rem 3rem" }}>
-          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:isDesktop ? 16 : 10 }}>
-            <div style={{ display:"flex", flexDirection:"column", gap:isDesktop ? 16 : 10 }}>
-              {left.map((photo,i) => (
-                <FadeIn key={photo.id} delay={i*0.05}>
-                  <PlaceholderFrame ratio={photo.ratio} id={photo.id}/>
-                </FadeIn>
-              ))}
-            </div>
-            <div style={{ display:"flex", flexDirection:"column", gap:isDesktop ? 16 : 10 }}>
-              {right.map((photo,i) => (
-                <FadeIn key={photo.id} delay={i*0.05 + 0.05}>
-                  <PlaceholderFrame ratio={photo.ratio} id={photo.id}/>
-                </FadeIn>
-              ))}
-            </div>
+          <div style={{ display:"flex", flexDirection:"column", gap:isDesktop ? 16 : 10 }}>
+            {right.map((photo,i) => (
+              <FadeIn key={photo.id} delay={i*0.05 + 0.05}>
+                <PlaceholderFrame ratio={photo.ratio} id={photo.id}/>
+              </FadeIn>
+            ))}
           </div>
         </div>
       </div>
-    </div>
+    </Shell>
   );
 }
 
@@ -168,7 +158,8 @@ export default function PortfolioPage({ onOpenQuestionnaire }) {
     <>
       <Nav onOpenQuestionnaire={onOpenQuestionnaire}/>
       <main>
-        <PortfolioHeaderAndGallery/>
+        <PortfolioHero/>
+        <PortfolioGallery/>
         <PricingCTA/>
       </main>
       <Footer onOpenQuestionnaire={onOpenQuestionnaire}/>
