@@ -354,11 +354,11 @@ function RecentWeddings() {
           </p>
         </FadeIn>
 
-        <div style={{ display:"flex", flexDirection:"column", gap:"0.4rem" }}>
+        <div style={{ display:"flex", flexDirection:"column", gap:"2rem" }}>
           {weddings.map((w,i) => (
             <FadeIn key={w.name} delay={i*0.08}>
-              <div>
-                <div style={{ overflow:"hidden", marginBottom:"15px", aspectRatio:"16/9" }}>
+              <div style={{ display:"flex", flexDirection:"column", gap:"15px" }}>
+                <div style={{ overflow:"hidden", aspectRatio:"16/9" }}>
                   <motion.img src={w.img} alt={w.name}
                     whileHover={{ scale:1.03 }} transition={{ duration:0.5 }}
                     style={{ width:"100%", height:"100%", objectFit:"cover",
@@ -366,10 +366,10 @@ function RecentWeddings() {
                 </div>
                 <div style={{ display:"flex", alignItems:"center",
                   justifyContent:"space-between", gap:"0.75rem" }}>
-                  <div>
+                  <div style={{ display:"flex", flexDirection:"column", gap:"0.15rem" }}>
                     <h3 style={{ fontFamily:"'Libre Baskerville', serif",
                       fontStyle:"italic", fontSize:"1.35rem",
-                      fontWeight:400, color:FIREBRICK, margin:"0 0 0.1rem" }}>{w.name}</h3>
+                      fontWeight:400, color:FIREBRICK, margin:0, lineHeight:1.15 }}>{w.name}</h3>
                     <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.62rem",
                       letterSpacing:"0.18em", textTransform:"uppercase",
                       color:SADDLE, opacity:0.55, margin:0 }}>{w.location}</p>
@@ -384,45 +384,57 @@ function RecentWeddings() {
           ))}
         </div>
 
-        {/* SAN SAN — exact flat KHAKI color via mask, no blend mode, bleeds into next section */}
-        <FadeIn delay={0.1}>
-          <div style={{ position:"relative", marginTop:"0.3rem", marginBottom:"-180px" }}>
-            {/*
-              The SAN SAN PNG is used purely as a shape mask. We apply it as a
-              mask-image on a div filled with solid KHAKI (#ACAF9A) — this gives
-              an exact, flat color match to the next section's background,
-              with no blend-mode color mixing against bisque. The real <img> is
-              kept (invisible) to drive the container's natural aspect ratio.
-            */}
-            <div style={{ position:"relative", width:"102%", marginLeft:"-1%" }}>
-              <img src={SANSAN_URL} alt="San San" style={{ width:"100%", display:"block", visibility:"hidden" }}/>
-              <div style={{
-                position:"absolute", inset:0,
-                backgroundColor: KHAKI,
-                WebkitMaskImage: `url(${SANSAN_URL})`,
-                maskImage: `url(${SANSAN_URL})`,
-                WebkitMaskRepeat: "no-repeat",
-                maskRepeat: "no-repeat",
-                WebkitMaskSize: "contain",
-                maskSize: "contain",
-                WebkitMaskPosition: "center",
-                maskPosition: "center",
-              }}/>
+      </div>
+
+      {/* SAN SAN — straddles the bisque→khaki boundary directly: this wrapper's
+          own background is split (top BISQUE, bottom KHAKI) so the graphic's
+          top "SAN" reads against bisque and the bottom "SAN" sits on khaki,
+          blending low-contrast khaki-on-khaki — exactly like the mockup,
+          rather than hiding content behind the next section via negative margin. */}
+      <div style={{ position:"relative" }}>
+        <div style={{ position:"absolute", inset:0, background:BISQUE, zIndex:0 }}/>
+        <div style={{ position:"absolute", left:0, right:0, bottom:0, top:"50%",
+          background:KHAKI, zIndex:0 }}/>
+        <div style={{ position:"relative", zIndex:1, padding:"0 1.5rem" }}>
+          <FadeIn delay={0.1}>
+            <div style={{ position:"relative" }}>
+              {/*
+                The SAN SAN PNG is used purely as a shape mask. We apply it as a
+                mask-image on a div filled with solid KHAKI (#ACAF9A) — this gives
+                an exact, flat color match regardless of what's behind it.
+                The real <img> is kept (invisible) to drive the container's
+                natural aspect ratio.
+              */}
+              <div style={{ position:"relative", width:"102%", marginLeft:"-1%" }}>
+                <img src={SANSAN_URL} alt="San San" style={{ width:"100%", display:"block", visibility:"hidden" }}/>
+                <div style={{
+                  position:"absolute", inset:0,
+                  backgroundColor: KHAKI,
+                  WebkitMaskImage: `url(${SANSAN_URL})`,
+                  maskImage: `url(${SANSAN_URL})`,
+                  WebkitMaskRepeat: "no-repeat",
+                  maskRepeat: "no-repeat",
+                  WebkitMaskSize: "contain",
+                  maskSize: "contain",
+                  WebkitMaskPosition: "center",
+                  maskPosition: "center",
+                }}/>
+              </div>
+              {/* Button centered over the top ~25% of SAN SAN, on the bisque portion */}
+              <div style={{ position:"absolute", top:"10%", left:0, right:0,
+                display:"flex", justifyContent:"center", zIndex:2 }}>
+                <a href="#" style={{
+                  display:"inline-block",
+                  border:`1.5px solid ${FIREBRICK}`,
+                  color:FIREBRICK, padding:"0.85rem 2.5rem",
+                  fontFamily:"'Manrope', sans-serif", fontSize:"0.72rem", fontWeight:600,
+                  letterSpacing:"0.16em", textTransform:"uppercase",
+                  borderRadius:"999px", textDecoration:"none",
+                  background:BISQUE }}>View Full Portfolio</a>
+              </div>
             </div>
-            {/* Button centered over the top ~25% of SAN SAN */}
-            <div style={{ position:"absolute", top:"10%", left:0, right:0,
-              display:"flex", justifyContent:"center", zIndex:2 }}>
-              <a href="#" style={{
-                display:"inline-block",
-                border:`1.5px solid ${FIREBRICK}`,
-                color:FIREBRICK, padding:"0.85rem 2.5rem",
-                fontFamily:"'Manrope', sans-serif", fontSize:"0.72rem", fontWeight:600,
-                letterSpacing:"0.16em", textTransform:"uppercase",
-                borderRadius:"999px", textDecoration:"none",
-                background:BISQUE }}>View Full Portfolio</a>
-            </div>
-          </div>
-        </FadeIn>
+          </FadeIn>
+        </div>
       </div>
     </Shell>
   );
@@ -456,7 +468,7 @@ function HowWeShoot() {
 
       {/* Text content */}
       <div style={{ position:"relative", zIndex:1, maxWidth:MAX_W, margin:"0 auto" }}>
-        <div style={{ padding:"11.5rem 1.5rem 3rem" }}>
+        <div style={{ padding:"3.5rem 1.5rem 3rem" }}>
           <FadeIn>
             <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.62rem",
               letterSpacing:"0.22em", textTransform:"uppercase",
