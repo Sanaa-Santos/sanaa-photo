@@ -368,7 +368,7 @@ function RecentWeddings() {
           </h2>
           <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.78rem",
             color:SADDLE, opacity:0.68, marginBottom:"1.5rem" }}>
-            Full days, start to finish — not just the highlights.
+            Weddings that left me feeling inspired.
           </p>
         </FadeIn>
 
