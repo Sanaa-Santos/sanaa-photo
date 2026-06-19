@@ -22,12 +22,29 @@ const CATS_CREAM      = "https://res.cloudinary.com/drqtl7xy8/image/upload/f_aut
 const CACTUS_URL      = "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1781833031/cactus_uqyno6.png";
 const BOOTS_URL       = "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1781833083/boots_fwnp5g.png";
 const HAT_URL         = "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1781833117/hat_cjxrve.png";
-const SANSAN_URL      = "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1781835662/sansan_a2uxlg.png";
+const SANSAN_URL      = "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1781833119/sansan_ck4ngq.png";
 const LOGO_RED_WORD   = "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1781811245/Sansan_Stills_name_01_nxkfee.png";
 const LOGO_CREAM_WORD = "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1781813367/Sansan_Stills_name_03_k93cdv.png";
 const LOGO_CREAM_CAT  = "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1781813338/Sansan_Stills_icon_03_ovwd1h.png";
 
 const MAX_W = 680;
+const DESKTOP_BREAKPOINT = 900;
+
+// Lightweight hook used ONLY to branch a handful of desktop-specific values
+// (sizing/layout) below MAX_W's centered mobile column. Mobile behavior is
+// completely unaffected — this never changes markup or styles below the
+// breakpoint, only adds alternate values above it.
+function useIsDesktop() {
+  const [isDesktop, setIsDesktop] = useState(
+    typeof window !== "undefined" ? window.innerWidth >= DESKTOP_BREAKPOINT : false
+  );
+  useEffect(() => {
+    const onResize = () => setIsDesktop(window.innerWidth >= DESKTOP_BREAKPOINT);
+    window.addEventListener("resize", onResize, { passive:true });
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+  return isDesktop;
+}
 
 const Diamond = ({ color = FIREBRICK, size = 8 }) => (
   <svg width={size} height={size} viewBox="0 0 10 10" fill="none"
@@ -229,6 +246,7 @@ function Hero({ onOpenQuestionnaire }) {
 //  - RIGHT col: square, landscape, and circle photos stacked, each ~10% smaller,
 //    with more breathing room between them
 function IntroSection() {
+  const isDesktop = useIsDesktop();
   return (
     <Shell>
       <div style={{ position:"absolute", inset:0, zIndex:0,
@@ -241,7 +259,7 @@ function IntroSection() {
           alignItems:"start" }}>
 
           {/* LEFT COLUMN — text, photo, caption */}
-          <div>
+          <div style={isDesktop ? { marginTop:"2.5rem" } : undefined}>
             <FadeIn>
               <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.95rem", color:SADDLE,
                 lineHeight:1.75, marginBottom:"1.5rem" }}>
@@ -302,6 +320,7 @@ function IntroSection() {
 
 // ── TICKER ────────────────────────────────────────────────────────────────────
 function Ticker() {
+  const isDesktop = useIsDesktop();
   const items = [
     "Real, not performative","One flat rate","No overtime charges",
     "Full day coverage","Austin, TX based","Documentary style",
@@ -309,22 +328,28 @@ function Ticker() {
     "Full day coverage","Austin, TX based","Documentary style",
   ];
   return (
-    <Shell outerBg={FIREBRICK} innerBg={FIREBRICK}>
-      <div style={{ overflow:"hidden", padding:"0.9rem 0" }}>
-        <motion.div
-          animate={{ x:["0%","-50%"] }}
-          transition={{ duration:28, repeat:Infinity, ease:"linear" }}
-          style={{ display:"flex", whiteSpace:"nowrap", width:"max-content" }}>
-          {[...items,...items].map((item,i) => (
-            <span key={i} style={{ display:"inline-flex", alignItems:"center", gap:"0.8rem",
-              fontFamily:"'Manrope', sans-serif", fontSize:"0.65rem", letterSpacing:"0.22em",
-              textTransform:"uppercase", color:BISQUE, opacity:0.88, paddingRight:"2rem" }}>
-              <Diamond color={BISQUE} size={6}/>{item}
-            </span>
-          ))}
-        </motion.div>
+    <div style={{ position:"relative", background:BISQUE }}>
+      <div style={{ position:"absolute", inset:0, zIndex:0,
+        backgroundImage:`url(${sitePattern})`, backgroundRepeat:"repeat",
+        backgroundSize:"clamp(260px,28vw,480px)", opacity:0.12, pointerEvents:"none" }}/>
+      <div style={{ position:"relative", zIndex:1,
+        maxWidth: isDesktop ? 1100 : MAX_W, margin:"0 auto", background:FIREBRICK }}>
+        <div style={{ overflow:"hidden", padding:"0.9rem 0" }}>
+          <motion.div
+            animate={{ x:["0%","-50%"] }}
+            transition={{ duration:28, repeat:Infinity, ease:"linear" }}
+            style={{ display:"flex", whiteSpace:"nowrap", width:"max-content" }}>
+            {[...items,...items].map((item,i) => (
+              <span key={i} style={{ display:"inline-flex", alignItems:"center", gap:"0.8rem",
+                fontFamily:"'Manrope', sans-serif", fontSize:"0.65rem", letterSpacing:"0.22em",
+                textTransform:"uppercase", color:BISQUE, opacity:0.88, paddingRight:"2rem" }}>
+                <Diamond color={BISQUE} size={6}/>{item}
+              </span>
+            ))}
+          </motion.div>
+        </div>
       </div>
-    </Shell>
+    </div>
   );
 }
 
@@ -437,6 +462,7 @@ function RecentWeddings() {
 // Bottom half of slider transitions to BISQUE.
 // Implemented as one outer div with the KHAKI bg, then a BISQUE bottom half.
 function HowWeShoot() {
+  const isDesktop = useIsDesktop();
   const points = [
     { label:"We catch it as it happens",
       body:"We document the real day, the planned and unplanned parts, and all the in-between moments you didn't even realize were happening." },
@@ -451,16 +477,25 @@ function HowWeShoot() {
   // tiled background (single element) so the pattern never restarts/seams
   // at any boundary. SAN SAN lives in RecentWeddings (on bisque) and dips
   // down into this section's khaki via a negative bottom margin there.
+  // The whole khaki block sits inside the same bisque+tile-pattern outer
+  // treatment as every other section, so on desktop it's confined to the
+  // content column instead of breaking out to the full viewport width.
   return (
-    <div style={{ position:"relative", background:KHAKI }}>
-      {/* Single continuous cat-pattern layer spanning SAN SAN + text + slider-top */}
-      <div className="howweshoot-cats" style={{ position:"absolute", inset:0, zIndex:0,
-        backgroundImage:`url(${CATS_CREAM})`, backgroundRepeat:"repeat",
-        backgroundSize:"clamp(280px,38vw,540px)", opacity:0.33, pointerEvents:"none" }}/>
+    <div style={{ position:"relative", background:BISQUE }}>
+      <div style={{ position:"absolute", inset:0, zIndex:0,
+        backgroundImage:`url(${sitePattern})`, backgroundRepeat:"repeat",
+        backgroundSize:"clamp(260px,28vw,480px)", opacity:0.12, pointerEvents:"none" }}/>
+      <div style={{ position:"relative", zIndex:1,
+        maxWidth: isDesktop ? 1100 : MAX_W, margin:"0 auto",
+        background:KHAKI, overflow:"hidden" }}>
+        {/* Single continuous cat-pattern layer spanning SAN SAN + text + slider-top */}
+        <div className="howweshoot-cats" style={{ position:"absolute", inset:0, zIndex:0,
+          backgroundImage:`url(${CATS_CREAM})`, backgroundRepeat:"repeat",
+          backgroundSize:"clamp(280px,38vw,540px)", opacity:0.33, pointerEvents:"none" }}/>
 
-      {/* Text content */}
-      <div style={{ position:"relative", zIndex:1, maxWidth:MAX_W, margin:"0 auto" }}>
-        <div style={{ padding:"1.5rem 1.5rem 3rem" }}>
+        {/* Text content */}
+        <div style={{ position:"relative", zIndex:1, maxWidth:MAX_W, margin:"0 auto" }}>
+          <div style={{ padding:"1.5rem 1.5rem 3rem" }}>
           <FadeIn>
             <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.62rem",
               letterSpacing:"0.22em", textTransform:"uppercase",
@@ -520,6 +555,7 @@ function HowWeShoot() {
             </FadeIn>
           </div>
         </div>
+        </div>
       </div>
     </div>
   );
@@ -556,6 +592,7 @@ function Testimonial() {
 
 // ── PRICING CTA ───────────────────────────────────────────────────────────────
 function PricingCTA() {
+  const isDesktop = useIsDesktop();
   return (
     <Shell>
       <section style={{ position:"relative", overflow:"hidden", aspectRatio:"3/4" }}>
@@ -567,23 +604,26 @@ function PricingCTA() {
           pointerEvents:"none" }}/>
         <div style={{ position:"relative", zIndex:1, padding:"2rem 1.5rem 0" }}>
           <FadeIn>
-            <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.62rem",
+            <p style={{ fontFamily:"'Manrope', sans-serif",
+              fontSize: isDesktop ? "0.85rem" : "0.62rem",
               letterSpacing:"0.22em", textTransform:"uppercase",
-              color:FIREBRICK, opacity:0.9, marginBottom:"0.25rem" }}>The Flat Rate</p>
+              color:FIREBRICK, opacity:0.9, marginBottom: isDesktop ? "0.5rem" : "0.25rem" }}>The Flat Rate</p>
             <h2 style={{ fontFamily:"'Libre Baskerville', serif",
-              fontSize:"clamp(1.8rem, 8vw, 2.8rem)",
-              fontWeight:400, color:FIREBRICK, lineHeight:1.08, marginBottom:"0.35rem" }}>
+              fontSize: isDesktop ? "clamp(2.8rem, 5vw, 4.2rem)" : "clamp(1.8rem, 8vw, 2.8rem)",
+              fontWeight:400, color:FIREBRICK, lineHeight:1.08,
+              marginBottom: isDesktop ? "0.6rem" : "0.35rem" }}>
               One day.<br/><em>One price.</em>
             </h2>
-            <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.78rem",
-              color:FIREBRICK, opacity:0.8, marginBottom:"1.2rem" }}>
+            <p style={{ fontFamily:"'Manrope', sans-serif",
+              fontSize: isDesktop ? "1.05rem" : "0.78rem",
+              color:FIREBRICK, opacity:0.8, marginBottom: isDesktop ? "1.8rem" : "1.2rem" }}>
               No surprises at the end of the night.
             </p>
             <a href="#" style={{ display:"inline-block",
               background:FIREBRICK, color:BISQUE,
-              padding:"0.85rem 2rem",
+              padding: isDesktop ? "1.1rem 2.6rem" : "0.85rem 2rem",
               fontFamily:"'Manrope', sans-serif",
-              fontSize:"0.7rem", fontWeight:700,
+              fontSize: isDesktop ? "0.85rem" : "0.7rem", fontWeight:700,
               letterSpacing:"0.14em", textTransform:"uppercase",
               borderRadius:"999px", textDecoration:"none" }}>See What's Included</a>
           </FadeIn>
