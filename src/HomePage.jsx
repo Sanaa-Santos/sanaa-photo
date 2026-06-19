@@ -387,24 +387,17 @@ function RecentWeddings() {
         {/* SAN SAN — full-width wordmark sitting on this section's BISQUE
             background, matching the mockup: khaki-colored letters read
             clearly against bisque. The CTA button overlaps the gap between
-            the two stacked "SAN" words. A short KHAKI strip sits behind
-            just the bottom edge of the graphic (painted before it, so the
-            graphic itself is never hidden) — this is what lets the bottom
-            of the second "SAN" visually touch/blend into khaki before the
-            next section begins. */}
+            the two stacked "SAN" words. */}
         <FadeIn delay={0.1}>
-          <div style={{ position:"relative", marginTop:"1rem" }}>
-            {/* KHAKI strip behind only the bottom of the graphic */}
-            <div style={{ position:"absolute", left:0, right:0, bottom:0, height:18,
-              background:KHAKI, zIndex:0 }}/>
+          <div style={{ position:"relative", marginTop:"2.5rem" }}>
             {/*
               The SAN SAN PNG is used purely as a shape mask. We apply it as a
               mask-image on a div filled with solid KHAKI (#ACAF9A) — this gives
-              an exact, flat color match against either backdrop. The real
+              an exact, flat color match against the bisque backdrop. The real
               <img> is kept (invisible) to drive the container's natural
               aspect ratio.
             */}
-            <div style={{ position:"relative", zIndex:1, width:"108%", marginLeft:"-4%" }}>
+            <div style={{ position:"relative", width:"108%", marginLeft:"-4%" }}>
               <img src={SANSAN_URL} alt="San San" style={{ width:"100%", display:"block", visibility:"hidden" }}/>
               <div style={{
                 position:"absolute", inset:0,
