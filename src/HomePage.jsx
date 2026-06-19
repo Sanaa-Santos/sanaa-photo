@@ -19,10 +19,10 @@ const REVIEW_URL      = "https://res.cloudinary.com/drqtl7xy8/image/upload/f_aut
 const PRICE_URL       = "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1781810036/courtney-megan-austin-wedding-flat-rate-section_gjawmj.jpg";
 const CATS_GREEN      = "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1781811065/Green-cats_yssk3o.png";
 const CATS_CREAM      = "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1781811066/Cream-cats_nbnxvi.png";
-const CACTUS_URL      = "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1781814809/cactus_wbrany.png";
-const BOOTS_URL       = "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1781814810/boots_dvnnio.png";
-const HAT_URL         = "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1781814826/hat_gp2ucv.png";
-const SANSAN_URL      = "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1781814828/sansan_khqsq6.png";
+const CACTUS_URL      = "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1781833031/cactus_uqyno6.png";
+const BOOTS_URL       = "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1781833083/boots_fwnp5g.png";
+const HAT_URL         = "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1781833117/hat_cjxrve.png";
+const SANSAN_URL      = "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1781833119/sansan_ck4ngq.png";
 const LOGO_RED_WORD   = "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1781811245/Sansan_Stills_name_01_nxkfee.png";
 const LOGO_CREAM_WORD = "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1781813367/Sansan_Stills_name_03_k93cdv.png";
 const LOGO_CREAM_CAT  = "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1781813338/Sansan_Stills_icon_03_ovwd1h.png";
@@ -385,57 +385,6 @@ function RecentWeddings() {
         </div>
 
       </div>
-
-      {/* SAN SAN — straddles the bisque→khaki boundary directly: this wrapper's
-          own background is split (top BISQUE, bottom KHAKI) so the graphic's
-          top "SAN" reads against bisque and the bottom "SAN" sits on khaki,
-          blending low-contrast khaki-on-khaki — exactly like the mockup,
-          rather than hiding content behind the next section via negative margin. */}
-      <div style={{ position:"relative" }}>
-        <div style={{ position:"absolute", inset:0, background:BISQUE, zIndex:0 }}/>
-        <div style={{ position:"absolute", left:0, right:0, bottom:0, top:"50%",
-          background:KHAKI, zIndex:0 }}/>
-        <div style={{ position:"relative", zIndex:1, padding:"0 1.5rem" }}>
-          <FadeIn delay={0.1}>
-            <div style={{ position:"relative" }}>
-              {/*
-                The SAN SAN PNG is used purely as a shape mask. We apply it as a
-                mask-image on a div filled with solid KHAKI (#ACAF9A) — this gives
-                an exact, flat color match regardless of what's behind it.
-                The real <img> is kept (invisible) to drive the container's
-                natural aspect ratio.
-              */}
-              <div style={{ position:"relative", width:"102%", marginLeft:"-1%" }}>
-                <img src={SANSAN_URL} alt="San San" style={{ width:"100%", display:"block", visibility:"hidden" }}/>
-                <div style={{
-                  position:"absolute", inset:0,
-                  backgroundColor: KHAKI,
-                  WebkitMaskImage: `url(${SANSAN_URL})`,
-                  maskImage: `url(${SANSAN_URL})`,
-                  WebkitMaskRepeat: "no-repeat",
-                  maskRepeat: "no-repeat",
-                  WebkitMaskSize: "contain",
-                  maskSize: "contain",
-                  WebkitMaskPosition: "center",
-                  maskPosition: "center",
-                }}/>
-              </div>
-              {/* Button centered over the top ~25% of SAN SAN, on the bisque portion */}
-              <div style={{ position:"absolute", top:"10%", left:0, right:0,
-                display:"flex", justifyContent:"center", zIndex:2 }}>
-                <a href="#" style={{
-                  display:"inline-block",
-                  border:`1.5px solid ${FIREBRICK}`,
-                  color:FIREBRICK, padding:"0.85rem 2.5rem",
-                  fontFamily:"'Manrope', sans-serif", fontSize:"0.72rem", fontWeight:600,
-                  letterSpacing:"0.16em", textTransform:"uppercase",
-                  borderRadius:"999px", textDecoration:"none",
-                  background:BISQUE }}>View Full Portfolio</a>
-              </div>
-            </div>
-          </FadeIn>
-        </div>
-      </div>
     </Shell>
   );
 }
@@ -455,19 +404,70 @@ function HowWeShoot() {
   ];
 
   // Slider card height for calculating the 50% cut
-  // The KHAKI + cream-cats area spans from the top of the text section down
-  // through the top half of the slider — rendered as ONE continuous tiled
-  // background (single element) so the pattern never restarts/seams at the
-  // boundary between the two sections.
+  // The KHAKI + cream-cats area spans from SAN SAN's midpoint, through the
+  // text section, down through the top half of the slider — rendered as ONE
+  // continuous tiled background (single element) so the pattern never
+  // restarts/seams at any boundary. A BISQUE panel sits on top of only the
+  // upper half of the SAN SAN graphic so it reads against bisque there,
+  // while the lower half (and everything below it) sits on the one
+  // continuous khaki+cats layer underneath.
   return (
     <div style={{ position:"relative", background:KHAKI }}>
-      {/* Single continuous cat-pattern layer spanning text + slider-top */}
+      {/* Single continuous cat-pattern layer spanning SAN SAN + text + slider-top */}
       <div className="howweshoot-cats" style={{ position:"absolute", inset:0, zIndex:0,
         backgroundImage:`url(${CATS_CREAM})`, backgroundRepeat:"repeat",
         backgroundSize:"clamp(280px,38vw,540px)", opacity:0.33, pointerEvents:"none" }}/>
 
-      {/* Text content */}
+      {/* SAN SAN — sits on the continuous khaki+cats layer. A bisque panel
+          covers only its top half so the upper "SAN" reads against bisque
+          (matching the section above), while the lower "SAN" blends into
+          the khaki+cats backdrop with no seam. */}
       <div style={{ position:"relative", zIndex:1, maxWidth:MAX_W, margin:"0 auto" }}>
+        <div style={{ position:"relative" }}>
+          <div style={{ position:"absolute", left:0, right:0, top:0, height:"50%",
+            background:BISQUE, zIndex:1 }}/>
+          <div style={{ position:"relative", zIndex:2, padding:"0 1.5rem" }}>
+            <FadeIn delay={0.1}>
+              <div style={{ position:"relative" }}>
+                {/*
+                  The SAN SAN PNG is used purely as a shape mask. We apply it as a
+                  mask-image on a div filled with solid KHAKI (#ACAF9A) — this gives
+                  an exact, flat color match regardless of what's behind it.
+                  The real <img> is kept (invisible) to drive the container's
+                  natural aspect ratio.
+                */}
+                <div style={{ position:"relative", width:"102%", marginLeft:"-1%" }}>
+                  <img src={SANSAN_URL} alt="San San" style={{ width:"100%", display:"block", visibility:"hidden" }}/>
+                  <div style={{
+                    position:"absolute", inset:0,
+                    backgroundColor: KHAKI,
+                    WebkitMaskImage: `url(${SANSAN_URL})`,
+                    maskImage: `url(${SANSAN_URL})`,
+                    WebkitMaskRepeat: "no-repeat",
+                    maskRepeat: "no-repeat",
+                    WebkitMaskSize: "contain",
+                    maskSize: "contain",
+                    WebkitMaskPosition: "center",
+                    maskPosition: "center",
+                  }}/>
+                </div>
+                {/* Button centered over the top ~25% of SAN SAN, on the bisque portion */}
+                <div style={{ position:"absolute", top:"10%", left:0, right:0,
+                  display:"flex", justifyContent:"center", zIndex:3 }}>
+                  <a href="#" style={{
+                    display:"inline-block",
+                    border:`1.5px solid ${FIREBRICK}`,
+                    color:FIREBRICK, padding:"0.85rem 2.5rem",
+                    fontFamily:"'Manrope', sans-serif", fontSize:"0.72rem", fontWeight:600,
+                    letterSpacing:"0.16em", textTransform:"uppercase",
+                    borderRadius:"999px", textDecoration:"none",
+                    background:BISQUE }}>View Full Portfolio</a>
+                </div>
+              </div>
+            </FadeIn>
+          </div>
+        </div>
+
         <div style={{ padding:"3.5rem 1.5rem 3rem" }}>
           <FadeIn>
             <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.62rem",
