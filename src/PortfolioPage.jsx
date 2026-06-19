@@ -1,9 +1,11 @@
+import sitePattern from "./assets/sitebg.jpg";
 import {
   BISQUE, FIREBRICK, SADDLE, MAX_W, DESKTOP_BREAKPOINT,
   useIsDesktop, Diamond, FadeIn, Shell, Nav, Footer,
 } from "./Shared";
 
-const PRICE_URL = "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1781810036/courtney-megan-austin-wedding-flat-rate-section_gjawmj.jpg";
+const HERO_URL  = "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1781882012/jake-farzana-austin-wedding-portfolio-hero_afnnyy.jpg";
+const PRICE_URL = "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1781882012/jake-farzana-austin-wedding-portfolio-flat-rate_vpyisz.jpg";
 
 // Placeholder photo set — Kas hasn't picked final portfolio images yet.
 // Each entry just needs a distinct aspect ratio so the masonry effect
@@ -37,72 +39,81 @@ function PlaceholderFrame({ ratio, id }) {
   );
 }
 
-// ── HEADER ────────────────────────────────────────────────────────────────────
-// Functions like the homepage Hero: sits at the very top of the page, under
-// the fixed/transparent Nav (so it bleeds to the top edge on the live site,
-// matching the homepage — the mockup's extra top padding was just an artifact
-// of the static Canva mockup, not the intended live behavior).
-function PortfolioHeader() {
-  return (
-    <Shell>
-      <div style={{ position:"relative", paddingTop:"7rem" }}>
-        <div style={{ padding:"0 1.5rem 2.5rem" }}>
-          <FadeIn>
-            <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.62rem",
-              letterSpacing:"0.22em", textTransform:"uppercase",
-              color:FIREBRICK, opacity:0.72, marginBottom:"0.5rem",
-              display:"flex", alignItems:"center", gap:"0.5rem" }}>
-              <Diamond color={FIREBRICK} size={7}/>Portfolio
-            </p>
-            <h1 style={{ fontFamily:"'Libre Baskerville', serif", fontStyle:"italic",
-              fontSize:"clamp(2.4rem, 10vw, 4.2rem)",
-              fontWeight:400, color:FIREBRICK, lineHeight:1.08, marginBottom:"0.75rem" }}>
-              The <em>work</em>
-            </h1>
-            <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.95rem",
-              color:SADDLE, opacity:0.75 }}>
-              Every photo below was delivered to a real couple.
-            </p>
-          </FadeIn>
-        </div>
-      </div>
-    </Shell>
-  );
-}
-
-// ── GALLERY ───────────────────────────────────────────────────────────────────
-// Two independent columns (masonry), matching mathilde-rietsch.com/portfolio/mariage:
-// photos are distributed alternately into two columns so each column's height
-// flows independently — taller/shorter photos don't force row-locked gaps like
-// a strict CSS grid would. On desktop this sits in the same MAX_W-equivalent
-// column treatment as the rest of the site; the two photo columns themselves
-// get a bit more breathing room on wider screens.
-function Gallery() {
+// ── HEADER + GALLERY ──────────────────────────────────────────────────────────
+// Header and Gallery share ONE continuous tile-pattern background (single
+// element) so the pattern never restarts/seams at the boundary between them
+// — same technique used for the homepage's "How We Shoot" section. Both are
+// BISQUE throughout, so there's no color change to break up, just one
+// uninterrupted tiled backdrop from the top of the page through the gallery.
+function PortfolioHeaderAndGallery() {
   const isDesktop = useIsDesktop();
   const left = PLACEHOLDER_PHOTOS.filter((_,i) => i % 2 === 0);
   const right = PLACEHOLDER_PHOTOS.filter((_,i) => i % 2 === 1);
 
   return (
-    <Shell innerStyle={isDesktop ? { maxWidth: MAX_W * 1.4 } : {}}>
-      <div style={{ padding:"0 1.5rem 3rem" }}>
-        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:isDesktop ? 16 : 10 }}>
-          <div style={{ display:"flex", flexDirection:"column", gap:isDesktop ? 16 : 10 }}>
-            {left.map((photo,i) => (
-              <FadeIn key={photo.id} delay={i*0.05}>
-                <PlaceholderFrame ratio={photo.ratio} id={photo.id}/>
-              </FadeIn>
-            ))}
+    <div style={{ position:"relative", background:BISQUE }}>
+      <div style={{ position:"absolute", inset:0, zIndex:0,
+        backgroundImage:`url(${sitePattern})`, backgroundRepeat:"repeat",
+        backgroundSize:"clamp(260px,28vw,480px)", opacity:0.12, pointerEvents:"none" }}/>
+
+      <div style={{ position:"relative", zIndex:1, maxWidth:MAX_W, margin:"0 auto" }}>
+        {/* Header */}
+        <div style={{ position:"relative", paddingTop:"7rem" }}>
+          <div style={{ padding:"0 1.5rem 2.5rem" }}>
+            <FadeIn>
+              <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.62rem",
+                letterSpacing:"0.22em", textTransform:"uppercase",
+                color:FIREBRICK, opacity:0.72, marginBottom:"0.5rem",
+                display:"flex", alignItems:"center", gap:"0.5rem" }}>
+                <Diamond color={FIREBRICK} size={7}/>Portfolio
+              </p>
+              <h1 style={{ fontFamily:"'Libre Baskerville', serif", fontStyle:"italic",
+                fontSize:"clamp(2.4rem, 10vw, 4.2rem)",
+                fontWeight:400, color:FIREBRICK, lineHeight:1.08, marginBottom:"0.75rem" }}>
+                The <em>work</em>
+              </h1>
+              <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.95rem",
+                color:SADDLE, opacity:0.75 }}>
+                Every photo below was delivered to a real couple.
+              </p>
+            </FadeIn>
           </div>
-          <div style={{ display:"flex", flexDirection:"column", gap:isDesktop ? 16 : 10 }}>
-            {right.map((photo,i) => (
-              <FadeIn key={photo.id} delay={i*0.05 + 0.05}>
-                <PlaceholderFrame ratio={photo.ratio} id={photo.id}/>
-              </FadeIn>
-            ))}
+        </div>
+
+        {/* Hero image — full-width within the column */}
+        <FadeIn delay={0.08}>
+          <div style={{ padding:"0 1.5rem 2.5rem" }}>
+            <div style={{ aspectRatio:"4/5", overflow:"hidden" }}>
+              <img src={HERO_URL} alt="Jake & Farzana"
+                style={{ width:"100%", height:"100%", objectFit:"cover",
+                  objectPosition:"center center", display:"block" }}/>
+            </div>
+          </div>
+        </FadeIn>
+
+        {/* Gallery — two independent columns (masonry), matching
+            mathilde-rietsch.com/portfolio/mariage: photos are distributed
+            alternately so each column's height flows independently. */}
+        <div style={{ padding:"0 1.5rem 3rem" }}>
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:isDesktop ? 16 : 10 }}>
+            <div style={{ display:"flex", flexDirection:"column", gap:isDesktop ? 16 : 10 }}>
+              {left.map((photo,i) => (
+                <FadeIn key={photo.id} delay={i*0.05}>
+                  <PlaceholderFrame ratio={photo.ratio} id={photo.id}/>
+                </FadeIn>
+              ))}
+            </div>
+            <div style={{ display:"flex", flexDirection:"column", gap:isDesktop ? 16 : 10 }}>
+              {right.map((photo,i) => (
+                <FadeIn key={photo.id} delay={i*0.05 + 0.05}>
+                  <PlaceholderFrame ratio={photo.ratio} id={photo.id}/>
+                </FadeIn>
+              ))}
+            </div>
           </div>
         </div>
       </div>
-    </Shell>
+    </div>
   );
 }
 
@@ -157,8 +168,7 @@ export default function PortfolioPage({ onOpenQuestionnaire }) {
     <>
       <Nav onOpenQuestionnaire={onOpenQuestionnaire}/>
       <main>
-        <PortfolioHeader/>
-        <Gallery/>
+        <PortfolioHeaderAndGallery/>
         <PricingCTA/>
       </main>
       <Footer onOpenQuestionnaire={onOpenQuestionnaire}/>
