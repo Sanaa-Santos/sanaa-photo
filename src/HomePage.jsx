@@ -263,7 +263,7 @@ function IntroSection() {
             <FadeIn>
               <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.95rem", color:SADDLE,
                 lineHeight:1.75, marginBottom:"1.5rem" }}>
-                Candid wedding photography for couples who want to enjoy their day. One flat rate. The whole day.
+                Candid wedding photography for couples who want to enjoy their day. The whole day.
               </p>
             </FadeIn>
 
@@ -457,9 +457,9 @@ function RecentWeddings() {
 function HowWeShoot() {
   const points = [
     { label:"We catch it as it happens",
-      body:"We document the real day, the planned and unplanned parts, and all the in-between moments you didn't even realize were happening." },
+      body:"We document the real day, including all the in-between moments you didn't even realize were happening." },
     { label:"Every shot flattering. That's not luck.",
-      body:"My first job was photographing models. Angles, light, and easy direction are second nature." },
+      body:"My first job was fashion photography. Angles, light, and easy direction are second nature." },
     { label:"There the whole day",
       body:"You tell us when to start and stop. If the party keeps going, so do we." },
   ];
@@ -490,7 +490,7 @@ function HowWeShoot() {
         <div style={{ position:"relative", zIndex:1, maxWidth:MAX_W, margin:"0 auto" }}>
           <div style={{ padding:"1.5rem 1.5rem 3rem" }}>
           <FadeIn>
-            <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.62rem",
+            <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.90rem",
               letterSpacing:"0.22em", textTransform:"uppercase",
               color:FIREBRICK, marginBottom:"0.4rem" }}>How We Shoot</p>
             <h2 style={{ fontFamily:"'Libre Baskerville', serif",
