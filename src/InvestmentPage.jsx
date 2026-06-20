@@ -37,7 +37,7 @@ const FAQS = [
 function InvestmentHero() {
   return (
     <Shell>
-      <section style={{ position:"relative", minHeight:"100svh", display:"flex", alignItems:"flex-end" }}>
+      <section style={{ position:"relative", minHeight:"100svh", display:"flex", alignItems:"flex-end", overflow:"hidden" }}>
         <img src={HERO_URL} alt="Iesha & Steve"
           style={{ position:"absolute", inset:0, width:"100%", height:"100%",
             objectFit:"cover", objectPosition:"center center", display:"block",
