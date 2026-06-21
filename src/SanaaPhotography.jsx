@@ -7,6 +7,7 @@ import HomePage from "./HomePage";
 import PortfolioPage from "./PortfolioPage";
 import InvestmentPage from "./InvestmentPage";
 import ExperiencePage from "./ExperiencePage";
+import AboutPage from "./AboutPage";
 
 const BISQUE    = "#F7DDC2";
 const FIREBRICK = "#8E1D1F";
@@ -389,6 +390,7 @@ export default function SanaaPhotography() {
           <Route path="/portfolio" element={<PortfolioPage onOpenQuestionnaire={() => setQuestOpen(true)} />} />
           <Route path="/investment" element={<InvestmentPage onOpenQuestionnaire={() => setQuestOpen(true)} />} />
           <Route path="/experience" element={<ExperiencePage onOpenQuestionnaire={() => setQuestOpen(true)} />} />
+          <Route path="/about" element={<AboutPage onOpenQuestionnaire={() => setQuestOpen(true)} />} />
         </Routes>
       </BrowserRouter>
 

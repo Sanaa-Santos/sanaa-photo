@@ -88,7 +88,7 @@ export function Nav({ onOpenQuestionnaire }) {
     { label:"Portfolio", href:"/portfolio" },
     { label:"Investment", href:"/investment" },
     { label:"Experience", href:"/experience" },
-    { label:"About", href:"#" },
+    { label:"About", href:"/about" },
   ];
 
   useEffect(() => {
@@ -210,7 +210,7 @@ export function Footer({ onOpenQuestionnaire }) {
     { label:"Portfolio", href:"/portfolio" },
     { label:"Investment", href:"/investment" },
     { label:"Experience", href:"/experience" },
-    { label:"About", href:"#" },
+    { label:"About", href:"/about" },
   ];
   return (
     <Shell outerBg={FIREBRICK} innerBg={FIREBRICK}>
