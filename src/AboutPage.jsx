@@ -1,11 +1,13 @@
+import sitePattern from "./assets/sitebg.jpg";
 import {
-  BISQUE, FIREBRICK, SADDLE,
+  BISQUE, FIREBRICK, SADDLE, MAX_W,
   Diamond, FadeIn, Shell, Nav, Footer,
 } from "./Shared";
 
 const HERO_URL     = "https://res.cloudinary.com/drqtl7xy8/image/upload/v1782018773/sanaa-santos-sansan-stills-austin-wedding-photographer-about-hero_j286mj.jpg";
 const POLAROID_URL = "https://res.cloudinary.com/drqtl7xy8/image/upload/v1782018772/sanaa-santos-sansan-stills-austin-wedding-photographer-about-polaroid_jlnjxz.png";
 const CTA_URL      = "https://res.cloudinary.com/drqtl7xy8/image/upload/v1782018772/sanaa-santos-sansan-stills-austin-wedding-photographer-about-ready_upq1j8.jpg";
+const CATS_CREAM   = "https://res.cloudinary.com/drqtl7xy8/image/upload/v1781811066/Cream-cats_nbnxvi.png";
 
 const BIO_PARAGRAPHS = [
   "I picked up a camera thinking it'd be a hobby, and it became my life. A lover of beauty, fashion, and storytelling. I started in fashion photography, where I learned how to see people — how each person is different and deserves their own light.",
@@ -54,57 +56,73 @@ function AboutHero() {
 }
 
 // ── BIO + POLAROIDS + QUOTE + FACTS ──────────────────────────────────────────
-// All on the same BISQUE background, so they share one Shell/pattern layer
-// rather than separate instances (avoids the tile seam).
+// This section sits on a FIREBRICK background with the khaki cat pattern at
+// 15% opacity (per mockup), rather than the default Shell treatment. Same
+// nesting technique as HomePage's HowWeShoot: the outer BISQUE + dim
+// sitebg-tile layer spans the full viewport width exactly like every other
+// section (so desktop's outer pattern is untouched), and a maxWidth:MAX_W
+// inner wrapper carries its own FIREBRICK background + cat-pattern layer,
+// confined to the content column.
 function BioAndFacts() {
   return (
-    <Shell>
-      <div style={{ padding:"3rem 1.5rem 3.5rem" }}>
-        <FadeIn>
-          <div style={{ display:"flex", flexDirection:"column", gap:"1.25rem" }}>
-            {BIO_PARAGRAPHS.map((p, i) => (
-              <p key={i} style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.92rem",
-                color:SADDLE, opacity:0.88, lineHeight:1.78 }}>
-                {p}
-              </p>
+    <div style={{ position:"relative", background:BISQUE }}>
+      <div style={{ position:"absolute", inset:0, zIndex:0,
+        backgroundImage:`url(${sitePattern})`, backgroundRepeat:"repeat",
+        backgroundSize:"clamp(260px,28vw,480px)", opacity:0.12, pointerEvents:"none" }}/>
+      <div style={{ position:"relative", zIndex:1,
+        maxWidth:MAX_W, margin:"0 auto",
+        background:FIREBRICK, overflow:"hidden" }}>
+        <div style={{ position:"absolute", inset:0, zIndex:0,
+          backgroundImage:`url(${CATS_CREAM})`, backgroundRepeat:"repeat",
+          backgroundSize:"clamp(280px,38vw,540px)", opacity:0.15, pointerEvents:"none" }}/>
+
+        <div style={{ position:"relative", zIndex:1, padding:"3rem 1.5rem 3.5rem" }}>
+          <FadeIn>
+            <div style={{ display:"flex", flexDirection:"column", gap:"1.25rem" }}>
+              {BIO_PARAGRAPHS.map((p, i) => (
+                <p key={i} style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.92rem",
+                  color:BISQUE, opacity:0.88, lineHeight:1.78 }}>
+                  {p}
+                </p>
+              ))}
+            </div>
+          </FadeIn>
+
+          <FadeIn delay={0.08}>
+            <div style={{ margin:"2.75rem 0 2.5rem", display:"flex", justifyContent:"center" }}>
+              <img src={POLAROID_URL} alt="Sanaa — fashion shoots and Austin, before weddings"
+                style={{ width:"100%", maxWidth:420, height:"auto", display:"block" }}/>
+            </div>
+          </FadeIn>
+
+          <FadeIn delay={0.1}>
+            <blockquote style={{ fontFamily:"'Libre Baskerville', serif", fontStyle:"italic",
+              fontSize:"1.2rem", color:BISQUE, lineHeight:1.55, marginBottom:"2.75rem" }}>
+              My first job was photographing models. Weddings turned out to be where that training matters most.
+            </blockquote>
+          </FadeIn>
+
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"0.7rem" }}>
+            {FACTS.map((fact, i) => (
+              <FadeIn key={fact.label} delay={i * 0.06}>
+                <div style={{ background:BISQUE, borderRadius:8,
+                  padding:"1.1rem 1rem", height:"100%", boxSizing:"border-box" }}>
+                  <p style={{ fontFamily:"'Libre Baskerville', serif", fontStyle:"italic",
+                    fontSize:"1.02rem", fontWeight:400, color:FIREBRICK,
+                    lineHeight:1.25, marginBottom:"0.5rem" }}>
+                    {fact.label}
+                  </p>
+                  <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.78rem",
+                    color:SADDLE, opacity:0.85, lineHeight:1.5 }}>
+                    {fact.body}
+                  </p>
+                </div>
+              </FadeIn>
             ))}
           </div>
-        </FadeIn>
-
-        <FadeIn delay={0.08}>
-          <div style={{ margin:"2.75rem 0 2.5rem", display:"flex", justifyContent:"center" }}>
-            <img src={POLAROID_URL} alt="Sanaa — fashion shoots and Austin, before weddings"
-              style={{ width:"100%", maxWidth:420, height:"auto", display:"block" }}/>
-          </div>
-        </FadeIn>
-
-        <FadeIn delay={0.1}>
-          <blockquote style={{ fontFamily:"'Libre Baskerville', serif", fontStyle:"italic",
-            fontSize:"1.2rem", color:FIREBRICK, lineHeight:1.55, marginBottom:"2.75rem" }}>
-            My first job was photographing models. Weddings turned out to be where that training matters most.
-          </blockquote>
-        </FadeIn>
-
-        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"0.7rem" }}>
-          {FACTS.map((fact, i) => (
-            <FadeIn key={fact.label} delay={i * 0.06}>
-              <div style={{ border:`1.5px solid ${FIREBRICK}`, borderRadius:8,
-                padding:"1.1rem 1rem", height:"100%", boxSizing:"border-box" }}>
-                <p style={{ fontFamily:"'Libre Baskerville', serif", fontStyle:"italic",
-                  fontSize:"1.02rem", fontWeight:400, color:FIREBRICK,
-                  lineHeight:1.25, marginBottom:"0.5rem" }}>
-                  {fact.label}
-                </p>
-                <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.78rem",
-                  color:SADDLE, opacity:0.85, lineHeight:1.5 }}>
-                  {fact.body}
-                </p>
-              </div>
-            </FadeIn>
-          ))}
         </div>
       </div>
-    </Shell>
+    </div>
   );
 }
 

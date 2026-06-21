@@ -118,7 +118,8 @@ export function Nav({ onOpenQuestionnaire }) {
               display:"flex", flexDirection:"column", gap:6, padding:"4px", zIndex:1 }}>
             {[0,1,2].map(i => (
               <span key={i} style={{ display:"block", width:28, height:2.5,
-                background:BISQUE, borderRadius:2 }}/>
+                background: showCream ? BISQUE : FIREBRICK, borderRadius:2,
+                transition:"background 0.35s ease" }}/>
             ))}
           </button>
 
