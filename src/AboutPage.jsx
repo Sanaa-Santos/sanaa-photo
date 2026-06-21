@@ -98,7 +98,7 @@ function BioAndFacts() {
           <FadeIn delay={0.1}>
             <blockquote style={{ fontFamily:"'Libre Baskerville', serif", fontStyle:"italic",
               fontSize:"1.2rem", color:BISQUE, lineHeight:1.55, marginBottom:"2.75rem" }}>
-              My first job was photographing models. Weddings turned out to be where that training matters most.
+              If I'm not shooting weddings, you'll find me out in Austin, exploring the city in search for some good brisket, or at home cuddling my cat, Flan.
             </blockquote>
           </FadeIn>
 
