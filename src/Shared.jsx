@@ -87,7 +87,7 @@ export function Nav({ onOpenQuestionnaire }) {
     { label:"Home", href:"/" },
     { label:"Portfolio", href:"/portfolio" },
     { label:"Investment", href:"/investment" },
-    { label:"Experience", href:"#" },
+    { label:"Experience", href:"/experience" },
     { label:"About", href:"#" },
   ];
 
@@ -209,7 +209,7 @@ export function Footer({ onOpenQuestionnaire }) {
     { label:"Home", href:"/" },
     { label:"Portfolio", href:"/portfolio" },
     { label:"Investment", href:"/investment" },
-    { label:"Experience", href:"#" },
+    { label:"Experience", href:"/experience" },
     { label:"About", href:"#" },
   ];
   return (
