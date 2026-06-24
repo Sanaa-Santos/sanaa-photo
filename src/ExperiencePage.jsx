@@ -5,6 +5,7 @@ import {
 
 const HERO_URL  = "https://res.cloudinary.com/drqtl7xy8/image/upload/v1782005550/nicole-jonathan-austin-engagement_asqpgj.jpg";
 const CTA_URL   = "https://res.cloudinary.com/drqtl7xy8/image/upload/v1782013854/diana-ahmed-san-antonio-engagement-photography_nngyem.jpg";
+const TESTIMONIAL_URL = "https://res.cloudinary.com/drqtl7xy8/image/upload/v1782265970/nicole-jonathan-austin-6th-street-shoot-2_zieyre.jpg";
 
 const STEPS = [
   { n: "1", title: "Fill out the questionnaire",
@@ -101,24 +102,20 @@ function StepsAndTestimonial() {
 
         <FadeIn delay={0.1}>
           <div style={{ marginTop:"3rem" }}>
-            <div style={{ aspectRatio:"4/3",
-              background:"rgba(247,221,194,0.55)",
-              border:"1px dashed rgba(100,64,40,0.22)",
-              borderRadius:3, display:"flex", alignItems:"center", justifyContent:"center" }}>
-              <span style={{ fontFamily:"'Manrope', sans-serif",
-                fontSize:"0.6rem", letterSpacing:"0.15em",
-                textTransform:"uppercase", color:SADDLE, opacity:0.4 }}>
-                Photo — KASS2781 — Between The Moments
-              </span>
+            <div style={{ overflow:"hidden", aspectRatio:"4/3", marginBottom:"2rem" }}>
+              <img src={TESTIMONIAL_URL} alt="Nicole & Jonathan"
+                style={{ width:"100%", height:"100%", objectFit:"cover",
+                  objectPosition:"center center", display:"block" }}/>
             </div>
             <blockquote style={{ fontFamily:"'Libre Baskerville', serif", fontStyle:"italic",
-              fontSize:"1.15rem", color:FIREBRICK, lineHeight:1.5, marginTop:"1.5rem" }}>
-              "The whole day felt easy. We never once thought about the camera — and the photos are everything."
+              fontSize:"clamp(1.15rem, 5vw, 1.6rem)",
+              fontWeight:400, color:FIREBRICK, lineHeight:1.5, marginBottom:"1rem" }}>
+              "From the start, this wife-and-husband photography team made us feel comfortable and understood. They didn't just take photos, they told our love story. The way they worked together was seamless and intuitive, capturing multiple angles and emotions we didn't even realize were happening in real time. Every glance, every laugh, every quiet, in-between moment was documented with so much care and artistry. Their talent, professionalism, and heart are unmatched. If you're looking for photographers in the Austin metro area who go beyond posed shots and capture the true essence of your relationship, this is the team. We are beyond grateful and will treasure these photos forever. I will be coming back for more shoots!"
             </blockquote>
-            <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.6rem",
-              letterSpacing:"0.15em", textTransform:"uppercase",
-              color:SADDLE, opacity:0.4, marginTop:"0.6rem" }}>
-              Placeholder quote — swap with a real one
+            <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.62rem",
+              letterSpacing:"0.18em", textTransform:"uppercase",
+              color:SADDLE, opacity:0.55, display:"flex", alignItems:"center", gap:"0.5rem" }}>
+              <Diamond color={SADDLE} size={6}/>Nicole & Jonathan
             </p>
           </div>
         </FadeIn>
