@@ -5,7 +5,7 @@ import {
 } from "./Shared";
 
 const HERO_URL     = "https://res.cloudinary.com/drqtl7xy8/image/upload/v1782267442/sansan-stills-about-1_sqc0o2.jpg";
-const POLAROID_URL = "https://res.cloudinary.com/drqtl7xy8/image/upload/v1782268000/My_husband_Kas_awypwc.png";
+const POLAROID_URL = "https://res.cloudinary.com/drqtl7xy8/image/upload/v1782268127/austin-wedding-photographer-polaroids_rionym.png";
 const CTA_URL      = "https://res.cloudinary.com/drqtl7xy8/image/upload/v1782267336/sansan-stills-about-2_xsntrt.jpg";
 const CATS_CREAM   = "https://res.cloudinary.com/drqtl7xy8/image/upload/v1781811066/Cream-cats_nbnxvi.png";
 
