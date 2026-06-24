@@ -7,6 +7,7 @@ import {
 
 const HERO_URL = "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1781885239/iesha-steve-austin-engagement-investment-hero_m5hmm9.jpg";
 const CATS_CREAM = "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1781811066/Cream-cats_nbnxvi.png";
+const TESTIMONIAL_URL = "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1782265187/corbin-zuleyma-austin-wedding-3_vjkaui.jpg";
 
 const INCLUDED = [
   "Full-day coverage (no hour cap)",
@@ -163,19 +164,20 @@ function PricingAndFaq({ onOpenQuestionnaire }) {
 
         <FadeIn delay={0.08}>
           <div style={{ marginTop:"2.5rem" }}>
-            <div style={{ aspectRatio:"4/3",
-              background:"rgba(247,221,194,0.55)",
-              border:"1px dashed rgba(100,64,40,0.22)",
-              borderRadius:3, display:"flex", alignItems:"center", justifyContent:"center" }}>
-              <span style={{ fontFamily:"'Manrope', sans-serif",
-                fontSize:"0.6rem", letterSpacing:"0.15em",
-                textTransform:"uppercase", color:SADDLE, opacity:0.4 }}>
-                Photo — DSCF1072 — Corbin & Zuleyma
-              </span>
+            <div style={{ overflow:"hidden", aspectRatio:"4/3", marginBottom:"2rem" }}>
+              <img src={TESTIMONIAL_URL} alt="Corbin & Zuleyma"
+                style={{ width:"100%", height:"100%", objectFit:"cover",
+                  objectPosition:"center center", display:"block" }}/>
             </div>
-            <p style={{ fontFamily:"'Libre Baskerville', serif", fontStyle:"italic",
-              fontSize:"1.15rem", color:FIREBRICK, lineHeight:1.5, marginTop:"1.5rem" }}>
-              "If the party keeps going, so do we."
+            <blockquote style={{ fontFamily:"'Libre Baskerville', serif", fontStyle:"italic",
+              fontSize:"clamp(1.15rem, 5vw, 1.6rem)",
+              fontWeight:400, color:FIREBRICK, lineHeight:1.5, marginBottom:"1rem" }}>
+              "We enjoyed our experience working with Sanaa! She was always on top of check-ins and updates. Given some of our more unusual requests and wedding scheduling she found great images of not just us but displaying us & everyone else within the context of the entire day. We consistently receive compliments on our photos."
+            </blockquote>
+            <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.62rem",
+              letterSpacing:"0.18em", textTransform:"uppercase",
+              color:SADDLE, opacity:0.55, display:"flex", alignItems:"center", gap:"0.5rem" }}>
+              <Diamond color={SADDLE} size={6}/>Corbin & Zuleyma
             </p>
           </div>
         </FadeIn>
