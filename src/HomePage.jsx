@@ -24,6 +24,26 @@ const BOOTS_URL       = "https://res.cloudinary.com/drqtl7xy8/image/upload/f_aut
 const HAT_URL         = "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1781833117/hat_cjxrve.png";
 const SANSAN_URL      = "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1781835662/sansan_a2uxlg.png";
 
+const SLIDER_PHOTOS = [
+  "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1782264092/claire-lynelle-austin-engagement_loy9ar.jpg",
+  "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1782264092/megan-courtney-austin-wedding_wtisig.jpg",
+  "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1782264092/jake-farzana-austin-wedding-2_sec4qg.jpg",
+  "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1782264092/iesha-steve-austin-engagement_jkyzzq.jpg",
+  "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1782264092/jake-farzana-austin-wedding_tzoyhn.jpg",
+  "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1782264092/nicole-jonathan-austin-6th-street-shoot_p4jky2.jpg",
+  "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1782264091/jake-farzana-austin-engagement_dwxzr4.jpg",
+  "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1782264091/lynn-danny-austin-wedding_bwpmgt.jpg",
+  "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1782264091/riti-arul-austin-engagement_sjla8q.jpg",
+  "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1782264091/corbin-zuleyma-austin-wedding2_wjrvhv.jpg",
+  "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1782264092/hoan-thao-austin-wedding_kvzmvi.jpg",
+  "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1782264092/diana-ahmed-san-antonio-engagement_rbtsbq.jpg",
+  "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1782264092/priya-michaela-austin-engagement_emowkg.jpg",
+  "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1782264091/shantel-travis-austin-engagement_h6rxxg.jpg",
+  "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1782264091/rain-shuhara-austin-engagement-1_yqeko7.jpg",
+  "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1782264091/corbin-zuleyma-austin-wedding_ldj2ch.jpg",
+  "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1782264091/rain-shuhara-austin-engagement-2_qwdnae.jpg",
+];
+
 // ── HERO ──────────────────────────────────────────────────────────────────────
 function Hero({ onOpenQuestionnaire }) {
   return (
@@ -355,7 +375,10 @@ function HowWeShoot() {
 
         {/* Slider — sits directly under the text, still within the same
             continuous KHAKI + cats background. A BISQUE band is layered on
-            top to cover the bottom half of the slider only. */}
+            top to cover the bottom half of the slider only. Cards are real
+            photos at a fixed shared height (matches the old 240×360
+            placeholder height) with width:auto, so portrait and landscape
+            shots sit flush top/bottom but vary in width naturally. */}
         <div style={{ position:"relative", overflow:"hidden" }}>
           {/* BISQUE band — bottom half, drawn over the continuous cat bg */}
           <div style={{ position:"absolute", bottom:0, left:0, right:0, height:"50%",
@@ -367,15 +390,10 @@ function HowWeShoot() {
                 paddingBottom:"3rem", paddingTop:"2rem",
                 scrollbarWidth:"none", WebkitOverflowScrolling:"touch",
                 paddingLeft:"1.5rem", paddingRight:"1.5rem" }}>
-                {[1,2,3,4].map(i => (
-                  <div key={i} style={{ flexShrink:0, width:"65vw", maxWidth:240,
-                    aspectRatio:"2/3",
-                    background:"rgba(247,221,194,0.55)",
-                    border:"1px dashed rgba(100,64,40,0.22)",
-                    borderRadius:3, display:"flex", alignItems:"center", justifyContent:"center" }}>
-                    <span style={{ fontFamily:"'Manrope', sans-serif",
-                      fontSize:"0.6rem", letterSpacing:"0.15em",
-                      textTransform:"uppercase", color:SADDLE, opacity:0.4 }}>Photo {i}</span>
+                {SLIDER_PHOTOS.map((src, i) => (
+                  <div key={src} style={{ flexShrink:0, height:360 }}>
+                    <img src={src} alt="" style={{ height:"100%", width:"auto",
+                      display:"block", objectFit:"cover" }}/>
                   </div>
                 ))}
               </div>
