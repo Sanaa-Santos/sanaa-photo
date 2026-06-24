@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import {
   BISQUE, FIREBRICK, MAX_W, DESKTOP_BREAKPOINT,
-  useIsDesktop, Diamond, FadeIn, Shell, Nav, Footer,
+  useIsDesktop, Diamond, FadeIn, Shell, Nav, Footer, SEO,
 } from "./Shared";
 
 const HERO_URL  = "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1781882012/jake-farzana-austin-wedding-portfolio-hero_afnnyy.jpg";
@@ -186,6 +186,12 @@ function PricingCTA() {
 export default function PortfolioPage({ onOpenQuestionnaire }) {
   return (
     <>
+      <SEO
+        title="Wedding Photo Portfolio | Sansan Stills Austin"
+        description="Real Austin and Texas Hill Country weddings, shot candid and documentary-style. Browse galleries delivered to real couples by Sansan Stills."
+        path="/portfolio"
+        image="https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1781882012/jake-farzana-austin-wedding-portfolio-hero_afnnyy.jpg"
+      />
       <Nav onOpenQuestionnaire={onOpenQuestionnaire}/>
       <main>
         <PortfolioHero/>

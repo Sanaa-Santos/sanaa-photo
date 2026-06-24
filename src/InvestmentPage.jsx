@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   BISQUE, FIREBRICK, SADDLE,
-  Diamond, FadeIn, Shell, Nav, Footer,
+  Diamond, FadeIn, Shell, Nav, Footer, SEO,
 } from "./Shared";
 
 const HERO_URL = "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1781885239/iesha-steve-austin-engagement-investment-hero_m5hmm9.jpg";
@@ -208,6 +208,12 @@ function PricingAndFaq({ onOpenQuestionnaire }) {
 export default function InvestmentPage({ onOpenQuestionnaire }) {
   return (
     <>
+      <SEO
+        title="Wedding Photography Pricing | Sansan Stills Austin"
+        description="One flat rate for full-day Austin, TX wedding photography — no hour cap, no overtime charges. See what's included and get answers to common questions."
+        path="/investment"
+        image="https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1781885239/iesha-steve-austin-engagement-investment-hero_m5hmm9.jpg"
+      />
       <Nav onOpenQuestionnaire={onOpenQuestionnaire}/>
       <main>
         <InvestmentHero/>

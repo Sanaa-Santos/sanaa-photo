@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import sitePattern from "./assets/sitebg.jpg";
 import {
   BISQUE, FIREBRICK, SADDLE, KHAKI, MAX_W,
-  useIsDesktop, Diamond, FadeIn, Shell, Nav, Footer,
+  useIsDesktop, Diamond, FadeIn, Shell, Nav, Footer, SEO,
 } from "./Shared";
 
 const HERO_URL        = "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1781807787/herobanner_g72oiv.jpg";
@@ -531,6 +531,11 @@ function PricingCTA() {
 export default function HomePage({ onOpenQuestionnaire }) {
   return (
     <>
+      <SEO
+        title="Sansan Stills | Austin, TX Wedding Photographer"
+        description="Candid, documentary-style wedding photography in Austin, TX and the Texas Hill Country. Full-day coverage at one flat rate, no overtime charges."
+        path="/"
+      />
       <Nav onOpenQuestionnaire={onOpenQuestionnaire}/>
       <main>
         <Hero onOpenQuestionnaire={onOpenQuestionnaire}/>

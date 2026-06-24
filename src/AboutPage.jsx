@@ -1,7 +1,7 @@
 import sitePattern from "./assets/sitebg.jpg";
 import {
   BISQUE, FIREBRICK, SADDLE, MAX_W,
-  Diamond, FadeIn, Shell, Nav, Footer,
+  Diamond, FadeIn, Shell, Nav, Footer, SEO,
 } from "./Shared";
 
 const HERO_URL     = "https://res.cloudinary.com/drqtl7xy8/image/upload/v1782267442/sansan-stills-about-1_sqc0o2.jpg";
@@ -168,6 +168,12 @@ function ReadyCTA({ onOpenQuestionnaire }) {
 export default function AboutPage({ onOpenQuestionnaire }) {
   return (
     <>
+      <SEO
+        title="About Sanaa | Austin, TX Wedding Photographer"
+        description="Meet Sanaa Santos of Sansan Stills — a former fashion photographer turned Austin wedding photographer, shooting weddings since 2020 with a Fuji camera and a documentary eye."
+        path="/about"
+        image={HERO_URL}
+      />
       <Nav onOpenQuestionnaire={onOpenQuestionnaire}/>
       <main>
         <AboutHero/>

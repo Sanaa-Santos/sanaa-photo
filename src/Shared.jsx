@@ -15,6 +15,43 @@ export const LOGO_CREAM_CAT  = "https://res.cloudinary.com/drqtl7xy8/image/uploa
 export const MAX_W = 680;
 export const DESKTOP_BREAKPOINT = 900;
 
+export const SITE_URL  = "https://sansanstills.com";
+export const SITE_NAME = "Sansan Stills";
+// Default social-share image — homepage hero — used as the OG/Twitter
+// fallback for any page that doesn't pass its own `image` prop.
+export const DEFAULT_OG_IMAGE = "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1781807787/herobanner_g72oiv.jpg";
+
+// ── SEO ───────────────────────────────────────────────────────────────────────
+// React 19 hoists <title>, <meta>, and <link> tags rendered anywhere in the
+// tree up into the real document <head> automatically — no extra library
+// needed. Each page renders <SEO .../> once, near the top of its component,
+// with route-specific copy. This updates document.title and meta tags on
+// every client-side navigation (covers JS-rendering crawlers like modern
+// Googlebot), while index.html's own static tags remain the fallback for
+// crawlers/bots that don't execute JS (and serve as the homepage defaults).
+export function SEO({ title, description, path = "", image = DEFAULT_OG_IMAGE }) {
+  const url = `${SITE_URL}${path}`;
+  return (
+    <>
+      <title>{title}</title>
+      <meta name="description" content={description} />
+      <link rel="canonical" href={url} />
+
+      <meta property="og:type" content="website" />
+      <meta property="og:site_name" content={SITE_NAME} />
+      <meta property="og:title" content={title} />
+      <meta property="og:description" content={description} />
+      <meta property="og:url" content={url} />
+      <meta property="og:image" content={image} />
+
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={title} />
+      <meta name="twitter:description" content={description} />
+      <meta name="twitter:image" content={image} />
+    </>
+  );
+}
+
 // Lightweight hook used ONLY to branch a handful of desktop-specific values
 // (sizing/layout) below MAX_W's centered mobile column. Mobile behavior is
 // completely unaffected — this never changes markup or styles below the

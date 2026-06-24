@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#8E1D1F" />
+    <meta name="robots" content="index, follow" />
+
+    <!--
+      Only <title> lives here as a static fallback for non-JS crawlers/bots.
+      <meta name="description">, canonical, OG, and Twitter tags are NOT
+      duplicated here — React's <title> is deduplicated automatically when
+      <SEO> renders on each route, but <meta> and <link> are not deduplicated
+      against tags that exist outside React's render tree. Putting them here
+      too would leave two (possibly conflicting) description/OG tags in the
+      DOM on every page. <SEO> in Shared.jsx owns all of that, page by page.
+    -->
+    <title>Sansan Stills | Austin, TX Wedding Photographer</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

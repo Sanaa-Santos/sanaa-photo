@@ -1,6 +1,6 @@
 import {
   BISQUE, FIREBRICK, SADDLE,
-  Diamond, FadeIn, Shell, Nav, Footer,
+  Diamond, FadeIn, Shell, Nav, Footer, SEO,
 } from "./Shared";
 
 const HERO_URL  = "https://res.cloudinary.com/drqtl7xy8/image/upload/v1782005550/nicole-jonathan-austin-engagement_asqpgj.jpg";
@@ -166,6 +166,12 @@ function ReadyCTA({ onOpenQuestionnaire }) {
 export default function ExperiencePage({ onOpenQuestionnaire }) {
   return (
     <>
+      <SEO
+        title="The Wedding Day Experience | Sansan Stills Austin"
+        description="From questionnaire to final gallery: how booking Sansan Stills works, what your wedding day with us looks like, and when you'll get your photos."
+        path="/experience"
+        image={HERO_URL}
+      />
       <Nav onOpenQuestionnaire={onOpenQuestionnaire}/>
       <main>
         <ExperienceHero/>
