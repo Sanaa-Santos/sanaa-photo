@@ -105,7 +105,7 @@ function StepsAndTestimonial() {
             <div style={{ overflow:"hidden", aspectRatio:"4/3", marginBottom:"2rem" }}>
               <img src={TESTIMONIAL_URL} alt="Nicole & Jonathan"
                 style={{ width:"100%", height:"100%", objectFit:"cover",
-                  objectPosition:"center center", display:"block" }}/>
+                  objectPosition:"center 85%", display:"block" }}/>
             </div>
             <blockquote style={{ fontFamily:"'Libre Baskerville', serif", fontStyle:"italic",
               fontSize:"clamp(1.15rem, 5vw, 1.6rem)",
