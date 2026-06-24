@@ -304,6 +304,53 @@ function RecentWeddings() {
   );
 }
 
+// ── DRAG-TO-SCROLL (desktop) ─────────────────────────────────────────────────
+// overflowX:auto scroll strips work fine on mobile via touch, but desktop
+// mouse users have no scrollbar (hidden on purpose) and no drag gesture —
+// only trackpad horizontal-scroll or a tilt wheel would move it. This hook
+// adds click-and-drag panning, plus maps vertical wheel input to horizontal
+// scroll, so a plain mouse can swipe the strip too.
+function useDragScroll() {
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    let isDown = false, startX = 0, startScroll = 0;
+
+    const onDown = (e) => {
+      isDown = true;
+      startX = e.pageX; startScroll = el.scrollLeft;
+      el.style.cursor = "grabbing";
+    };
+    const onMove = (e) => {
+      if (!isDown) return;
+      el.scrollLeft = startScroll - (e.pageX - startX);
+    };
+    const endDrag = () => { isDown = false; el.style.cursor = "grab"; };
+    const onWheel = (e) => {
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        el.scrollLeft += e.deltaY;
+        e.preventDefault();
+      }
+    };
+
+    el.addEventListener("mousedown", onDown);
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", endDrag);
+    el.addEventListener("mouseleave", endDrag);
+    el.addEventListener("wheel", onWheel, { passive:false });
+
+    return () => {
+      el.removeEventListener("mousedown", onDown);
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", endDrag);
+      el.removeEventListener("mouseleave", endDrag);
+      el.removeEventListener("wheel", onWheel);
+    };
+  }, []);
+  return ref;
+}
+
 // ── HOW WE SHOOT + SLIDER ─────────────────────────────────────────────────────
 // KHAKI bg with cream cats covers text section + top half of slider.
 // Bottom half of slider transitions to BISQUE.
@@ -317,6 +364,7 @@ function HowWeShoot() {
     { label:"There the whole day",
       body:"You tell us when to start and stop. If the party keeps going, so do we." },
   ];
+  const sliderRef = useDragScroll();
 
   // The KHAKI + cream-cats area spans from the top of this section's text
   // down through the top half of the slider — rendered as ONE continuous
@@ -386,14 +434,16 @@ function HowWeShoot() {
 
           <div style={{ position:"relative", zIndex:1 }}>
             <FadeIn delay={0.1}>
-              <div style={{ display:"flex", gap:10, overflowX:"auto",
+              <div ref={sliderRef} style={{ display:"flex", gap:10, overflowX:"auto",
                 paddingBottom:"3rem", paddingTop:"2rem",
                 scrollbarWidth:"none", WebkitOverflowScrolling:"touch",
-                paddingLeft:"1.5rem", paddingRight:"1.5rem" }}>
+                paddingLeft:"1.5rem", paddingRight:"1.5rem",
+                cursor:"grab", userSelect:"none" }}>
                 {SLIDER_PHOTOS.map((src, i) => (
                   <div key={src} style={{ flexShrink:0, height:360 }}>
-                    <img src={src} alt="" style={{ height:"100%", width:"auto",
-                      display:"block", objectFit:"cover" }}/>
+                    <img src={src} alt="" draggable={false}
+                      style={{ height:"100%", width:"auto",
+                        display:"block", objectFit:"cover", pointerEvents:"none" }}/>
                   </div>
                 ))}
               </div>
