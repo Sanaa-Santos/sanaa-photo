@@ -1,6 +1,6 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import emailjs from "@emailjs/browser";
 import sitePattern from "./assets/sitebg.jpg";
 import HomePage from "./HomePage";
@@ -357,6 +357,20 @@ function QuestionnaireDrawer({ onClose }) {
   );
 }
 
+// React Router preserves scroll position across client-side navigations by
+// default (unlike a full page load), so jumping from a scrolled-down spot on
+// one page to a new page lands you mid-page instead of at the top. This
+// watches the current path and resets scroll to (0,0) whenever it changes.
+// Must render inside <BrowserRouter> (needs router context via useLocation)
+// but doesn't render any visible markup of its own.
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+}
+
 export default function SanaaPhotography() {
   const [questOpen, setQuestOpen] = useState(false);
 
@@ -385,6 +399,7 @@ export default function SanaaPhotography() {
       `}</style>
 
       <BrowserRouter>
+        <ScrollToTop/>
         <Routes>
           <Route path="/" element={<HomePage onOpenQuestionnaire={() => setQuestOpen(true)} />} />
           <Route path="/portfolio" element={<PortfolioPage onOpenQuestionnaire={() => setQuestOpen(true)} />} />
