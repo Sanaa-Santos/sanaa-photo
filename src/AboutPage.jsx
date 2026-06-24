@@ -4,9 +4,9 @@ import {
   Diamond, FadeIn, Shell, Nav, Footer,
 } from "./Shared";
 
-const HERO_URL     = "https://res.cloudinary.com/drqtl7xy8/image/upload/v1782018773/sanaa-santos-sansan-stills-austin-wedding-photographer-about-hero_j286mj.jpg";
-const POLAROID_URL = "https://res.cloudinary.com/drqtl7xy8/image/upload/v1782018772/sanaa-santos-sansan-stills-austin-wedding-photographer-about-polaroid_jlnjxz.png";
-const CTA_URL      = "https://res.cloudinary.com/drqtl7xy8/image/upload/v1782018772/sanaa-santos-sansan-stills-austin-wedding-photographer-about-ready_upq1j8.jpg";
+const HERO_URL     = "https://res.cloudinary.com/drqtl7xy8/image/upload/v1782267442/sansan-stills-about-1_sqc0o2.jpg";
+const POLAROID_URL = "https://res.cloudinary.com/drqtl7xy8/image/upload/v1782267566/sansan-stills-polaroid-section_bvo4pu.png";
+const CTA_URL      = "https://res.cloudinary.com/drqtl7xy8/image/upload/v1782267336/sansan-stills-about-2_xsntrt.jpg";
 const CATS_CREAM   = "https://res.cloudinary.com/drqtl7xy8/image/upload/v1781811066/Cream-cats_nbnxvi.png";
 
 const BIO_PARAGRAPHS = [
