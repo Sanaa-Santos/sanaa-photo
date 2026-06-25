@@ -98,7 +98,7 @@ function BioAndFacts() {
           <FadeIn delay={0.1}>
             <blockquote style={{ fontFamily:"'Libre Baskerville', serif", fontStyle:"italic",
               fontSize:"1.2rem", color:BISQUE, lineHeight:1.55, marginBottom:"2.75rem" }}>
-              If I'm not shooting weddings, you'll find me out in Austin, shopping at local markets, in line at a food pop-up, or at home cuddling my cats, Flan and Rasu (not pictured, she's shy).
+              If I'm not shooting weddings, you'll find me out in Austin, shopping at local markets, in line at a food pop-up, catching a matinee film, or at home cuddling my cats, Flan and Rasu (not pictured, she's shy).
             </blockquote>
           </FadeIn>
 

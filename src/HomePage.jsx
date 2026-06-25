@@ -117,7 +117,7 @@ function IntroSection() {
             <FadeIn>
               <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.95rem", color:SADDLE,
                 lineHeight:1.75, marginBottom:"1.5rem" }}>
-                Candid wedding photography for couples who want to enjoy their day. One flat rate. The whole day.
+                Candid wedding photography for couples who want to enjoy their day. The whole day.
               </p>
             </FadeIn>
 
