@@ -1,6 +1,6 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import emailjs from "@emailjs/browser";
 import sitePattern from "./assets/sitebg.jpg";
 import HomePage from "./HomePage";
@@ -18,7 +18,17 @@ const EMAILJS_SERVICE  = "sansan_service";
 const EMAILJS_TEMPLATE = "template_pipszhb";
 const EMAILJS_KEY      = "gN2ok8Ezm4_FvorFo";
 
-const QUESTIONS = [
+// ── QUESTION BANKS ────────────────────────────────────────────────────────────
+// Step 0 is always the event-type router — answered first, not part of
+// either path's numbered questions or progress dots.
+const EVENT_QUESTION = {
+  id: "eventType",
+  q: "What kind of event are you inquiring about?",
+  sub: "Let's get started.",
+  opts: ["Wedding", "Engagement"],
+};
+
+const WEDDING_QUESTIONS = [
   {
     id: "vibe", q: "How do you want your day to feel?", sub: "Go with your gut.",
     opts: ["Romantic & emotional", "Fun & energetic", "Calm & intimate", "Bold & unforgettable"],
@@ -47,8 +57,30 @@ const QUESTIONS = [
   },
 ];
 
+const ENGAGEMENT_QUESTIONS = [
+  {
+    id: "vibe", q: "How do you want your session to feel?", sub: "Go with your gut.",
+    opts: ["Romantic & dreamy", "Fun & playful", "Natural & relaxed", "Bold & editorial"],
+  },
+  {
+    id: "found", q: "How did you find Sansan Stills?", sub: "Just curious.",
+    opts: ["Instagram", "Google", "A friend told me", "I just knew"],
+  },
+  {
+    id: "moments", q: "What's the one shot you're hoping to walk away with?", sub: "The one you'll frame.",
+    opts: [
+      "Something candid and unposed",
+      "A stunning golden-hour moment",
+      "Something that shows our personalities",
+      "Honestly, I trust you completely",
+    ],
+    isFinal: true,
+  },
+];
+
 const slideTransition = { duration: 0.45, ease: [0.4, 0, 0.2, 1] };
 
+// ── QUESTION PANEL ────────────────────────────────────────────────────────────
 function QuestionPanel({ q, step, onSelect }) {
   const containerVariants = { hidden: {}, visible: { transition: { staggerChildren: 0.07 } } };
   const itemVariants = {
@@ -110,7 +142,10 @@ function QuestionPanel({ q, step, onSelect }) {
   );
 }
 
-function ContactForm({ onSubmit, answers }) {
+// ── CONTACT FORM ──────────────────────────────────────────────────────────────
+// dateLabel: "Wedding date" or "Engagement date" depending on the path taken.
+// Internal field key stays "date" either way so the EmailJS template is unaffected.
+function ContactForm({ onSubmit, answers, dateLabel }) {
   const [form, setForm] = useState({ name: "", email: "", date: "", location: "", message: "" });
   const [sending, setSending] = useState(false);
   const [error, setError] = useState(null);
@@ -118,7 +153,7 @@ function ContactForm({ onSubmit, answers }) {
   const fields = [
     { k: "name",     label: "Your name",     ph: "Sarah & James" },
     { k: "email",    label: "Email address", ph: "you@email.com" },
-    { k: "date",     label: "Wedding date",  ph: "October 2026 — or still deciding" },
+    { k: "date",     label: dateLabel,       ph: "October 2026 — or still deciding" },
     { k: "location", label: "Venue or city", ph: "Austin, TX" },
     { k: "message",  label: "Anything else?", ph: "Tell me more about your day...", multiline: true },
   ];
@@ -132,6 +167,7 @@ function ContactForm({ onSubmit, answers }) {
         vibe: answers.vibe || "—", moments: answers.moments || "—",
         size: answers.size || "—", found: answers.found || "—",
         frame: answers.frame || "—",
+        eventType: answers.eventType || "—",
       }, EMAILJS_KEY);
       onSubmit();
     } catch {
@@ -204,9 +240,10 @@ function ContactForm({ onSubmit, answers }) {
         ))}
 
         {error && (
-          <p style={{ fontFamily: "'Manrope', sans-serif", fontSize: "0.8rem", color: FIREBRICK, marginBottom: "0.5rem", opacity: 0.8 }}>
-            {error}
-          </p>
+          <p style={{
+            fontFamily: "'Manrope', sans-serif", fontSize: "0.8rem",
+            color: FIREBRICK, marginBottom: "0.5rem", opacity: 0.8,
+          }}>{error}</p>
         )}
 
         <motion.button
@@ -231,6 +268,7 @@ function ContactForm({ onSubmit, answers }) {
   );
 }
 
+// ── THANK YOU ─────────────────────────────────────────────────────────────────
 function ThankYou({ onClose }) {
   return (
     <motion.div
@@ -270,23 +308,45 @@ function ThankYou({ onClose }) {
   );
 }
 
+// ── QUESTIONNAIRE DRAWER ──────────────────────────────────────────────────────
 function QuestionnaireDrawer({ onClose }) {
-  const [step, setStep] = useState(0);
-  const [answers, setAnswers] = useState({});
-  const [showForm, setShowForm] = useState(false);
+  // path: null = not yet chosen, "wedding" or "engagement" after event-type step
+  const [path, setPath]           = useState(null);
+  const [step, setStep]           = useState(0);   // index into the active path's questions
+  const [answers, setAnswers]     = useState({});
+  const [showForm, setShowForm]   = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
+  // Which question bank is active right now
+  const activeQuestions = path === "engagement" ? ENGAGEMENT_QUESTIONS : WEDDING_QUESTIONS;
+
+  const handleEventSelect = useCallback((opt) => {
+    const chosen = opt === "Engagement" ? "engagement" : "wedding";
+    setAnswers(prev => ({ ...prev, eventType: opt }));
+    setPath(chosen);
+    // step stays at 0, ready for the first question of the chosen path
+  }, []);
+
   const handleSelect = useCallback((opt) => {
-    const q = QUESTIONS[step];
+    const q = activeQuestions[step];
     setAnswers(prev => ({ ...prev, [q.id]: opt }));
     if (q.isFinal) { setShowForm(true); return; }
     setStep(s => s + 1);
-  }, [step]);
+  }, [step, activeQuestions]);
 
   const handleClose = () => {
-    setStep(0); setAnswers({}); setShowForm(false); setSubmitted(false);
+    setPath(null); setStep(0); setAnswers({});
+    setShowForm(false); setSubmitted(false);
     onClose();
   };
+
+  // Progress dots: one dot per question in the active path (or wedding default
+  // before a path is chosen so the dots aren't blank on the first screen).
+  const dotsSource = path === "engagement" ? ENGAGEMENT_QUESTIONS : WEDDING_QUESTIONS;
+
+  // The "current" dot index: -1 while on the event-type screen (nothing lit yet)
+  // so we can light dots only once a path has started.
+  const currentDotIndex = path === null ? -1 : (showForm ? dotsSource.length : step);
 
   return (
     <motion.div
@@ -322,17 +382,18 @@ function QuestionnaireDrawer({ onClose }) {
         }}
       >✕</button>
 
-      {!submitted && (
+      {/* Progress dots — only shown once a path is chosen and not yet submitted */}
+      {!submitted && path !== null && (
         <div style={{
           position: "fixed", top: "1.55rem", left: "50%",
           transform: "translateX(-50%)",
           display: "flex", gap: 7, zIndex: 10,
         }}>
-          {QUESTIONS.map((_, i) => (
+          {dotsSource.map((_, i) => (
             <motion.div
               key={i}
               animate={{
-                background: i <= (showForm ? QUESTIONS.length : step) ? FIREBRICK : "rgba(142,29,31,0.2)",
+                background: i <= currentDotIndex ? FIREBRICK : "rgba(142,29,31,0.2)",
                 scale: i === step && !showForm ? 1.35 : 1,
               }}
               transition={{ duration: 0.25 }}
@@ -347,9 +408,27 @@ function QuestionnaireDrawer({ onClose }) {
           {submitted ? (
             <ThankYou key="thanks" onClose={handleClose} />
           ) : showForm ? (
-            <ContactForm key="form" answers={answers} onSubmit={() => setSubmitted(true)} />
+            <ContactForm
+              key="form"
+              answers={answers}
+              onSubmit={() => setSubmitted(true)}
+              dateLabel={path === "engagement" ? "Engagement date" : "Wedding date"}
+            />
+          ) : path === null ? (
+            // Event-type routing question — no step number, no progress dots
+            <QuestionPanel
+              key="event-type"
+              q={EVENT_QUESTION}
+              step="event"
+              onSelect={handleEventSelect}
+            />
           ) : (
-            <QuestionPanel key={`q-${step}`} q={QUESTIONS[step]} step={step} onSelect={handleSelect} />
+            <QuestionPanel
+              key={`q-${path}-${step}`}
+              q={activeQuestions[step]}
+              step={step}
+              onSelect={handleSelect}
+            />
           )}
         </AnimatePresence>
       </div>
@@ -357,6 +436,14 @@ function QuestionnaireDrawer({ onClose }) {
   );
 }
 
+// ── SCROLL TO TOP ON NAVIGATION ───────────────────────────────────────────────
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+  return null;
+}
+
+// ── ROOT ──────────────────────────────────────────────────────────────────────
 export default function SanaaPhotography() {
   const [questOpen, setQuestOpen] = useState(false);
 
@@ -385,6 +472,7 @@ export default function SanaaPhotography() {
       `}</style>
 
       <BrowserRouter>
+        <ScrollToTop/>
         <Routes>
           <Route path="/" element={<HomePage onOpenQuestionnaire={() => setQuestOpen(true)} />} />
           <Route path="/portfolio" element={<PortfolioPage onOpenQuestionnaire={() => setQuestOpen(true)} />} />
