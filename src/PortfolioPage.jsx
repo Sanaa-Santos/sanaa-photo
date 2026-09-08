@@ -4,7 +4,7 @@ import {
   useIsDesktop, Diamond, FadeIn, Shell, Nav, Footer, SEO,
 } from "./Shared";
 
-const HERO_URL  = "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1781882012/jake-farzana-austin-wedding-portfolio-hero_afnnyy.jpg";
+const HERO_URL  = "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1788841024/jasonsangelportfoliobannernew_sfk0ps.jpg";
 const PRICE_URL = "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1781882012/jake-farzana-austin-wedding-portfolio-flat-rate_vpyisz.jpg";
 
 // Real portfolio gallery — Corbin & Zuleyma, then Jake & Farzana, in order.
@@ -13,6 +13,31 @@ const PRICE_URL = "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_au
 // from the photos themselves: a two-column grid where each column flows
 // independently, rather than a single row-locked grid.
 const PHOTOS = [
+  "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1788840678/jasonangel1_tqfpay.jpg",
+  "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1788840678/jasonangel2_v7jhmt.jpg",
+  "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1788840678/jasonangel3_aku5ii.jpg",
+  "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1788840678/jasonangel4_qjdb7u.jpg",
+  "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1788840679/jasonangel6_zlae3w.jpg",
+  "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1788840679/jasonangel5_lbrobb.jpg",
+  "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1788840679/jasonangel7_laedhb.jpg",
+  "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1788840679/jasonangel8_dkpiue.jpg",
+  "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1788840679/jasonangel9_jq1tdt.jpg",
+  "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1788840679/jasonangel11_i8m4ki.jpg",
+  "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1788840680/jasonangel12_qpxc90.jpg",
+  "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1788840680/jasonangel13_vcggqj.jpg",
+  "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1788840680/jasonangel14_xjaa6g.jpg",
+  "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1788840681/jasonangel15_m0ey1j.jpg",
+  "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1788840680/jasonangel16_t6bouz.jpg",
+  "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1788840680/jasonangel17_ikmnn2.jpg",
+  "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1788840681/jasonangel18_kvpz0t.jpg",
+  "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1788840681/jasonangel19_yn6rke.jpg",
+  "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1788840681/jasonangel20_t4hprr.jpg",
+  "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1788840681/jasonangel21_v9q82g.jpg",
+  "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1788840681/jasonangel22_csboij.jpg",
+  "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1788840681/jasonangel23_b6nzcp.jpg",
+  "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1788840682/jasonangel24_sjiibv.jpg",
+  "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1788840682/jasonangel25_nrq76p.jpg",
+  "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1788840682/jasonangel26_bqjfnt.jpg",
   "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1782270041/corbin-zuleyma-01_yhhetf.jpg",
   "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1782270041/corbin-zuleyma-02_zfvm04.jpg",
   "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1782270040/corbin-zuleyma-03_bh4ms1.jpg",
@@ -79,7 +104,7 @@ function PortfolioHero() {
   return (
     <Shell>
       <section style={{ position:"relative", minHeight:"100svh", display:"flex", alignItems:"flex-end" }}>
-        <img src={HERO_URL} alt="Jake & Farzana"
+        <img src={HERO_URL} alt="Jason & Angel"
           style={{ position:"absolute", inset:0, width:"100%", height:"100%",
             objectFit:"cover", objectPosition:"center center", display:"block" }}/>
         <div style={{ position:"absolute", inset:0,
@@ -190,7 +215,7 @@ export default function PortfolioPage({ onOpenQuestionnaire }) {
         title="Wedding Photo Portfolio | Sansan Stills Austin"
         description="Real Austin and Texas Hill Country weddings, shot candid and documentary-style. Browse galleries delivered to real couples by Sansan Stills."
         path="/portfolio"
-        image="https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1781882012/jake-farzana-austin-wedding-portfolio-hero_afnnyy.jpg"
+        image="https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1788841024/jasonsangelportfoliobannernew_sfk0ps.jpg"
       />
       <Nav onOpenQuestionnaire={onOpenQuestionnaire}/>
       <main>
