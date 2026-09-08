@@ -42,6 +42,8 @@ const SLIDER_PHOTOS = [
   "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1782264091/rain-shuhara-austin-engagement-1_yqeko7.jpg",
   "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1782264091/corbin-zuleyma-austin-wedding_ldj2ch.jpg",
   "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1782264091/rain-shuhara-austin-engagement-2_qwdnae.jpg",
+  "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1788840683/jasonangelmain2_jvihs8.jpg",
+  "https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1788840682/jasonangelmain1_op36bo.jpg",
 ];
 
 // ── HERO ──────────────────────────────────────────────────────────────────────

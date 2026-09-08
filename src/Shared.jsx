@@ -15,6 +15,8 @@ export const LOGO_CREAM_CAT  = "https://res.cloudinary.com/drqtl7xy8/image/uploa
 export const MAX_W = 680;
 export const DESKTOP_BREAKPOINT = 900;
 
+export const INSTAGRAM_URL = "https://www.instagram.com/sansanstills/";
+
 export const SITE_URL  = "https://sansanstills.com";
 export const SITE_NAME = "Sansan Stills";
 // Default social-share image — homepage hero — used as the OG/Twitter
@@ -73,6 +75,15 @@ export const Diamond = ({ color = FIREBRICK, size = 8 }) => (
     style={{ display:"inline-block", flexShrink:0, verticalAlign:"middle" }}>
     <rect x="5" y="0.5" width="6.5" height="6.5" rx="0.4"
       transform="rotate(45 5 0.5)" fill={color} />
+  </svg>
+);
+
+export const InstagramIcon = ({ color = BISQUE, size = 20 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    style={{ display:"block", flexShrink:0 }}>
+    <rect x="2.5" y="2.5" width="19" height="19" rx="5.5" stroke={color} strokeWidth="1.7"/>
+    <circle cx="12" cy="12" r="4.6" stroke={color} strokeWidth="1.7"/>
+    <circle cx="17.6" cy="6.4" r="1.15" fill={color}/>
   </svg>
 );
 
@@ -221,6 +232,13 @@ export function Nav({ onOpenQuestionnaire }) {
                   borderRadius:"999px", cursor:"pointer", alignSelf:"flex-start" }}>
                 Tell Us About Your Day
               </motion.button>
+              <motion.a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer"
+                aria-label="Sansan Stills on Instagram"
+                initial={{ opacity:0, y:12 }} animate={{ opacity:1, y:0 }}
+                transition={{ delay:0.56, duration:0.4 }}
+                style={{ marginTop:"1.4rem", alignSelf:"center" }}>
+                <InstagramIcon color={BISQUE} size={26}/>
+              </motion.a>
             </div>
 
             <div style={{ display:"flex", justifyContent:"center" }}>
@@ -277,8 +295,13 @@ export function Footer({ onOpenQuestionnaire }) {
           display:"flex", flexDirection:"column", alignItems:"center", gap:"0.35rem" }}>
           <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.62rem",
             letterSpacing:"0.12em", color:BISQUE, opacity:0.45 }}>Austin, TX · Worldwide</p>
+          <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer"
+            aria-label="Sansan Stills on Instagram"
+            style={{ display:"flex", margin:"0.2rem 0", opacity:0.45 }}>
+            <InstagramIcon color={BISQUE} size={18}/>
+          </a>
           <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.62rem",
-            letterSpacing:"0.1em", color:BISQUE, opacity:0.45 }}>@sansanstills · sanaa@sansanstills.com</p>
+            letterSpacing:"0.1em", color:BISQUE, opacity:0.45 }}>sanaa@sansanstills.com</p>
           <p style={{ fontFamily:"'Manrope', sans-serif", fontSize:"0.58rem",
             color:BISQUE, opacity:0.28, marginTop:"0.4rem" }}>© Sansan Stills 2026</p>
         </div>
