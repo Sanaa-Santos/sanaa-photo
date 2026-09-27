@@ -4,9 +4,9 @@ import {
   Diamond, FadeIn, Shell, Nav, Footer, SEO,
 } from "./Shared";
 
-const HERO_URL     = "https://res.cloudinary.com/drqtl7xy8/image/upload/v1782267442/sansan-stills-about-1_sqc0o2.jpg";
-const POLAROID_URL = "https://res.cloudinary.com/drqtl7xy8/image/upload/v1782268127/austin-wedding-photographer-polaroids_rionym.png";
-const CTA_URL      = "https://res.cloudinary.com/drqtl7xy8/image/upload/v1782267336/sansan-stills-about-2_xsntrt.jpg";
+const HERO_URL     = "https://res.cloudinary.com/drqtl7xy8/image/upload/v1790489747/sanaa-sansan-stills-austin-texas-wedding-photographer-1_kitspn.jpg";
+const POLAROID_URL = "https://res.cloudinary.com/drqtl7xy8/image/upload/v1790489893/sansan-stills-about-polaroids_nkgrtt.png";
+const CTA_URL      = "https://res.cloudinary.com/drqtl7xy8/image/upload/v1790489766/sanaa-sansan-stills-austin-texas-wedding-photographer-2_cczrdx.jpg";
 const CATS_CREAM   = "https://res.cloudinary.com/drqtl7xy8/image/upload/v1781811066/Cream-cats_nbnxvi.png";
 
 const BIO_PARAGRAPHS = [
@@ -98,7 +98,7 @@ function BioAndFacts() {
           <FadeIn delay={0.1}>
             <blockquote style={{ fontFamily:"'Libre Baskerville', serif", fontStyle:"italic",
               fontSize:"1.2rem", color:BISQUE, lineHeight:1.55, marginBottom:"2.75rem" }}>
-              If I'm not shooting weddings, you'll find me out in Austin, exploring the city in search for some good brisket, or at home cuddling my cat, Flan.
+              If I'm not shooting weddings, you'll find me out catching a matinee film, trying different foods and expanding my palette, or at home cuddling my cats, Flan and Rasu (not pictured, she's shy).
             </blockquote>
           </FadeIn>
 
