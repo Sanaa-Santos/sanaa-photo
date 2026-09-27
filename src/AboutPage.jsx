@@ -4,7 +4,7 @@ import {
   Diamond, FadeIn, Shell, Nav, Footer, SEO,
 } from "./Shared";
 
-const HERO_URL     = "https://res.cloudinary.com/drqtl7xy8/image/upload/v1790489747/sanaa-sansan-stills-austin-texas-wedding-photographer-1_kitspn.jpg";
+const HERO_URL     = "https://res.cloudinary.com/drqtl7xy8/image/upload/v1790490370/sansan-stills-hero-image-wedding-photographer-austin-tx_jrft8l.jpg";
 const POLAROID_URL = "https://res.cloudinary.com/drqtl7xy8/image/upload/v1790489893/sansan-stills-about-polaroids_nkgrtt.png";
 const CTA_URL      = "https://res.cloudinary.com/drqtl7xy8/image/upload/v1790489766/sanaa-sansan-stills-austin-texas-wedding-photographer-2_cczrdx.jpg";
 const CATS_CREAM   = "https://res.cloudinary.com/drqtl7xy8/image/upload/v1781811066/Cream-cats_nbnxvi.png";
