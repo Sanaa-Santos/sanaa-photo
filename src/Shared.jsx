@@ -131,12 +131,19 @@ function NavLink({ href, children, ...rest }) {
 export function Nav({ onOpenQuestionnaire }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const navLinks = [
-    { label:"Home", href:"/" },
-    { label:"Portfolio", href:"/portfolio" },
+  const [portfoliosOpen, setPortfoliosOpen] = useState(false);
+
+  // Links before and after the special "Portfolios" entry, which needs its
+  // own sub-navigation (Weddings / Engagements) rather than a plain href.
+  const beforePortfolios = [{ label:"Home", href:"/" }];
+  const afterPortfolios = [
     { label:"Investment", href:"/investment" },
     { label:"Experience", href:"/experience" },
     { label:"About", href:"/about" },
+  ];
+  const portfolioSubLinks = [
+    { label:"Weddings", href:"/wedding-portfolio" },
+    { label:"Engagements", href:"/engagement-portfolio" },
   ];
 
   useEffect(() => {
@@ -144,6 +151,10 @@ export function Nav({ onOpenQuestionnaire }) {
     window.addEventListener("scroll", onScroll, { passive:true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // Closes the drawer and collapses the Portfolios sub-menu together, so it
+  // doesn't reopen already-expanded next time.
+  const closeMenu = () => { setMenuOpen(false); setPortfoliosOpen(false); };
 
   const showCream = scrolled || menuOpen;
 
@@ -196,7 +207,7 @@ export function Nav({ onOpenQuestionnaire }) {
               display:"flex", flexDirection:"column", justifyContent:"space-between",
               padding:"1.1rem 2rem 3rem" }}>
             <div style={{ display:"flex", alignItems:"center", position:"relative", height:60 }}>
-              <button onClick={() => setMenuOpen(false)}
+              <button onClick={closeMenu}
                 style={{ background:"none", border:`1.5px solid rgba(247,221,194,0.45)`,
                   color:BISQUE, width:38, height:38, borderRadius:"50%",
                   fontSize:"0.85rem", cursor:"pointer",
@@ -210,11 +221,57 @@ export function Nav({ onOpenQuestionnaire }) {
             </div>
 
             <div style={{ display:"flex", flexDirection:"column", gap:"0.05rem", paddingLeft:"0.5rem" }}>
-              {navLinks.map((link,i) => (
+              {beforePortfolios.map((link,i) => (
                 <NavLink key={link.label} href={link.href}
                   initial={{ opacity:0, x:-24 }} animate={{ opacity:1, x:0 }}
                   transition={{ delay:0.08+i*0.07, duration:0.45, ease:[0.22,1,0.36,1] }}
-                  onClick={() => setMenuOpen(false)}
+                  onClick={closeMenu}
+                  style={{ fontFamily:"'Libre Baskerville', serif", fontStyle:"italic",
+                    fontSize:"clamp(2.2rem, 9vw, 4rem)",
+                    color:BISQUE, textDecoration:"none", lineHeight:1.25, opacity:0.92 }}>
+                  {link.label}
+                </NavLink>
+              ))}
+
+              <motion.button
+                initial={{ opacity:0, x:-24 }} animate={{ opacity:1, x:0 }}
+                transition={{ delay:0.08+beforePortfolios.length*0.07, duration:0.45, ease:[0.22,1,0.36,1] }}
+                onClick={() => setPortfoliosOpen(o => !o)}
+                aria-expanded={portfoliosOpen}
+                style={{ background:"none", border:"none", padding:0, cursor:"pointer",
+                  textAlign:"left", fontFamily:"'Libre Baskerville', serif", fontStyle:"italic",
+                  fontSize:"clamp(2.2rem, 9vw, 4rem)",
+                  color:BISQUE, textDecoration:"none", lineHeight:1.25, opacity:0.92 }}>
+                Portfolios ›
+              </motion.button>
+              <AnimatePresence>
+                {portfoliosOpen && (
+                  <motion.div
+                    initial={{ opacity:0, height:0 }}
+                    animate={{ opacity:1, height:"auto" }}
+                    exit={{ opacity:0, height:0 }}
+                    transition={{ duration:0.35, ease:[0.22,1,0.36,1] }}
+                    style={{ overflow:"hidden", display:"flex", flexDirection:"column",
+                      gap:"0.05rem", paddingLeft:"1rem" }}>
+                    {portfolioSubLinks.map(link => (
+                      <NavLink key={link.label} href={link.href}
+                        onClick={closeMenu}
+                        style={{ fontFamily:"'Libre Baskerville', serif", fontStyle:"italic",
+                          fontSize:"clamp(1.35rem, 5.5vw, 2.2rem)",
+                          color:BISQUE, textDecoration:"none", lineHeight:1.4, opacity:0.8,
+                          padding:"0.15rem 0" }}>
+                        {link.label}
+                      </NavLink>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {afterPortfolios.map((link,i) => (
+                <NavLink key={link.label} href={link.href}
+                  initial={{ opacity:0, x:-24 }} animate={{ opacity:1, x:0 }}
+                  transition={{ delay:0.08+(beforePortfolios.length+1+i)*0.07, duration:0.45, ease:[0.22,1,0.36,1] }}
+                  onClick={closeMenu}
                   style={{ fontFamily:"'Libre Baskerville', serif", fontStyle:"italic",
                     fontSize:"clamp(2.2rem, 9vw, 4rem)",
                     color:BISQUE, textDecoration:"none", lineHeight:1.25, opacity:0.92 }}>
@@ -224,7 +281,7 @@ export function Nav({ onOpenQuestionnaire }) {
               <motion.button
                 initial={{ opacity:0, y:12 }} animate={{ opacity:1, y:0 }}
                 transition={{ delay:0.5, duration:0.4 }}
-                onClick={() => { setMenuOpen(false); onOpenQuestionnaire(); }}
+                onClick={() => { closeMenu(); onOpenQuestionnaire(); }}
                 style={{ marginTop:"1.8rem", background:BISQUE, border:"none", color:FIREBRICK,
                   padding:"0.9rem 2rem", fontFamily:"'Manrope', sans-serif",
                   fontSize:"0.75rem", fontWeight:700,
@@ -263,7 +320,8 @@ function PlainNavLink({ href, children, ...rest }) {
 export function Footer({ onOpenQuestionnaire }) {
   const links = [
     { label:"Home", href:"/" },
-    { label:"Portfolio", href:"/portfolio" },
+    { label:"Weddings", href:"/wedding-portfolio" },
+    { label:"Engagements", href:"/engagement-portfolio" },
     { label:"Investment", href:"/investment" },
     { label:"Experience", href:"/experience" },
     { label:"About", href:"/about" },
