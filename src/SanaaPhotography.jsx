@@ -4,7 +4,8 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import emailjs from "@emailjs/browser";
 import sitePattern from "./assets/sitebg.jpg";
 import HomePage from "./HomePage";
-import PortfolioPage from "./PortfolioPage";
+import WeddingPortfolioPage from "./WeddingPortfolioPage";
+import EngagementPortfolioPage from "./EngagementPortfolioPage";
 import InvestmentPage from "./InvestmentPage";
 import ExperiencePage from "./ExperiencePage";
 import AboutPage from "./AboutPage";
@@ -475,7 +476,8 @@ export default function SanaaPhotography() {
         <ScrollToTop/>
         <Routes>
           <Route path="/" element={<HomePage onOpenQuestionnaire={() => setQuestOpen(true)} />} />
-          <Route path="/portfolio" element={<PortfolioPage onOpenQuestionnaire={() => setQuestOpen(true)} />} />
+          <Route path="/wedding-portfolio" element={<WeddingPortfolioPage onOpenQuestionnaire={() => setQuestOpen(true)} />} />
+          <Route path="/engagement-portfolio" element={<EngagementPortfolioPage onOpenQuestionnaire={() => setQuestOpen(true)} />} />
           <Route path="/investment" element={<InvestmentPage onOpenQuestionnaire={() => setQuestOpen(true)} />} />
           <Route path="/experience" element={<ExperiencePage onOpenQuestionnaire={() => setQuestOpen(true)} />} />
           <Route path="/about" element={<AboutPage onOpenQuestionnaire={() => setQuestOpen(true)} />} />

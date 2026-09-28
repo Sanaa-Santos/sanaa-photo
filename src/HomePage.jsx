@@ -289,7 +289,7 @@ function RecentWeddings() {
             {/* Button centered over the gap between the two stacked SAN words */}
             <div style={{ position:"absolute", top:"42%", left:0, right:0,
               display:"flex", justifyContent:"center", zIndex:2 }}>
-              <Link to="/portfolio" style={{
+              <Link to="/wedding-portfolio" style={{
                 display:"inline-block",
                 border:`1.5px solid ${FIREBRICK}`,
                 color:FIREBRICK, padding:"0.85rem 2.5rem",

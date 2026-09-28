@@ -100,7 +100,7 @@ function GalleryFrame({ src }) {
 // reads as full-bleed at the top of the page — same structure, same behavior.
 // The Gallery below shares a separate, single continuous tile-pattern
 // background (its own Shell) so there's no seam within the gallery itself.
-function PortfolioHero() {
+function WeddingPortfolioHero() {
   return (
     <Shell>
       <section style={{ position:"relative", minHeight:"100svh", display:"flex", alignItems:"flex-end" }}>
@@ -115,7 +115,7 @@ function PortfolioHero() {
               letterSpacing:"0.22em", textTransform:"uppercase",
               color:BISQUE, opacity:0.72, marginBottom:"0.5rem",
               display:"flex", alignItems:"center", gap:"0.5rem" }}>
-              <Diamond color={FIREBRICK} size={7}/>Portfolio
+              <Diamond color={FIREBRICK} size={7}/>Wedding Portfolio
             </p>
             <h1 style={{ fontFamily:"'Libre Baskerville', serif", fontStyle:"italic",
               fontSize:"clamp(2.6rem, 11vw, 5rem)",
@@ -133,7 +133,7 @@ function PortfolioHero() {
   );
 }
 
-function PortfolioGallery() {
+function WeddingPortfolioGallery() {
   const isDesktop = useIsDesktop();
   const left = PHOTOS.filter((_,i) => i % 2 === 0);
   const right = PHOTOS.filter((_,i) => i % 2 === 1);
@@ -208,19 +208,19 @@ function PricingCTA() {
   );
 }
 
-export default function PortfolioPage({ onOpenQuestionnaire }) {
+export default function WeddingPortfolioPage({ onOpenQuestionnaire }) {
   return (
     <>
       <SEO
         title="Wedding Photo Portfolio | Sansan Stills Austin"
         description="Real Austin and Texas Hill Country weddings, shot candid and documentary-style. Browse galleries delivered to real couples by Sansan Stills."
-        path="/portfolio"
+        path="/wedding-portfolio"
         image="https://res.cloudinary.com/drqtl7xy8/image/upload/f_auto,q_auto/v1788841024/jasonsangelportfoliobannernew_sfk0ps.jpg"
       />
       <Nav onOpenQuestionnaire={onOpenQuestionnaire}/>
       <main>
-        <PortfolioHero/>
-        <PortfolioGallery/>
+        <WeddingPortfolioHero/>
+        <WeddingPortfolioGallery/>
         <PricingCTA/>
       </main>
       <Footer onOpenQuestionnaire={onOpenQuestionnaire}/>
